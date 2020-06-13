@@ -3,16 +3,16 @@
 appRunning=1
 
 while [ $appRunning == 1 ]; do
-    echo Compile and run [1], Compile [2], Run [3], Exit [4]
+    echo -e "\e[96mCompile and run [1], Compile [2], Run [3], Exit [4]\e[39m"
     read userChoice
 
     if [[ $userChoice == 1 ]]; then
-        echo Compiling and running...
+        echo -e "\e[93mCompiling and running...\e[39m"
         g++ -c src/*.cpp -std=c++14 -Werror
         g++ *.o -o bin/Bomberman -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
         ./bin/Bomberman
     elif [[ $userChoice == 2 ]]; then
-        echo Compiling...
+        echo -e "\e[93mCompiling...\e[39m"
         g++ -c src/*.cpp -std=c++14 -Werror
         g++ *.o -o bin/Bomberman -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
     elif [[ $userChoice == 3 ]]; then
