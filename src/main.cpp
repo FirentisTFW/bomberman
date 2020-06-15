@@ -16,51 +16,62 @@ int main() {
     while (window.isOpen()) {
 
         sf::Event event;
-        while (window.pollEvent(event))
-        {
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
 
             if (event.type == sf::Event::KeyPressed) {          
                 if(event.key.code == sf::Keyboard::Escape) {        // ESC pause the game
-                    if(!game->isGamePaused)
-                        game->isGamePaused = true;
-                    else
-                        game->isGamePaused = false;
-                    std::cout << "ESC" << std::endl;
+                    // if(!game->isGamePaused)
+                    //     game->isGamePaused = true;
+                    // else
+                    //     game->isGamePaused = false;
+                    // std::cout << "Game paused" << std::endl;
+                    game->players[0]->speed++;                      // TEST - speed testing
                 }
 
                 // Player movement
-                else if(event.key.code == sf::Keyboard::Up) {                       // move up
-                    // game->players[0]->rect.move(0, -game->players[0]->speed);
-                    game->players[0]->move('u');
-                }
-                else if(event.key.code == sf::Keyboard::Down) {                     // move down
-                    // game->players[0]->rect.move(0, game->players[0]->speed);
-                    game->players[0]->move('d');
-                }
-                else if(event.key.code == sf::Keyboard::Left) {                     // move left
-                    // game->players[0]->rect.move(-game->players[0]->speed, 0);
-                    game->players[0]->move('l');
-                }
-                else if(event.key.code == sf::Keyboard::Right) {                    // move right
-                    // game->players[0]->rect.move(game->players[0]->speed, 0);
-                    game->players[0]->move('r');
-                } // Player movement
+                else if(!game->isGamePaused) {
+                    if(event.key.code == sf::Keyboard::Up) {                       // move up
+                        // game->players[0]->rect.move(0, -game->players[0]->speed);
+                        game->players[0]->shouldPlayerMove('u');
+                    }
+                    else if(event.key.code == sf::Keyboard::Down) {                     // move down
+                        // game->players[0]->rect.move(0, game->players[0]->speed);
+                        game->players[0]->shouldPlayerMove('d');
+                    }
+                    else if(event.key.code == sf::Keyboard::Left) {                     // move left
+                        // game->players[0]->rect.move(-game->players[0]->speed, 0);
+                        game->players[0]->shouldPlayerMove('l');
+                    }
+                    else if(event.key.code == sf::Keyboard::Right) {                    // move right
+                        // game->players[0]->rect.move(game->players[0]->speed, 0);
+                        game->players[0]->shouldPlayerMove('r');
+                    } // Player movement
 
-                else if(event.key.code == sf::Keyboard::Space) {
-                    std::cout << "bomb!" << std::endl;
+                    else if(event.key.code == sf::Keyboard::Space) {
+                        std::cout << "bomb!" << std::endl;
+                    }
                 }
             }
-
         }
 
+
+        if (!game->isGamePaused) {                          // game wasn't paused
+
+            
+            game->updateGameTime();
+            if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again
+                game->updatePlayerMovementFramerate();
+        }
+        
         sf::Time time = clock.getElapsedTime();
 		clock.restart().asSeconds();
 
         window.clear();
         game->draw();
         window.display();
+
     }
 
     return 0;
