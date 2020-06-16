@@ -8,6 +8,11 @@ Game::Game(sf::RenderWindow* _window) {                   // start a game
     window = _window;
 
     players.push_back(new Player(true, 0, 0));
+    boxes.push_back(new Box(false, 5, 5));
+    boxes.push_back(new Box(false, 5, 8));
+    boxes.push_back(new Box(false, 10, 12));
+    boxes.push_back(new Box(false, 2, 12));
+    // std::fill(begin(gameBoard), begin(gameBoard) + 16, 0); // set gameTime to 0:0:0
 }
 
 void Game::updateGameTime() {
@@ -23,14 +28,37 @@ void Game::updateGameTime() {
     }
 }
 
-void Game::updatePlayerMovementFramerate() {            // function called every frame for player movement to work properly
+void Game::updatePlayerMovementFramerate() {            
     for(Player* player : players) {
         player->howManyFramesAfterMove++;
     }
 }
 
-void Game::draw() {                                      // draw objects on the screen
-    for (Player* player : players) 
-        window->draw(player->rect); 
+void Game::updateGameBoard() {
+    for (int i = 0; i < 16; i++) {                      // fill everything with empty strings assuming there's nothing there
+        for (int j = 0; j < 16; j++) {
+            gameBoard[i][j] = "0";
+        }
+    }
+    for (Player* player : players){
+        gameBoard[player->posY][player->posX] = "player";
+    }
+    for (Box* box : boxes){
+        gameBoard[box->posY][box->posX] = "box";
+    }
+
+    for(int i=0; i<16; i++) {                           // print an array
+        for (int j = 0; j < 16; j++) {
+            std::cout << gameBoard[i][j] << ", ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void Game::draw() {
+    for (Player *player : players)
+        window->draw(player->rect);
+    for (Box *box : boxes)
+        window->draw(box->rect);
     // std::cout << "draaaaw" << std::endl;
 }

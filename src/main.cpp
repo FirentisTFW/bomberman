@@ -28,24 +28,21 @@ int main() {
                     //     game->isGamePaused = false;
                     // std::cout << "Game paused" << std::endl;
                     game->players[0]->speed++;                      // TEST - speed testing
+                    game->updateGameBoard();
                 }
 
                 // Player movement
                 else if(!game->isGamePaused) {
-                    if(event.key.code == sf::Keyboard::Up) {                       // move up
-                        // game->players[0]->rect.move(0, -game->players[0]->speed);
+                    if(event.key.code == sf::Keyboard::Up) {                            // move up
                         game->players[0]->shouldPlayerMove('u');
                     }
                     else if(event.key.code == sf::Keyboard::Down) {                     // move down
-                        // game->players[0]->rect.move(0, game->players[0]->speed);
                         game->players[0]->shouldPlayerMove('d');
                     }
                     else if(event.key.code == sf::Keyboard::Left) {                     // move left
-                        // game->players[0]->rect.move(-game->players[0]->speed, 0);
                         game->players[0]->shouldPlayerMove('l');
                     }
                     else if(event.key.code == sf::Keyboard::Right) {                    // move right
-                        // game->players[0]->rect.move(game->players[0]->speed, 0);
                         game->players[0]->shouldPlayerMove('r');
                     } // Player movement
 
@@ -58,7 +55,6 @@ int main() {
 
 
         if (!game->isGamePaused) {                          // game wasn't paused
-
             
             game->updateGameTime();
             if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again

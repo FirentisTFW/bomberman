@@ -25,6 +25,8 @@ Player::Player(bool _isHuman, int _posX, int _posY) {
 
 }
 
+Player::~Player() {};
+
 // ------------------------------------------ METHODS -------------------------------------------------
 
 void Player::shouldPlayerMove(char direction) {
@@ -42,29 +44,26 @@ void Player::shouldPlayerMove(char direction) {
 void Player::move(char direction) {
     switch(direction) {
         case 'u':
-            std::cout << "move up" << std::endl;
-            if(rect.getPosition().y - 50 >= 0) {        // player can move -> still on the map
+            if(posY > 0) {        // player can move -> still on the map
                 rect.move(0, -50);
                 posY--;
             }
             break;
         case 'd':
-            std::cout << "move down" << std::endl;
-            if(rect.getPosition().y + 50 <= 799) {        // player can move -> still on the map
+            if(posY < 15) {        // player can move -> still on the map
                 rect.move(0, +50);
                 posY++;
             }
             break;
         case 'l':
-            std::cout << "move left" << std::endl;
-            if(rect.getPosition().x - 50 >= 0) {        // player can move -> still on the map
+            if(posX > 0) {        // player can move -> still on the map
                 rect.move(-50, 0);
                 posX--;
             }
             break;
         case 'r':
-            std::cout << "move right" << std::endl;
-            if(rect.getPosition().x + 50 <= 799) {        // player can move -> still on the map
+            // std::cout << "move right" << std::endl;
+            if(posX < 15) {        // player can move -> still on the map
                 rect.move(50, 0);
                 posX++;
             }
