@@ -28,22 +28,22 @@ int main() {
                     //     game->isGamePaused = false;
                     // std::cout << "Game paused" << std::endl;
                     game->players[0]->speed++;                      // TEST - speed testing
-                    game->updateGameBoard();
+                    // game->updateGameBoard();
                 }
 
                 // Player movement
                 else if(!game->isGamePaused) {
                     if(event.key.code == sf::Keyboard::Up) {                            // move up
-                        game->players[0]->shouldPlayerMove('u');
+                        game->players[0]->shouldPlayerMove('u', game->gameBoard);
                     }
                     else if(event.key.code == sf::Keyboard::Down) {                     // move down
-                        game->players[0]->shouldPlayerMove('d');
+                        game->players[0]->shouldPlayerMove('d', game->gameBoard);
                     }
                     else if(event.key.code == sf::Keyboard::Left) {                     // move left
-                        game->players[0]->shouldPlayerMove('l');
+                        game->players[0]->shouldPlayerMove('l', game->gameBoard);
                     }
                     else if(event.key.code == sf::Keyboard::Right) {                    // move right
-                        game->players[0]->shouldPlayerMove('r');
+                        game->players[0]->shouldPlayerMove('r', game->gameBoard);
                     } // Player movement
 
                     else if(event.key.code == sf::Keyboard::Space) {
@@ -57,6 +57,7 @@ int main() {
         if (!game->isGamePaused) {                          // game wasn't paused
             
             game->updateGameTime();
+            game->updateGameBoard();
             if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again
                 game->updatePlayerMovementFramerate();
         }

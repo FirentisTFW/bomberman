@@ -26,6 +26,7 @@ public:
     Player(bool isHuman, int _posX, int _posY);
     ~Player();
 
-    void shouldPlayerMove(char direction); // check if enough frames passed without move so player can be finally moved on the map
+    void shouldPlayerMove(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard); // check if enough frames passed without move so player can be finally moved on the map
+    bool isMovePossible(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard);
     void move(char direction);
 };

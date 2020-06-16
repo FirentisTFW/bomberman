@@ -47,12 +47,12 @@ void Game::updateGameBoard() {
         gameBoard[box->posY][box->posX] = "box";
     }
 
-    for(int i=0; i<16; i++) {                           // print an array
-        for (int j = 0; j < 16; j++) {
-            std::cout << gameBoard[i][j] << ", ";
-        }
-        std::cout << std::endl;
-    }
+    // for(int i=0; i<16; i++) {                           // print an array
+    //     for (int j = 0; j < 16; j++) {
+    //         std::cout << gameBoard[i][j] << ", ";
+    //     }
+    //     std::cout << std::endl;
+    // }
 }
 
 void Game::draw() {

@@ -29,15 +29,64 @@ Player::~Player() {};
 
 // ------------------------------------------ METHODS -------------------------------------------------
 
-void Player::shouldPlayerMove(char direction) {
-    howManyFramesAfterMove++;                           
+
+void Player::shouldPlayerMove(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard) {
+    
+    howManyFramesAfterMove++;  
+
     if(lastDirection != direction) {
-        move(direction);
-        howManyFramesAfterMove = 0;
+        if(isMovePossible(direction, gameBoard)) {
+            move(direction);
+            howManyFramesAfterMove = 0;
+        }
     }
     else if(howManyFramesAfterMove >= Player::movementSpeedFramerate[speed-1]) {
-        howManyFramesAfterMove = 0;
-        move(direction);
+        if (isMovePossible(direction, gameBoard)) {
+            howManyFramesAfterMove = 0;
+            move(direction);
+        }
+    }
+}
+
+bool Player::isMovePossible(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard) {
+
+     switch(direction) {
+        case 'u':
+            if(posY > 0) {        // player can move -> still on the map
+                if(gameBoard[posY-1][posX] == "0" || gameBoard[posY-1][posX] == "bonus" || gameBoard[posY-1][posX] == "explosion") {    // field player wants to step on is possible to step on
+                    return true;
+                }
+                return false;
+            }
+            break;
+        case 'd':
+            if(posY < 15) {        // player can move -> still on the map
+                if(gameBoard[posY+1][posX] != "box" || gameBoard[posY+1][posX] == "bonus" || gameBoard[posY+1][posX] == "explosion") {
+                    return true;
+                }
+                return false;
+            }
+            break;
+        case 'l':
+            if(posX > 0) {        // player can move -> still on the map
+                if(gameBoard[posY][posX-1] != "box" || gameBoard[posY][posX-1] == "bonus" || gameBoard[posY][posX-1] == "explosion") {
+                    return true;
+                }
+                return false;
+            }
+            break;
+        case 'r':
+            // std::cout << "move right" << std::endl;
+            if(posX < 15) {        // player can move -> still on the map
+                if(gameBoard[posY][posX+1] != "box" || gameBoard[posY][posX+1] == "bonus" || gameBoard[posY][posX+1] == "explosion") {
+                    return true;
+                }
+                return false;
+            }
+            break;
+        default:
+            return false;
+            break;
     }
 }
 
