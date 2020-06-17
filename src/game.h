@@ -1,6 +1,8 @@
 #pragma once
 #include "player.h"
 #include "box.h"
+#include "bomb.h"
+#include "explosion.h"
 
 class Game {
     
@@ -12,6 +14,8 @@ public:
 
     std::vector<Player*> players;
     std::vector<Box*> boxes;
+    std::vector<Bomb*> bombs;
+    std::vector<Explosion*> explosions;
 
     Game(sf::RenderWindow* _window);
 
@@ -22,6 +26,8 @@ public:
     void updatePlayerMovementFramerate();                       // function called every frame for player movement to work properly
 
     void updateGameBoard();
+
+    void showGameBoard();
 
     void draw();                                                // draw objects on the screen
 };  // Game

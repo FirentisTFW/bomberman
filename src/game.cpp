@@ -7,7 +7,7 @@ Game::Game(sf::RenderWindow* _window) {                   // start a game
     isGamePaused = false;
     window = _window;
 
-    players.push_back(new Player(true, 0, 0));
+    players.push_back(new Player(true, 0, 0, 'g'));
     boxes.push_back(new Box(false, 5, 5));
     boxes.push_back(new Box(false, 5, 8));
     boxes.push_back(new Box(false, 10, 12));
@@ -46,13 +46,24 @@ void Game::updateGameBoard() {
     for (Box* box : boxes){
         gameBoard[box->posY][box->posX] = "box";
     }
+    for (Bomb* bomb : bombs){
+        gameBoard[bomb->posY][bomb->posX] = "bomb";
+    }
+    for (Explosion* explosion : explosions){
+        gameBoard[explosion->posY][explosion->posX] = "explosion";
+    }
 
-    // for(int i=0; i<16; i++) {                           // print an array
-    //     for (int j = 0; j < 16; j++) {
-    //         std::cout << gameBoard[i][j] << ", ";
-    //     }
-    //     std::cout << std::endl;
-    // }
+}
+
+void Game::showGameBoard() {
+
+    for(int i=0; i<16; i++) {                           // print an array
+        for (int j = 0; j < 16; j++) {
+            std::cout << gameBoard[i][j] << ", ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl << std::endl;
 }
 
 void Game::draw() {
@@ -60,5 +71,9 @@ void Game::draw() {
         window->draw(player->rect);
     for (Box *box : boxes)
         window->draw(box->rect);
+    for (Bomb *bomb : bombs)
+        window->draw(bomb->rect);
+    for (Explosion *explosion : explosions)
+        window->draw(explosion->rect);
     // std::cout << "draaaaw" << std::endl;
 }

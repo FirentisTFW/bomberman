@@ -28,7 +28,7 @@ int main() {
                     //     game->isGamePaused = false;
                     // std::cout << "Game paused" << std::endl;
                     game->players[0]->speed++;                      // TEST - speed testing
-                    // game->updateGameBoard();
+                    game->showGameBoard();
                 }
 
                 // Player movement
@@ -47,6 +47,7 @@ int main() {
                     } // Player movement
 
                     else if(event.key.code == sf::Keyboard::Space) {
+                        game->players[0]->placeBomb(game->bombs, game->gameBoard);
                         std::cout << "bomb!" << std::endl;
                     }
                 }
@@ -55,20 +56,22 @@ int main() {
 
 
         if (!game->isGamePaused) {                          // game wasn't paused
-            
+
+
             game->updateGameTime();
             game->updateGameBoard();
+            Bomb::checkBombsTimers(game->bombs, game->explosions);
+            Explosion::checkForInactiveExplosions(game->explosions);
             if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again
                 game->updatePlayerMovementFramerate();
         }
-        
+
         sf::Time time = clock.getElapsedTime();
 		clock.restart().asSeconds();
 
         window.clear();
         game->draw();
         window.display();
-
     }
 
     return 0;
