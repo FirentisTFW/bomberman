@@ -19,32 +19,52 @@ Bomb::~Bomb() {}
 
 // ------------------------------------------ METHODS -------------------------------------------------
 
-void Bomb::explode(std::vector<Explosion*> &explosions) {
+void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard) {
     
     std::cout << "Explosion!" << std::endl;
 
-    // CREATE EXPLOSION
+    // CREATE EXPLOSION IN BOMB POSITION
     explosions.push_back(new Explosion(posX, posY, color));
 
     // HERE SHOULD BE FUNCTION CHECKING COLLISION!
 
-    for(int i=0; i<range; i++)
-        explosions.push_back(new Explosion(posX, posY+(i+1), color));
-    for(int i=0; i<range; i++)
-        explosions.push_back(new Explosion(posX, posY-(i+1), color));
-    for(int i=0; i<range; i++)
+    for(int i=0; i<range; i++) {
+        explosions.push_back(new Explosion(posX, posY + (i + 1), color));
+        if(gameBoard[posY + (i+1)][posX] == "bomb")
+            break;
+        if(gameBoard[posY + (i+1)][posX] == "box")
+            break;
+    }
+    for(int i=0; i<range; i++) {
+        explosions.push_back(new Explosion(posX, posY - (i + 1), color));
+        if (gameBoard[posY - (i + 1)][posX] == "bomb")
+            break;
+        if (gameBoard[posY - (i + 1)][posX] == "box")
+            break;
+    }
+    for(int i=0; i<range; i++) {
         explosions.push_back(new Explosion(posX+(i+1), posY, color));
-    for(int i=0; i<range; i++)
-        explosions.push_back(new Explosion(posX-(i+1), posY, color));
+        if (gameBoard[posY][posX + (i + 1)] == "bomb")
+            break;
+        if (gameBoard[posY][posX + (i + 1)] == "box")
+            break;
+    }
+    for(int i=0; i<range; i++) {
+        explosions.push_back(new Explosion(posX - (i + 1), posY, color));
+        if (gameBoard[posY][posX - (i + 1)] == "bomb")
+            break;
+        if (gameBoard[posY][posX - (i + 1)] == "box")
+            break;
+    }
 }
 
-void Bomb::checkBombsTimers(std::vector<Bomb*> &bombs, std::vector<Explosion*> &explosions) {
+void Bomb::checkBombsTimers(std::vector<Bomb*> &bombs, std::vector<Explosion*> &explosions,std::array<std::array<std::string, 16>, 16> &gameBoard) {
     // std::cout << explosions.size() << std::endl;
     int bombsSize = bombs.size();
     for(int i = 0; i < bombsSize; i++) {
         bombs[i]->timeToExplode--;
         if(bombs[i]->timeToExplode <= 0) {
-            bombs[i]->explode(explosions);
+            bombs[i]->explode(explosions, gameBoard);
             bombs.erase(bombs.begin() + i);
             bombsSize = bombs.size();
             i--;

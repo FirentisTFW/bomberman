@@ -13,7 +13,7 @@ public:
 
     char color;
     int lives;
-    // bool shield;
+    bool shield;
     // bool bombPushing;                   // can player push planted bomb
     int speed;
     int range;

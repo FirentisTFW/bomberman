@@ -60,7 +60,7 @@ int main() {
 
             game->updateGameTime();
             game->updateGameBoard();
-            Bomb::checkBombsTimers(game->bombs, game->explosions);
+            Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard);
             Explosion::checkForInactiveExplosions(game->explosions);
             if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again
                 game->updatePlayerMovementFramerate();

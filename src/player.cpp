@@ -9,9 +9,11 @@ std::array<float, 5> Player::movementSpeedFramerate = {5.0, 4.0, 3.0, 2.0, 1.0};
 Player::Player(bool _isHuman, int _posX, int _posY, char _color) {
     std::cout << "player created!" << std::endl;
 
+    isHuman = _isHuman;
     lives = 3;
     speed = 1;
-    bombLimit = 4;
+    bombLimit = 200;
+    shield = false;
 
     posX = _posX;
     posY = _posY;
@@ -24,9 +26,6 @@ Player::Player(bool _isHuman, int _posX, int _posY, char _color) {
     rect.setSize(sf::Vector2f(50, 50));
     rect.setPosition(posX * 50, posY * 50);
     rect.setFillColor(sf::Color::Green);
-
-    if(_isHuman == true) isHuman = true;
-
 
 }
 
