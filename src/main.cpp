@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "game.h"
-#include "player.h"
+#include "character.h"
 
 int main() {
 
@@ -27,27 +27,27 @@ int main() {
                     // else
                     //     game->isGamePaused = false;
                     // std::cout << "Game paused" << std::endl;
-                    game->players[0]->speed++;                      // TEST - speed testing
+                    game->characters[0]->speed++;                      // TEST - speed testing
                     game->showGameBoard();
                 }
 
-                // Player movement
+                // Character movement
                 else if(!game->isGamePaused) {
                     if(event.key.code == sf::Keyboard::Up) {                            // move up
-                        game->players[0]->shouldPlayerMove('u', game->gameBoard);
+                        game->characters[0]->shouldCharacterMove('u', game->gameBoard);
                     }
                     else if(event.key.code == sf::Keyboard::Down) {                     // move down
-                        game->players[0]->shouldPlayerMove('d', game->gameBoard);
+                        game->characters[0]->shouldCharacterMove('d', game->gameBoard);
                     }
                     else if(event.key.code == sf::Keyboard::Left) {                     // move left
-                        game->players[0]->shouldPlayerMove('l', game->gameBoard);
+                        game->characters[0]->shouldCharacterMove('l', game->gameBoard);
                     }
                     else if(event.key.code == sf::Keyboard::Right) {                    // move right
-                        game->players[0]->shouldPlayerMove('r', game->gameBoard);
-                    } // Player movement
+                        game->characters[0]->shouldCharacterMove('r', game->gameBoard);
+                    } // Character movement
 
                     else if(event.key.code == sf::Keyboard::Space) {
-                        game->players[0]->placeBomb(game->bombs, game->gameBoard);
+                        game->characters[0]->placeBomb(game->bombs, game->gameBoard);
                         std::cout << "bomb!" << std::endl;
                     }
                 }
@@ -63,7 +63,7 @@ int main() {
             Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard);
             Explosion::checkForInactiveExplosions(game->explosions);
             if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again
-                game->updatePlayerMovementFramerate();
+                game->updateCharacterMovementFramerate();
         }
 
         sf::Time time = clock.getElapsedTime();
@@ -85,7 +85,7 @@ int main() {
 
     //sf::CircleShape shape(100.f);
 
-    //Player* player_1 = new Player();
+    //Character* player_1 = new Character();
 
     // while (window.isOpen())
     // {

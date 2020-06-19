@@ -1,5 +1,7 @@
 #include "game.h"
 
+// ------------------------------------------ CONSTRUCTORS -------------------------------------------------
+
 Game::Game(sf::RenderWindow* _window) {                   // start a game
     std::cout << "Game started" << std::endl;
 
@@ -7,14 +9,18 @@ Game::Game(sf::RenderWindow* _window) {                   // start a game
     isGamePaused = false;
     window = _window;
 
-    players.push_back(new Player(true, 0, 0, 'g'));
-    players.push_back(new Player(false, 8, 8, 'r'));
+    characters.push_back(new Character(true, 0, 0, 'g'));
+    characters.push_back(new Character(false, 8, 8, 'r'));
     boxes.push_back(new Box(true, 5, 5));
     boxes.push_back(new Box(true, 5, 8));
     boxes.push_back(new Box(true, 10, 12));
     boxes.push_back(new Box(false, 2, 12));
     // std::fill(begin(gameBoard), begin(gameBoard) + 16, 0); // set gameTime to 0:0:0
 }
+
+Game::~Game() {}
+
+// ------------------------------------------ METHODS -------------------------------------------------
 
 void Game::updateGameTime() {
     
@@ -29,9 +35,9 @@ void Game::updateGameTime() {
     }
 }
 
-void Game::updatePlayerMovementFramerate() {            
-    for(Player* player : players) {
-        player->howManyFramesAfterMove++;
+void Game::updateCharacterMovementFramerate() {            
+    for(Character* character : characters) {
+        character->howManyFramesAfterMove++;
     }
 }
 
@@ -44,27 +50,27 @@ void Game::updateGameBoard() {
     for (Explosion* explosion : explosions){
         gameBoard[explosion->posY][explosion->posX] = "explosion";
     }
-    for (int i = 0; i < players.size(); i++){
-        if (gameBoard[players[i]->posY][players[i]->posX] == "explosion") {             // player is on the fied where explosion happened
-            if(players[i]->shield) {
-                players[i]->shield = false;
+    for (int i = 0; i < characters.size(); i++){
+        if (gameBoard[characters[i]->posY][characters[i]->posX] == "explosion") {             // character is on the fied where explosion happened
+            if(characters[i]->shield) {
+                characters[i]->shield = false;
 
                 // ADD TIME SPAN BEFORE PLAYER CAN BE HIT AGAIN (LIKE 1-2 SECONDS)
 
-                gameBoard[players[i]->posY][players[i]->posX] = "player";
+                gameBoard[characters[i]->posY][characters[i]->posX] = "character";
             }
-            else if (players[i]->isHuman) {                                             // character is controlled by a player (living person)
-                players[i]->lives--;
+            else if (characters[i]->isHuman) {                                             // character is controlled by a character (living person)
+                characters[i]->lives--;
                 // gameOver();
                 std::cout << "Game Over 1!" << std::endl;
             }
-            else {                                                                      // player is controlled by AI
-                players.erase(players.begin() + i);
+            else {                                                                      // character is controlled by AI
+                characters.erase(characters.begin() + i);
                 i--;
             }
         }
         else
-            gameBoard[players[i]->posY][players[i]->posX] = "player";
+            gameBoard[characters[i]->posY][characters[i]->posX] = "character";
     }
 
     int boxesSize = boxes.size();
@@ -112,7 +118,7 @@ void Game::draw() {
         window->draw(explosion->rect);
     for (Box *box : boxes)
         window->draw(box->rect);
-    for (Player *player : players)
-        window->draw(player->rect);
+    for (Character *character : characters)
+        window->draw(character->rect);
     // std::cout << "draaaaw" << std::endl;
 }

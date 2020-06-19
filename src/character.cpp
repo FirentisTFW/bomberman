@@ -1,13 +1,13 @@
-#include "player.h"
+#include "character.h"
 
 // ------------------------------------------ STATIC PROPERTIES -------------------------------------------------
 
-std::array<float, 5> Player::movementSpeedFramerate = {5.0, 4.0, 3.0, 2.0, 1.0};
+std::array<float, 5> Character::movementSpeedFramerate = {5.0, 4.0, 3.0, 2.0, 1.0};
 
 // ------------------------------------------ CONSTRUCTORS -------------------------------------------------
 
-Player::Player(bool _isHuman, int _posX, int _posY, char _color) {
-    std::cout << "player created!" << std::endl;
+Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
+    std::cout << "character created!" << std::endl;
 
     isHuman = _isHuman;
     lives = 3;
@@ -29,12 +29,12 @@ Player::Player(bool _isHuman, int _posX, int _posY, char _color) {
 
 }
 
-Player::~Player() {}
+Character::~Character() {}
 
 // ------------------------------------------ METHODS -------------------------------------------------
 
 
-void Player::shouldPlayerMove(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard) {
+void Character::shouldCharacterMove(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard) {
     
     howManyFramesAfterMove++;  
 
@@ -44,7 +44,7 @@ void Player::shouldPlayerMove(char direction, const std::array<std::array<std::s
             howManyFramesAfterMove = 0;
         }
     }
-    else if(howManyFramesAfterMove >= Player::movementSpeedFramerate[speed-1]) {
+    else if(howManyFramesAfterMove >= Character::movementSpeedFramerate[speed-1]) {
         if (isMovePossible(direction, gameBoard)) {
             howManyFramesAfterMove = 0;
             move(direction);
@@ -52,19 +52,19 @@ void Player::shouldPlayerMove(char direction, const std::array<std::array<std::s
     }
 }
 
-bool Player::isMovePossible(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard) {
+bool Character::isMovePossible(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard) {
 
      switch(direction) {
         case 'u':
-            if(posY > 0) {        // player can move -> still on the map
-                if(gameBoard[posY-1][posX] == "0" || gameBoard[posY-1][posX] == "bonus" || gameBoard[posY-1][posX] == "explosion") {    // field player wants to step on is possible to step on
+            if(posY > 0) {        // character can move -> still on the map
+                if(gameBoard[posY-1][posX] == "0" || gameBoard[posY-1][posX] == "bonus" || gameBoard[posY-1][posX] == "explosion") {    // field character wants to step on is possible to step on
                     return true;
                 }
                 return false;
             }
             break;
         case 'd':
-            if(posY < 15) {        // player can move -> still on the map
+            if(posY < 15) {        // character can move -> still on the map
                 if(gameBoard[posY+1][posX] == "0" || gameBoard[posY+1][posX] == "bonus" || gameBoard[posY+1][posX] == "explosion") {
                     return true;
                 }
@@ -72,7 +72,7 @@ bool Player::isMovePossible(char direction, const std::array<std::array<std::str
             }
             break;
         case 'l':
-            if(posX > 0) {        // player can move -> still on the map
+            if(posX > 0) {        // character can move -> still on the map
                 if(gameBoard[posY][posX-1] == "0" || gameBoard[posY][posX-1] == "bonus" || gameBoard[posY][posX-1] == "explosion") {
                     return true;
                 }
@@ -81,7 +81,7 @@ bool Player::isMovePossible(char direction, const std::array<std::array<std::str
             break;
         case 'r':
             // std::cout << "move right" << std::endl;
-            if(posX < 15) {        // player can move -> still on the map
+            if(posX < 15) {        // character can move -> still on the map
                 if(gameBoard[posY][posX+1] == "0" || gameBoard[posY][posX+1] == "bonus" || gameBoard[posY][posX+1] == "explosion") {
                     return true;
                 }
@@ -94,29 +94,29 @@ bool Player::isMovePossible(char direction, const std::array<std::array<std::str
     }
 }
 
-void Player::move(char direction) {
+void Character::move(char direction) {
     switch(direction) {
         case 'u':
-            if(posY > 0) {        // player can move -> still on the map
+            if(posY > 0) {        // character can move -> still on the map
                 rect.move(0, -50);
                 posY--;
             }
             break;
         case 'd':
-            if(posY < 15) {        // player can move -> still on the map
+            if(posY < 15) {        // character can move -> still on the map
                 rect.move(0, +50);
                 posY++;
             }
             break;
         case 'l':
-            if(posX > 0) {        // player can move -> still on the map
+            if(posX > 0) {        // character can move -> still on the map
                 rect.move(-50, 0);
                 posX--;
             }
             break;
         case 'r':
             // std::cout << "move right" << std::endl;
-            if(posX < 15) {        // player can move -> still on the map
+            if(posX < 15) {        // character can move -> still on the map
                 rect.move(50, 0);
                 posX++;
             }
@@ -127,7 +127,7 @@ void Player::move(char direction) {
     lastDirection = direction;
 }
 
-void Player::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard) {
+void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard) {
     if(bombLimit > 0) {
         if(gameBoard[posY][posX] != "bomb") {                                   // two bombs can't be placed on the same field
             bombLimit--;
