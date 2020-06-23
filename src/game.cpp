@@ -2,12 +2,13 @@
 
 // ------------------------------------------ CONSTRUCTORS -------------------------------------------------
 
-Game::Game(sf::RenderWindow* _window) {                   // start a game
+Game::Game(sf::RenderWindow* _window, Player *_player) {                   // start a game
     std::cout << "Game started" << std::endl;
 
     std::fill(begin(gameTime), begin(gameTime)+3, 0);    // set gameTime to 0:0:0
     isGamePaused = false;
     window = _window;
+    player = _player;
 
     characters.push_back(new Character(true, 0, 0, 'g'));
     characters.push_back(new Character(false, 8, 8, 'r'));
@@ -60,7 +61,8 @@ void Game::updateGameBoard() {
                 gameBoard[characters[i]->posY][characters[i]->posX] = "character";
             }
             else if (characters[i]->isHuman) {                                             // character is controlled by a character (living person)
-                characters[i]->lives--;
+                player->lives--;
+                // characters[i]->lives--;
                 // gameOver();
                 std::cout << "Game Over 1!" << std::endl;
             }

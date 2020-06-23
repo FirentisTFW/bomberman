@@ -10,7 +10,6 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
     std::cout << "character created!" << std::endl;
 
     isHuman = _isHuman;
-    lives = 3;
     speed = 1;
     bombLimit = 200;
     shield = false;

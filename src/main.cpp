@@ -11,7 +11,9 @@ int main() {
 
     window.setFramerateLimit(60);
 
-    Game *game = new Game(&window);
+    Player *player = new Player(1);
+
+    Game *game = new Game(&window, player);
 
     while (window.isOpen()) {
 

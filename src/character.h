@@ -1,6 +1,7 @@
 #pragma once 
 #include "object.h"
 #include "bomb.h"
+#include "player.h"
 
 class Character: public Object {
 
@@ -11,7 +12,6 @@ public:
     char lastDirection;
 
     char color;
-    int lives;
     bool shield;
     // bool bombPushing;                   // can character push planted bomb
     int speed;

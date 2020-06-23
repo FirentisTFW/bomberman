@@ -11,13 +11,14 @@ public:
     bool isGamePaused;              
     std::array<int, 3> gameTime;                                // {minutes, seconds, frames}
     std::array<std::array<std::string, 16>, 16> gameBoard;      // what kind of object is on a given field on map (i.e. 'bomb')
+    Player *player;                                            // player object (lives, score)
 
     std::vector<Character*> characters;
     std::vector<Box*> boxes;
     std::vector<Bomb*> bombs;
     std::vector<Explosion*> explosions;
 
-    Game(sf::RenderWindow* _window);
+    Game(sf::RenderWindow* _window, Player *_player);
 
     ~Game();
 
