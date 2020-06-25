@@ -11,6 +11,8 @@ int main() {
 
     window.setFramerateLimit(60);
 
+    srand(time(NULL));                                          // for RNG
+
     Player *player = new Player(1);
 
     Game *game = new Game(&window, player);

@@ -3,6 +3,7 @@
 #include "box.h"
 #include "bomb.h"
 #include "explosion.h"
+#include "bonus.h"
 
 class Game {
     
@@ -17,6 +18,7 @@ public:
     std::vector<Box*> boxes;
     std::vector<Bomb*> bombs;
     std::vector<Explosion*> explosions;
+    std::vector<Bonus*> bonuses;
 
     Game(sf::RenderWindow* _window, Player *_player);
 

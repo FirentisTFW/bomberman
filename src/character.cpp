@@ -135,3 +135,23 @@ void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std:
         }
     }
 }
+
+void Character::steppedOnBonus(char type, int &playersLives) {
+    switch(type) {                                                    // check bonus type                
+        case 's':
+            speed++;
+            std::cout << "Speed increased!" << std::endl;
+            break;
+        case 'h':
+            shield = true;
+            std::cout << "Shield!" << std::endl;
+            break;
+        case 'l':
+            std::cout << "Another live!" << std::endl;
+            if (isHuman)
+                playersLives++;
+            break;
+        default:
+            break;
+    }
+}

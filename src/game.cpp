@@ -48,11 +48,16 @@ void Game::updateGameBoard() {
             gameBoard[i][j] = "0";
         }
     }
-    for (Explosion* explosion : explosions){
+
+    for (Explosion* explosion : explosions){           // put the explosions on the map
         gameBoard[explosion->posY][explosion->posX] = "explosion";
     }
-    for (int i = 0; i < characters.size(); i++){
-        if (gameBoard[characters[i]->posY][characters[i]->posX] == "explosion") {             // character is on the fied where explosion happened
+    for (Bonus* bonus : bonuses){                      // put the bonuses on the map
+        gameBoard[bonus->posY][bonus->posX] = "bonus";
+    }
+
+    for (int i = 0; i < characters.size(); i++) {
+        if (gameBoard[characters[i]->posY][characters[i]->posX] == "explosion") {             // character is on the field where explosion happened
             if(characters[i]->shield) {
                 characters[i]->shield = false;
 
@@ -60,7 +65,7 @@ void Game::updateGameBoard() {
 
                 gameBoard[characters[i]->posY][characters[i]->posX] = "character";
             }
-            else if (characters[i]->isHuman) {                                             // character is controlled by a character (living person)
+            else if (characters[i]->isHuman) {                                             // character is controlled by a player (living person)
                 player->lives--;
                 // characters[i]->lives--;
                 // gameOver();
@@ -71,14 +76,30 @@ void Game::updateGameBoard() {
                 i--;
             }
         }
-        else
+        else if (gameBoard[characters[i]->posY][characters[i]->posX] == "bonus") {          // character stepped on bonus - character gets a bonus and bonus is removed
+            int bonusesSize = bonuses.size();
+            for (int j = 0; j < bonusesSize; j++) {
+                if(gameBoard[characters[i]->posY][characters[i]->posX] == gameBoard[bonuses[j]->posY][bonuses[j]->posX]) {
+                    characters[i]->steppedOnBonus(bonuses[j]->type, player->lives);
+                    bonuses.erase(bonuses.begin() + j);     
+                    break;
+                }
+            }
+            gameBoard[characters[i]->posY][characters[i]->posX] = "character";
+        }
+        else                                                                                // character is on empty field
             gameBoard[characters[i]->posY][characters[i]->posX] = "character";
     }
 
     int boxesSize = boxes.size();
-    for (int i=0; i< boxesSize; i++){
+    for (int i=0; i< boxesSize; i++) {
         if (gameBoard[boxes[i]->posY][boxes[i]->posX] == "explosion") {
             if(boxes[i]->isDestroyable) {
+                char possibleBonus = Bonus::shouldBonusBeCreated();                     // calculate the chance fr a bonus to appear here
+                if(possibleBonus != '0') {                                              // create a bonus in place of destroyed box 
+                    bonuses.push_back(new Bonus(boxes[i]->posX, boxes[i]->posY, possibleBonus));
+                    gameBoard[boxes[i]->posY][boxes[i]->posX] = "bonus";
+                }
                 boxes.erase(boxes.begin() + i);
                 i--;
             }
@@ -88,6 +109,7 @@ void Game::updateGameBoard() {
         else
             gameBoard[boxes[i]->posY][boxes[i]->posX] = "box";
     }
+
     int bombsSize = bombs.size();
     for (int i = 0; i < bombsSize; i++) {
         if (gameBoard[bombs[i]->posY][bombs[i]->posX] == "explosion") {
@@ -116,10 +138,12 @@ void Game::showGameBoard() {
 void Game::draw() {
     for (Bomb *bomb : bombs)
         window->draw(bomb->rect);
-    for (Explosion *explosion : explosions)
-        window->draw(explosion->rect);
     for (Box *box : boxes)
         window->draw(box->rect);
+    for (Bonus *bonus : bonuses)
+        window->draw(bonus->rect);
+    for (Explosion *explosion : explosions)
+        window->draw(explosion->rect);
     for (Character *character : characters)
         window->draw(character->rect);
     // std::cout << "draaaaw" << std::endl;
