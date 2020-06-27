@@ -5,7 +5,7 @@ class Bonus : public Object {
     
 
     public:
-        char type;     // s - speed, l - live, h - shield, 
+        char type;     // s - speed, l - live, h - shield, r - range, b - bomb
         
         Bonus(int _posX, int _posY, char _type);
         ~Bonus();

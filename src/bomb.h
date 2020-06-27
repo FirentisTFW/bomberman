@@ -7,8 +7,9 @@ class Bomb : public Object {
         int range;                          // how many fields in each directions will be affected by explosion
         int timeToExplode;                  // how many frames before the bomb explodes
         char color;
+        int *charactersBombLimit;
 
-        Bomb(int _posX, int _posY, int _range, char _color);
+        Bomb(int _posX, int _posY, int _range, char _color, int *_charactersBombLimit);
         ~Bomb();
 
         void explode(std::vector<Explosion *> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard); // create an explosion in four directions

@@ -11,7 +11,7 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
 
     isHuman = _isHuman;
     speed = 1;
-    bombLimit = 200;
+    bombLimit = 1;
     shield = false;
 
     posX = _posX;
@@ -130,7 +130,7 @@ void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std:
     if(bombLimit > 0) {
         if(gameBoard[posY][posX] != "bomb") {                                   // two bombs can't be placed on the same field
             bombLimit--;
-            bombs.push_back(new Bomb(posX, posY, range, color));
+            bombs.push_back(new Bomb(posX, posY, range, color, &bombLimit));
             gameBoard[posY][posX] = "bomb";
         }
     }
@@ -138,6 +138,14 @@ void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std:
 
 void Character::steppedOnBonus(char type, int &playersLives) {
     switch(type) {                                                    // check bonus type                
+        case 'r':
+            range++;
+            std::cout << "Range increased!" << std::endl;
+            break;
+        case 'b':
+            bombLimit++;
+            std::cout << "Bomb limit increased!" << std::endl;
+            break;
         case 's':
             speed++;
             std::cout << "Speed increased!" << std::endl;

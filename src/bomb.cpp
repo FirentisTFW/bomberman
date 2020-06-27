@@ -2,13 +2,14 @@
 
 // ------------------------------------------ CONSTRUCTORS -------------------------------------------------
 
-Bomb::Bomb(int _posX, int _posY, int _range, char _color) {
+Bomb::Bomb(int _posX, int _posY, int _range, char _color, int *_charactersBombLimit) {
 
     range = _range;
     color = _color;
-    timeToExplode = 180;
+    timeToExplode = 180;                        // 3 seconds
     posX = _posX;
     posY = _posY;
+    charactersBombLimit = _charactersBombLimit;
 
     rect.setSize(sf::Vector2f(50, 50));
     rect.setPosition(posX * 50, posY * 50);
@@ -55,6 +56,10 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
         if (gameBoard[posY][posX - (i + 1)] == "bomb" || gameBoard[posY][posX - (i + 1)] == "box")
             break;
     }
+
+    *charactersBombLimit += 1;                                                  // bomb exploded so the character can place a new bomb
+
+    std::cout << "bombs limit: " << *charactersBombLimit << std::endl;
 }
 
 void Bomb::checkBombsTimers(std::vector<Bomb*> &bombs, std::vector<Explosion*> &explosions,std::array<std::array<std::string, 16>, 16> &gameBoard) {

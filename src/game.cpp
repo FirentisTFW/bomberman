@@ -76,11 +76,13 @@ void Game::updateGameBoard() {
                 i--;
             }
         }
-        else if (gameBoard[characters[i]->posY][characters[i]->posX] == "bonus") {          // character stepped on bonus - character gets a bonus and bonus is removed
+        else if (gameBoard[characters[i]->posY][characters[i]->posX] == "bonus") {          // character stepped on bonus - character gets a bonus and bonus is removed from the map
             int bonusesSize = bonuses.size();
             for (int j = 0; j < bonusesSize; j++) {
-                if(gameBoard[characters[i]->posY][characters[i]->posX] == gameBoard[bonuses[j]->posY][bonuses[j]->posX]) {
+                if(characters[i]->posY == bonuses[j]->posY && characters[i]->posX == bonuses[j]->posX) {
                     characters[i]->steppedOnBonus(bonuses[j]->type, player->lives);
+                    std::cout << "y: " << characters[i]->posY << std::endl;
+                    std::cout << "x: " << characters[i]->posX << std::endl;
                     bonuses.erase(bonuses.begin() + j);     
                     break;
                 }

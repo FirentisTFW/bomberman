@@ -16,7 +16,7 @@ public:
     // bool bombPushing;                   // can character push planted bomb
     int speed;
     int range;
-    int bombLimit;                      // how many bombs can character place at the same time (before some of them explode)
+    int bombLimit;                         // how many bombs can character place at the same time (before some of them explode)
     // int specialWeapon;                  // does character has any special weapon (fire, ice etc.) | 0 means characters has no special weapon
     // int specialWeaponCounter;           // how many times can character use special weapons
 
