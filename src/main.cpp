@@ -51,7 +51,7 @@ int main() {
                     } // Character movement
 
                     else if(event.key.code == sf::Keyboard::Space) {
-                        game->characters[0]->placeBomb(game->bombs, game->gameBoard);
+                        game->characters[0]->placeBomb(game->bombs, game->gameBoard, game->diggedBombs);
                         std::cout << "bomb!" << std::endl;
                     }
                 }

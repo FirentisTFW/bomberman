@@ -13,6 +13,7 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
     speed = 1;
     bombLimit = 1;
     shield = false;
+    lostShieldTimeSpan = 0;
 
     posX = _posX;
     posY = _posY;
@@ -21,6 +22,8 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
     lastDirection = ' ';
 
     range = 2;
+    specialWeapon = '0';                  
+    specialWeaponCounter = 0;
 
     rect.setSize(sf::Vector2f(50, 50));
     rect.setPosition(posX * 50, posY * 50);
@@ -126,13 +129,36 @@ void Character::move(char direction) {
     lastDirection = direction;
 }
 
-void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard) {
+void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard,std::vector<DiggedBomb*> &diggedBombs) {
+    
+    if(specialWeaponCounter > 0) {                  // character has a special weapon
+        useSpecialWeapon(bombs, gameBoard, diggedBombs);
+        return;
+    }
+
     if(bombLimit > 0) {
         if(gameBoard[posY][posX] != "bomb") {                                   // two bombs can't be placed on the same field
             bombLimit--;
             bombs.push_back(new Bomb(posX, posY, range, color, &bombLimit));
             gameBoard[posY][posX] = "bomb";
         }
+    }
+}
+
+void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb*> &diggedBombs) {
+    switch(specialWeapon) {
+        case 'f':                           // fire
+            break;
+        case 'i':                           // ice
+            break;
+        case 'd':                           // digged bomb
+            if(gameBoard[posY][posX] != "bomb") {                                   // two bombs can't be placed on the same field
+                diggedBombs.push_back(new DiggedBomb(posX, posY, color));
+                gameBoard[posY][posX] = "digged_bomb";
+                specialWeaponCounter--;
+            }
+        default:
+            break;
     }
 }
 
@@ -158,7 +184,25 @@ void Character::steppedOnBonus(char type, int &playersLives) {
             std::cout << "Another live!" << std::endl;
             if (isHuman)
                 playersLives++;
+            break;  
+
+            // SPECIAL WEAPONS
+        case 'f':
+            std::cout << "Special weapon: fire!" << std::endl;
+            specialWeapon = 'f';     
+            specialWeaponCounter = 2;
             break;
+        case 'i':
+            std::cout << "Special weapon: ice!" << std::endl;
+            specialWeapon = 'i';     
+            specialWeaponCounter = 1;
+            break;
+        case 'd':
+            std::cout << "Special weapon: digged bombs!" << std::endl;
+            specialWeapon = 'd';     
+            specialWeaponCounter = 2;
+            break;
+
         default:
             break;
     }

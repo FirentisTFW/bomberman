@@ -55,25 +55,31 @@ void Game::updateGameBoard() {
     for (Bonus* bonus : bonuses){                      // put the bonuses on the map
         gameBoard[bonus->posY][bonus->posX] = "bonus";
     }
+    for (DiggedBomb* diggedBomb : diggedBombs){                      // put the digged bombs on the map
+        gameBoard[diggedBomb->posY][diggedBomb->posX] = "digged_bomb";
+    }
 
     for (int i = 0; i < characters.size(); i++) {
+        if (characters[i]->lostShieldTimeSpan > 0)                               // character just lost its shield, can't be hurt again 
+                characters[i]->lostShieldTimeSpan--;
         if (gameBoard[characters[i]->posY][characters[i]->posX] == "explosion") {             // character is on the field where explosion happened
-            if(characters[i]->shield) {
+            if (characters[i]->shield) {
                 characters[i]->shield = false;
-
-                // ADD TIME SPAN BEFORE PLAYER CAN BE HIT AGAIN (LIKE 1-2 SECONDS)
+                characters[i]->lostShieldTimeSpan = 180;                                    // after losing shield, character can't be hit for 3 seconds
 
                 gameBoard[characters[i]->posY][characters[i]->posX] = "character";
             }
-            else if (characters[i]->isHuman) {                                             // character is controlled by a player (living person)
-                player->lives--;
-                // characters[i]->lives--;
-                // gameOver();
-                std::cout << "Game Over 1!" << std::endl;
-            }
-            else {                                                                      // character is controlled by AI
-                characters.erase(characters.begin() + i);
-                i--;
+            else if(characters[i]->lostShieldTimeSpan <= 0) {                              // character doesn't have "after-hit protection"
+                if (characters[i]->isHuman) {                                             // character is controlled by a player (living person)
+                    player->lives--;
+                    // characters[i]->lives--;
+                    // gameOver();
+                    std::cout << "Game Over 1!" << std::endl;
+                }
+                else {                                                                      // character is controlled by AI
+                    characters.erase(characters.begin() + i);
+                    i--;
+                }
             }
         }
         else if (gameBoard[characters[i]->posY][characters[i]->posX] == "bonus") {          // character stepped on bonus - character gets a bonus and bonus is removed from the map
@@ -140,12 +146,18 @@ void Game::showGameBoard() {
 void Game::draw() {
     for (Bomb *bomb : bombs)
         window->draw(bomb->rect);
-    for (Box *box : boxes)
-        window->draw(box->rect);
     for (Bonus *bonus : bonuses)
         window->draw(bonus->rect);
     for (Explosion *explosion : explosions)
         window->draw(explosion->rect);
+    for (Box *box : boxes) {
+        if(gameBoard[box->posY][box->posX] == "explosion") {
+            if(!box->isDestroyable)
+                window->draw(box->rect);
+        }
+        else
+            window->draw(box->rect);
+    }
     for (Character *character : characters)
         window->draw(character->rect);
     // std::cout << "draaaaw" << std::endl;
