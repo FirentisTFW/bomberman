@@ -59,7 +59,8 @@ bool Character::isMovePossible(char direction, const std::array<std::array<std::
      switch(direction) {
         case 'u':
             if(posY > 0) {        // character can move -> still on the map
-                if(gameBoard[posY-1][posX] == "0" || gameBoard[posY-1][posX] == "bonus" || gameBoard[posY-1][posX] == "explosion") {    // field character wants to step on is possible to step on
+                // if(gameBoard[posY-1][posX] == "0" || gameBoard[posY-1][posX] == "bonus" || gameBoard[posY-1][posX] == "explosion") {    // field character wants to step on is possible to step on
+                if(gameBoard[posY-1][posX] != "box" && gameBoard[posY-1][posX] != "character") {    // field character wants to step on is possible to step on
                     return true;
                 }
                 return false;
@@ -67,7 +68,7 @@ bool Character::isMovePossible(char direction, const std::array<std::array<std::
             break;
         case 'd':
             if(posY < 15) {        // character can move -> still on the map
-                if(gameBoard[posY+1][posX] == "0" || gameBoard[posY+1][posX] == "bonus" || gameBoard[posY+1][posX] == "explosion") {
+                if(gameBoard[posY+1][posX] != "box" && gameBoard[posY+1][posX] != "character") {
                     return true;
                 }
                 return false;
@@ -75,7 +76,7 @@ bool Character::isMovePossible(char direction, const std::array<std::array<std::
             break;
         case 'l':
             if(posX > 0) {        // character can move -> still on the map
-                if(gameBoard[posY][posX-1] == "0" || gameBoard[posY][posX-1] == "bonus" || gameBoard[posY][posX-1] == "explosion") {
+                if(gameBoard[posY][posX-1] != "box" && gameBoard[posY][posX-1] != "character") {
                     return true;
                 }
                 return false;
@@ -84,7 +85,7 @@ bool Character::isMovePossible(char direction, const std::array<std::array<std::
         case 'r':
             // std::cout << "move right" << std::endl;
             if(posX < 15) {        // character can move -> still on the map
-                if(gameBoard[posY][posX+1] == "0" || gameBoard[posY][posX+1] == "bonus" || gameBoard[posY][posX+1] == "explosion") {
+                if(gameBoard[posY][posX+1] != "box" && gameBoard[posY][posX+1] != "character") {
                     return true;
                 }
                 return false;
@@ -137,7 +138,7 @@ void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std:
     }
 
     if(bombLimit > 0) {
-        if(gameBoard[posY][posX] != "bomb") {                                   // two bombs can't be placed on the same field
+        if(gameBoard[posY][posX] != "bomb" && gameBoard[posY][posX] != "digged_bomb") {                                   // two bombs can't be placed on the same field
             bombLimit--;
             bombs.push_back(new Bomb(posX, posY, range, color, &bombLimit));
             gameBoard[posY][posX] = "bomb";
@@ -202,7 +203,6 @@ void Character::steppedOnBonus(char type, int &playersLives) {
             specialWeapon = 'd';     
             specialWeaponCounter = 2;
             break;
-
         default:
             break;
     }

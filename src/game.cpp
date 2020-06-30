@@ -55,8 +55,16 @@ void Game::updateGameBoard() {
     for (Bonus* bonus : bonuses){                      // put the bonuses on the map
         gameBoard[bonus->posY][bonus->posX] = "bonus";
     }
-    for (DiggedBomb* diggedBomb : diggedBombs){                      // put the digged bombs on the map
-        gameBoard[diggedBomb->posY][diggedBomb->posX] = "digged_bomb";
+
+    int diggedBombsSize = diggedBombs.size();
+    for (int i = 0; i < diggedBombsSize; i++){                      // put the digged bombs on the map
+        if(gameBoard[diggedBombs[i]->posY][diggedBombs[i]->posX] == "explosion") {              // digged bomb exploded
+            diggedBombs.erase(diggedBombs.begin() + i);
+            i--;
+            diggedBombsSize--;
+        }
+        else
+            gameBoard[diggedBombs[i]->posY][diggedBombs[i]->posX] = "digged_bomb";
     }
 
     for (int i = 0; i < characters.size(); i++) {
@@ -72,7 +80,6 @@ void Game::updateGameBoard() {
             else if(characters[i]->lostShieldTimeSpan <= 0) {                              // character doesn't have "after-hit protection"
                 if (characters[i]->isHuman) {                                             // character is controlled by a player (living person)
                     player->lives--;
-                    // characters[i]->lives--;
                     // gameOver();
                     std::cout << "Game Over 1!" << std::endl;
                 }
@@ -94,6 +101,32 @@ void Game::updateGameBoard() {
                 }
             }
             gameBoard[characters[i]->posY][characters[i]->posX] = "character";
+        }
+        else if (gameBoard[characters[i]->posY][characters[i]->posX] == "digged_bomb") {    // character stepped on a digged bomb
+            int diggedBombsSize = diggedBombs.size();
+            for (int j = 0; j < diggedBombsSize; j++) {                                     // search for a right bomb          
+                if (characters[i]->posX == diggedBombs[j]->posX && characters[i]->posY == diggedBombs[j]->posY) {    // the right bomb has been found
+                    if(diggedBombs[j]->color != characters[i]->color) {         // the bomb has been planted by another character (you can't lose life on your own bomb)
+                        if (characters[i]->shield) {
+                            characters[i]->shield = false;
+                            gameBoard[characters[i]->posY][characters[i]->posX] = "character";
+                        }
+                        else {
+                            if (characters[i]->isHuman) {                       // character is controlled by a player (living person)
+                                player->lives--;
+                                // gameOver();
+                                std::cout << "Game Over 1!" << std::endl;
+                            }
+                            else {                                              // character is controlled by AI
+                                characters.erase(characters.begin() + i);
+                                i--;
+                            }
+                        }
+                            diggedBombs.erase(diggedBombs.begin() + j);
+                        break;
+                    }
+                }
+            }
         }
         else                                                                                // character is on empty field
             gameBoard[characters[i]->posY][characters[i]->posX] = "character";
