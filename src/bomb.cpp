@@ -32,28 +32,28 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
         explosions.push_back(new Explosion(posX, posY + (i + 1), color));
 
         // if there is a bomb or box on the way, stop exploding in this direction, updateGameBoard() method in Game class will check if the explosion should destroy this object or not
-        if (gameBoard[posY + (i + 1)][posX] == "bomb" || gameBoard[posY + (i + 1)][posX] == "box") 
+        if (gameBoard[posY + (i + 1)][posX] == "bomb" || gameBoard[posY + (i + 1)][posX] == "box" || gameBoard[posY + (i + 1)][posX] == "wall")
             break;
     }
     for(int i=0; i<range; i++) {                           // UP
         if (posY - (i + 1) < 0)                          
             break;
         explosions.push_back(new Explosion(posX, posY - (i + 1), color));
-        if (gameBoard[posY - (i + 1)][posX] == "bomb" || gameBoard[posY - (i + 1)][posX] == "box")
+        if (gameBoard[posY - (i + 1)][posX] == "bomb" || gameBoard[posY - (i + 1)][posX] == "box" || gameBoard[posY - (i + 1)][posX] == "wall")
             break;
     }
     for(int i=0; i<range; i++) {                            // RIGHT
         if (posX + (i + 1) > 15)                           
             break;
         explosions.push_back(new Explosion(posX+(i+1), posY, color));
-        if (gameBoard[posY][posX + (i + 1)] == "bomb" || gameBoard[posY][posX + (i + 1)] == "box")
+        if (gameBoard[posY][posX + (i + 1)] == "bomb" || gameBoard[posY][posX + (i + 1)] == "box" || gameBoard[posY][posX + (i + 1)] == "wall")
             break;
     }
     for(int i=0; i<range; i++) {                            // LEFT
         if (posY - (i + 1) < 0)                         
             break;
         explosions.push_back(new Explosion(posX - (i + 1), posY, color));
-        if (gameBoard[posY][posX - (i + 1)] == "bomb" || gameBoard[posY][posX - (i + 1)] == "box")
+        if (gameBoard[posY][posX - (i + 1)] == "bomb" || gameBoard[posY][posX - (i + 1)] == "box" || gameBoard[posY][posX - (i + 1)] == "wall")
             break;
     }
 

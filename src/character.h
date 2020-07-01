@@ -3,6 +3,8 @@
 #include "bomb.h"
 #include "player.h"
 #include "diggedBomb.h"
+#include "box.h"
+#include "specialWeapon.h"
 
 class Character: public Object {
 
@@ -11,6 +13,7 @@ public:
     bool isHuman;               // is character controlled by human or is it AI
     int howManyFramesAfterMove; // how many frames passed after last move -> needed for movement system based on speed
     char lastDirection;
+    char lastTriedDirection;
 
     char color;
     bool shield;
@@ -35,9 +38,9 @@ public:
     
     void move(char direction);
 
-    void placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs);
+    void placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons);
 
-    void useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs);
+    void useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons);
 
     void steppedOnBonus(char type, int &playersLives);                  // player gets a bonus
 };

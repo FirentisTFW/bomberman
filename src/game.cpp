@@ -56,9 +56,23 @@ void Game::updateGameBoard() {
         gameBoard[bonus->posY][bonus->posX] = "bonus";
     }
 
+    int specialWeaponsSize = specialWeapons.size();
+    for (int i = 0; i < specialWeaponsSize; i++) {
+        specialWeapons[i]->timeToDisappear--;
+        if (specialWeapons[i]->timeToDisappear == 0) {
+            specialWeapons.erase(specialWeapons.begin()+i);
+            i--;
+            specialWeaponsSize--;
+        }
+        else {
+            if(specialWeapons[i]->type == 'f')
+                gameBoard[specialWeapons[i]->posY][specialWeapons[i]->posX] = "fire";
+        }
+    }
+
     int diggedBombsSize = diggedBombs.size();
     for (int i = 0; i < diggedBombsSize; i++){                      // put the digged bombs on the map
-        if(gameBoard[diggedBombs[i]->posY][diggedBombs[i]->posX] == "explosion") {              // digged bomb exploded
+        if(gameBoard[diggedBombs[i]->posY][diggedBombs[i]->posX] == "explosion" || gameBoard[diggedBombs[i]->posY][diggedBombs[i]->posX] == "fire") {              // digged bomb exploded
             diggedBombs.erase(diggedBombs.begin() + i);
             i--;
             diggedBombsSize--;
@@ -70,7 +84,7 @@ void Game::updateGameBoard() {
     for (int i = 0; i < characters.size(); i++) {
         if (characters[i]->lostShieldTimeSpan > 0)                               // character just lost its shield, can't be hurt again 
                 characters[i]->lostShieldTimeSpan--;
-        if (gameBoard[characters[i]->posY][characters[i]->posX] == "explosion") {             // character is on the field where explosion happened
+        if (gameBoard[characters[i]->posY][characters[i]->posX] == "explosion" || gameBoard[characters[i]->posY][characters[i]->posX] == "fire") {      // character is on the field where explosion happened
             if (characters[i]->shield) {
                 characters[i]->shield = false;
                 characters[i]->lostShieldTimeSpan = 180;                                    // after losing shield, character can't be hit for 3 seconds
@@ -134,7 +148,7 @@ void Game::updateGameBoard() {
 
     int boxesSize = boxes.size();
     for (int i=0; i< boxesSize; i++) {
-        if (gameBoard[boxes[i]->posY][boxes[i]->posX] == "explosion") {
+        if (gameBoard[boxes[i]->posY][boxes[i]->posX] == "explosion" || gameBoard[boxes[i]->posY][boxes[i]->posX] == "fire") {
             if(boxes[i]->isDestroyable) {
                 char possibleBonus = Bonus::shouldBonusBeCreated();                     // calculate the chance fr a bonus to appear here
                 if(possibleBonus != '0') {                                              // create a bonus in place of destroyed box 
@@ -145,10 +159,15 @@ void Game::updateGameBoard() {
                 i--;
             }
             else 
-                gameBoard[boxes[i]->posY][boxes[i]->posX] = "box";
+                gameBoard[boxes[i]->posY][boxes[i]->posX] = "wall";
         }
-        else
-            gameBoard[boxes[i]->posY][boxes[i]->posX] = "box";
+        else {
+            if(boxes[i]->isDestroyable)
+                gameBoard[boxes[i]->posY][boxes[i]->posX] = "box";
+            else
+                gameBoard[boxes[i]->posY][boxes[i]->posX] = "wall";
+
+        }
     }
 
     int bombsSize = bombs.size();
@@ -183,6 +202,8 @@ void Game::draw() {
         window->draw(bonus->rect);
     for (Explosion *explosion : explosions)
         window->draw(explosion->rect);
+    for (SpecialWeapon *specialWeapon : specialWeapons)
+        window->draw(specialWeapon->rect);
     for (Box *box : boxes) {
         if(gameBoard[box->posY][box->posX] == "explosion") {
             if(!box->isDestroyable)

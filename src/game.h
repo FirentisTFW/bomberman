@@ -5,6 +5,7 @@
 #include "explosion.h"
 #include "bonus.h"
 #include "diggedBomb.h"
+#include "specialWeapon.h"
 
 class Game {
     
@@ -21,6 +22,7 @@ public:
     std::vector<Explosion*> explosions;
     std::vector<Bonus*> bonuses;
     std::vector<DiggedBomb*> diggedBombs;
+    std::vector<SpecialWeapon*> specialWeapons;
 
     Game(sf::RenderWindow* _window, Player *_player);
 
