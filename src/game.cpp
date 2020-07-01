@@ -67,6 +67,16 @@ void Game::updateGameBoard() {
         else {
             if(specialWeapons[i]->type == 'f')
                 gameBoard[specialWeapons[i]->posY][specialWeapons[i]->posX] = "fire";
+            else {
+                if(gameBoard[specialWeapons[i]->posY][specialWeapons[i]->posX] != "explosion")              
+                    gameBoard[specialWeapons[i]->posY][specialWeapons[i]->posX] = "ice";
+                else {                                                                                  // explosion makes ice melt
+                    specialWeapons.erase(specialWeapons.begin() + i);
+                    i--;
+                    specialWeaponsSize--;
+                }
+            }
+
         }
     }
 
@@ -81,9 +91,16 @@ void Game::updateGameBoard() {
             gameBoard[diggedBombs[i]->posY][diggedBombs[i]->posX] = "digged_bomb";
     }
 
+    // CHARACTERS LOOP
     for (int i = 0; i < characters.size(); i++) {
         if (characters[i]->lostShieldTimeSpan > 0)                               // character just lost its shield, can't be hurt again 
                 characters[i]->lostShieldTimeSpan--;
+        if(characters[i]->frozenTime > 0) {                                      // slowly unfreezing    
+            characters[i]->frozenTime--;
+            if (characters[i]->frozenTime <= 0)
+                characters[i]->frozen = false;
+        }
+        
         if (gameBoard[characters[i]->posY][characters[i]->posX] == "explosion" || gameBoard[characters[i]->posY][characters[i]->posX] == "fire") {      // character is on the field where explosion happened
             if (characters[i]->shield) {
                 characters[i]->shield = false;
@@ -142,9 +159,13 @@ void Game::updateGameBoard() {
                 }
             }
         }
+        else if (gameBoard[characters[i]->posY][characters[i]->posX] == "ice") {            // character is on the filed with ice - freeze the character
+            characters[i]->frozen = true;
+            characters[i]->frozenTime = 300;
+        }
         else                                                                                // character is on empty field
             gameBoard[characters[i]->posY][characters[i]->posX] = "character";
-    }
+    }   // CHARACTERS LOOP
 
     int boxesSize = boxes.size();
     for (int i=0; i< boxesSize; i++) {
@@ -172,8 +193,14 @@ void Game::updateGameBoard() {
 
     int bombsSize = bombs.size();
     for (int i = 0; i < bombsSize; i++) {
-        if (gameBoard[bombs[i]->posY][bombs[i]->posX] == "explosion") {
+        if (gameBoard[bombs[i]->posY][bombs[i]->posX] == "explosion" || gameBoard[bombs[i]->posY][bombs[i]->posX] == "fire") {
             bombs[i]->explode(explosions, gameBoard);
+            bombs.erase(bombs.begin() + i);
+            bombsSize = bombs.size();
+            i--;
+        }
+        else if(gameBoard[bombs[i]->posY][bombs[i]->posX] == "ice") {
+            *bombs[i]->charactersBombLimit += 1;
             bombs.erase(bombs.begin() + i);
             bombsSize = bombs.size();
             i--;

@@ -15,6 +15,8 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
     bombLimit = 1;
     shield = false;
     lostShieldTimeSpan = 0;
+    frozen = false;
+    frozenTime = 0;
 
     posX = _posX;
     posY = _posY;
@@ -41,6 +43,8 @@ Character::~Character() {}
 void Character::shouldCharacterMove(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard) {
     
     howManyFramesAfterMove++;  
+
+    if(frozen) return;
 
     if(lastDirection != direction) {
         if(isMovePossible(direction, gameBoard)) {
@@ -151,56 +155,73 @@ void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std:
 }
 
 void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons) {
-    switch(specialWeapon) {
-        case 'f':
-            int addX, addY;                           // fire
-            switch(lastTriedDirection) {
-                case 'u':
-                    addX = 0;
-                    addY = -1;
-                    break;
-                case 'd':
-                    addX = 0;
-                    addY = 1;
-                    break;
-                case 'l':
-                    addX = -1;
-                    addY = 0;
-                    break;
-                case 'r':
-                    addX = 1;
-                    addY = 0;
-                    break;
-                default:
-                    break;
-            }
-            if (gameBoard[posY + addY][posX + addX] != "wall") {
-                specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, 'f'));
-                gameBoard[posY + addY][posX + addX] = "fire";
-                if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall") {
-                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, 'f'));
-                    gameBoard[posY + addY * 2][posX + addX * 2] = "fire";
+    
+    if(specialWeapon == 'd') {          // digged bomb
+        if (gameBoard[posY][posX] != "bomb" && gameBoard[posY][posX] != "digged_bomb") { // two bombs can't be placed on the same field
+            diggedBombs.push_back(new DiggedBomb(posX, posY, color));
+            gameBoard[posY][posX] = "digged_bomb";
+            specialWeaponCounter--;
+        }
+    }
+    else {
+        std::string typeOfWeapon;
+        if (specialWeapon == 'f')       // fire
+            typeOfWeapon = "fire";
+        else if (specialWeapon == 'i')    // ice
+            typeOfWeapon = "ice";
 
+        int addX, addY;                     
+        switch(lastTriedDirection) {              // direction check
+            case 'u':
+                addX = 0;
+                addY = -1;
+                break;
+            case 'd':
+                addX = 0;
+                addY = 1;
+                break;
+            case 'l':
+                addX = -1;
+                addY = 0;
+                break;
+            case 'r':
+                addX = 1;
+                addY = 0;
+                break;
+            default:
+                break;
+        }
+
+        if(specialWeapon == 'f') {
+            if (gameBoard[posY + addY][posX + addX] != "wall") {
+                specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
+                gameBoard[posY + addY][posX + addX] = typeOfWeapon;
+                if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall") {
+                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
+                    gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
                     if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall"){
-                        specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, 'f'));
-                        gameBoard[posY + addY * 3][posX + addX * 3] = "fire";
+                        specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
+                        gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
                     }
                 }
             }
-                specialWeaponCounter--;
-                break;
-            case 'i': // ice
-                break;
-            case 'd': // digged bomb
-                if (gameBoard[posY][posX] != "bomb")
-                { // two bombs can't be placed on the same field
-                    diggedBombs.push_back(new DiggedBomb(posX, posY, color));
-                    gameBoard[posY][posX] = "digged_bomb";
-                    specialWeaponCounter--;
-                }
-        default:
-            break;
         }
+        else {
+            if (gameBoard[posY + addY][posX + addX] != "wall" && gameBoard[posY + addY][posX + addX] != "box") {
+                specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
+                gameBoard[posY + addY][posX + addX] = typeOfWeapon;
+                if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall" && gameBoard[posY + addY * 2][posX + addX * 2] != "box") {
+                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
+                    gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
+                    if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall" && gameBoard[posY + addY * 3][posX + addX * 3] != "box"){
+                        specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
+                        gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
+                    }
+                }
+            }
+        }
+        specialWeaponCounter--;
+    }
 }
 
 void Character::steppedOnBonus(char type, int &playersLives) {
