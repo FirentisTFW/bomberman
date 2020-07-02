@@ -38,16 +38,16 @@ int main() {
                 // Character movement
                 else if(!game->isGamePaused) {
                     if(event.key.code == sf::Keyboard::Up) {                            // move up
-                        game->characters[0]->shouldCharacterMove('u', game->gameBoard);
+                        game->characters[0]->shouldCharacterMove('u', game->gameBoard, game->bombs);
                     }
                     else if(event.key.code == sf::Keyboard::Down) {                     // move down
-                        game->characters[0]->shouldCharacterMove('d', game->gameBoard);
+                        game->characters[0]->shouldCharacterMove('d', game->gameBoard, game->bombs);
                     }
                     else if(event.key.code == sf::Keyboard::Left) {                     // move left
-                        game->characters[0]->shouldCharacterMove('l', game->gameBoard);
+                        game->characters[0]->shouldCharacterMove('l', game->gameBoard, game->bombs);
                     }
                     else if(event.key.code == sf::Keyboard::Right) {                    // move right
-                        game->characters[0]->shouldCharacterMove('r', game->gameBoard);
+                        game->characters[0]->shouldCharacterMove('r', game->gameBoard, game->bombs);
                     } // Character movement
 
                     else if(event.key.code == sf::Keyboard::Space) {

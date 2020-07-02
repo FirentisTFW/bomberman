@@ -14,6 +14,7 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
     speed = 1;
     bombLimit = 1;
     shield = false;
+    bombPushing = false;
     lostShieldTimeSpan = 0;
     frozen = false;
     frozenTime = 0;
@@ -40,20 +41,20 @@ Character::~Character() {}
 // ------------------------------------------ METHODS -------------------------------------------------
 
 
-void Character::shouldCharacterMove(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard) {
+void Character::shouldCharacterMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
     
     howManyFramesAfterMove++;  
 
     if(frozen) return;
 
     if(lastDirection != direction) {
-        if(isMovePossible(direction, gameBoard)) {
+        if(isMovePossible(direction, gameBoard, bombs)) {
             move(direction);
             howManyFramesAfterMove = 0;
         }
     }
     else if(howManyFramesAfterMove >= Character::movementSpeedFramerate[speed-1]) {
-        if (isMovePossible(direction, gameBoard)) {
+        if (isMovePossible(direction, gameBoard, bombs)) {
             howManyFramesAfterMove = 0;
             move(direction);
         }
@@ -62,30 +63,63 @@ void Character::shouldCharacterMove(char direction, const std::array<std::array<
     lastTriedDirection = direction;
 }
 
-bool Character::isMovePossible(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard) {
+bool Character::isMovePossible(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
 
      switch(direction) {
         case 'u':
             if(posY > 0) {        // character can move -> still on the map
                 // if(gameBoard[posY-1][posX] == "0" || gameBoard[posY-1][posX] == "bonus" || gameBoard[posY-1][posX] == "explosion") {    // field character wants to step on is possible to step on
-                if(gameBoard[posY-1][posX] != "box" && gameBoard[posY-1][posX] != "wall") {    // field character wants to step on is possible to step on
+                if(gameBoard[posY-1][posX] != "box" && gameBoard[posY-1][posX] != "wall" && gameBoard[posY-1][posX] != "bomb") {    // field character wants to step on is possible to step on
                     return true;
+                }
+                if (gameBoard[posY - 1][posX] == "bomb" && bombPushing == true) {              // character wants to step on the bomb and character can push the bombs
+                    bool wasBombPushed = false;
+                    int bombsSize = bombs.size();
+                    for(int i = 0; i < bombsSize; i++) {
+                        if(bombs[i]->posX == posX && bombs[i]->posY == posY-1) {               // the right bomb has been found - try to push the bomb
+                            wasBombPushed = bombs[i]->moveBomb(direction, gameBoard);
+                            break;
+                        }
+                    }
+                    return wasBombPushed;
                 }
                 return false;
             }
             break;
         case 'd':
             if(posY < 15) {        // character can move -> still on the map
-                if(gameBoard[posY+1][posX] != "box" && gameBoard[posY+1][posX] != "wall") {
+                if(gameBoard[posY+1][posX] != "box" && gameBoard[posY+1][posX] != "wall" && gameBoard[posY+1][posX] != "bomb") {
                     return true;
+                }
+                if (gameBoard[posY + 1][posX] == "bomb" && bombPushing == true) {              // character wants to step on the bomb and character can push the bombs
+                    bool wasBombPushed = false;
+                    int bombsSize = bombs.size();
+                    for(int i = 0; i < bombsSize; i++) {
+                        if(bombs[i]->posX == posX && bombs[i]->posY == posY+1) {               // the right bomb has been found - try to push the bomb
+                            wasBombPushed = bombs[i]->moveBomb(direction, gameBoard);
+                            break;
+                        }
+                    }
+                    return wasBombPushed;
                 }
                 return false;
             }
             break;
         case 'l':
             if(posX > 0) {        // character can move -> still on the map
-                if(gameBoard[posY][posX-1] != "box" && gameBoard[posY][posX-1] != "wall") {
+                if(gameBoard[posY][posX-1] != "box" && gameBoard[posY][posX-1] != "wall" && gameBoard[posY][posX-1] != "bomb") {
                     return true;
+                }
+                if (gameBoard[posY][posX-1] == "bomb" && bombPushing == true) {              // character wants to step on the bomb and character can push the bombs
+                    bool wasBombPushed = false;
+                    int bombsSize = bombs.size();
+                    for(int i = 0; i < bombsSize; i++) {
+                        if(bombs[i]->posX == posX-1 && bombs[i]->posY == posY) {               // the right bomb has been found - try to push the bomb
+                            wasBombPushed = bombs[i]->moveBomb(direction, gameBoard);
+                            break;
+                        }
+                    }
+                    return wasBombPushed;
                 }
                 return false;
             }
@@ -93,8 +127,19 @@ bool Character::isMovePossible(char direction, const std::array<std::array<std::
         case 'r':
             // std::cout << "move right" << std::endl;
             if(posX < 15) {        // character can move -> still on the map
-                if(gameBoard[posY][posX+1] != "box" && gameBoard[posY][posX+1] != "wall") {
+                if(gameBoard[posY][posX+1] != "box" && gameBoard[posY][posX+1] != "wall" && gameBoard[posY][posX+1] != "bomb") {
                     return true;
+                }
+                if (gameBoard[posY][posX+1] == "bomb" && bombPushing == true) {              // character wants to step on the bomb and character can push the bombs
+                    bool wasBombPushed = false;
+                    int bombsSize = bombs.size();
+                    for(int i = 0; i < bombsSize; i++) {
+                        if(bombs[i]->posX == posX+1 && bombs[i]->posY == posY) {               // the right bomb has been found - try to push the bomb
+                            wasBombPushed = bombs[i]->moveBomb(direction, gameBoard);
+                            break;
+                        }
+                    }
+                    return wasBombPushed;
                 }
                 return false;
             }
@@ -246,6 +291,10 @@ void Character::steppedOnBonus(char type, int &playersLives) {
             std::cout << "Another live!" << std::endl;
             if (isHuman)
                 playersLives++;
+            break;  
+        case 'p':
+            std::cout << "Bomb pushing skill!" << std::endl;
+            bombPushing = true;
             break;  
 
             // SPECIAL WEAPONS

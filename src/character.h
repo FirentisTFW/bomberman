@@ -18,7 +18,7 @@ public:
     char color;
     bool shield;
     int lostShieldTimeSpan;                // after character loses shield, he can't be hit for another three seconds (he won't be killed by the bomb that crashed his shield)
-    // bool bombPushing;                   // can character push planted bomb
+    bool bombPushing;                   // can character push planted bomb
     bool frozen;                           // is character frozen by an ice weapon (character can't move)
     int frozenTime;                        // how many frames longer character will be frozen
 
@@ -35,10 +35,10 @@ public:
     Character(bool isHuman, int _posX, int _posY, char _color);
     ~Character();
 
-    void shouldCharacterMove(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard); // check if enough frames passed without move so character can be finally moved on the map
-    
-    bool isMovePossible(char direction, const std::array<std::array<std::string, 16>, 16> &gameBoard);   // collision check
-    
+    void shouldCharacterMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs); // check if enough frames passed without move so character can be finally moved on the map
+
+    bool isMovePossible(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs); // collision check
+
     void move(char direction);
 
     void placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons);
