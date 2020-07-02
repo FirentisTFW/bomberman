@@ -237,35 +237,52 @@ void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::arr
                 break;
         }
 
+        bool wasSpecialWeaponUsed = false;
+
         if(specialWeapon == 'f') {
-            if (gameBoard[posY + addY][posX + addX] != "wall") {
-                specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
-                gameBoard[posY + addY][posX + addX] = typeOfWeapon;
-                if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall") {
-                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
-                    gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
-                    if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall"){
-                        specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
-                        gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
+            if(Object::isPositionOnTheMap(posX + addX, posY + addY)) {
+                if (gameBoard[posY + addY][posX + addX] != "wall") {
+                    specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
+                    gameBoard[posY + addY][posX + addX] = typeOfWeapon;
+                    wasSpecialWeaponUsed = true;
+                    if(Object::isPositionOnTheMap(posX + addX * 2, posY + addY * 2)) {
+                        if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall") {
+                            specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
+                            gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
+                            if(Object::isPositionOnTheMap(posX + addX * 3, posY + addY * 3)) {
+                                if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall"){
+                                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
+                                    gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
         else {
-            if (gameBoard[posY + addY][posX + addX] != "wall" && gameBoard[posY + addY][posX + addX] != "box") {
-                specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
-                gameBoard[posY + addY][posX + addX] = typeOfWeapon;
-                if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall" && gameBoard[posY + addY * 2][posX + addX * 2] != "box") {
-                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
-                    gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
-                    if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall" && gameBoard[posY + addY * 3][posX + addX * 3] != "box"){
-                        specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
-                        gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
+            if(Object::isPositionOnTheMap(posX + addX, posY + addY)) {
+                if (gameBoard[posY + addY][posX + addX] != "wall" && gameBoard[posY + addY][posX + addX] != "box") {
+                    specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
+                    gameBoard[posY + addY][posX + addX] = typeOfWeapon;
+                    wasSpecialWeaponUsed = true;
+                    if(Object::isPositionOnTheMap(posX + addX * 2, posY + addY * 2)) {
+                        if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall" && gameBoard[posY + addY * 2][posX + addX * 2] != "box") {
+                            specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
+                            gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
+                            if(Object::isPositionOnTheMap(posX + addX * 3, posY + addY * 3)) {
+                                if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall" && gameBoard[posY + addY * 3][posX + addX * 3] != "box"){
+                                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
+                                    gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-        specialWeaponCounter--;
+        if (wasSpecialWeaponUsed)
+            specialWeaponCounter--;
     }
 }
 
