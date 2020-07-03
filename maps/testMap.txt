@@ -1,0 +1,25 @@
+<Boxes>
+    "counter" = 3
+        0
+        10
+        10
+
+        0
+        13
+        5
+
+        1
+        12
+        7
+
+<Characters>
+    "counter" = 2
+    0
+    0
+    5
+    r
+
+    0
+    15
+    0
+    r

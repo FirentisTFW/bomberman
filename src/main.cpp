@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "game.h"
 #include "character.h"
+#include "mapLoader.h"
 
 int main() {
 
@@ -16,6 +17,8 @@ int main() {
     Player *player = new Player(1);
 
     Game *game = new Game(&window, player);
+
+    mapLoader::loadMap(game->boxes, game->characters);
 
     while (window.isOpen()) {
 
