@@ -10,12 +10,25 @@ Game::Game(sf::RenderWindow* _window, Player *_player) {                   // st
     window = _window;
     player = _player;
 
-    characters.push_back(new Character(true, 0, 0, 'g'));
-    characters.push_back(new Character(false, 8, 8, 'r'));
-    boxes.push_back(new Box(true, 5, 5));
-    boxes.push_back(new Box(true, 5, 8));
-    boxes.push_back(new Box(true, 10, 12));
-    boxes.push_back(new Box(false, 2, 12));
+    // LOADING TEXTURES
+
+    for(int i = 1; i < 6; i++) {
+        boxesTextures[i-1].loadFromFile("images/box_" + std::to_string(i) + ".png");
+    }
+    for(int i = 1; i < 5; i++) {
+        boxesTextures[i+4].loadFromFile("images/stone_wall_" + std::to_string(i) + ".png");
+    }
+
+    bombTexture.loadFromFile("images/bomb.png");
+    explosionTexture.loadFromFile("images/explosion.png");
+
+    specialWeaponsTextures[0].loadFromFile("images/fire.png");
+    specialWeaponsTextures[1].loadFromFile("images/ice.png");
+
+    // ~ LOADING TEXTURES
+
+    // characters.push_back(new Character(true, 0, 0, 'g'));
+    // characters.push_back(new Character(false, 8, 8, 'r'));
     // std::fill(begin(gameBoard), begin(gameBoard) + 16, 0); // set gameTime to 0:0:0
 }
 
@@ -194,7 +207,7 @@ void Game::updateGameBoard() {
     int bombsSize = bombs.size();
     for (int i = 0; i < bombsSize; i++) {
         if (gameBoard[bombs[i]->posY][bombs[i]->posX] == "explosion" || gameBoard[bombs[i]->posY][bombs[i]->posX] == "fire") {
-            bombs[i]->explode(explosions, gameBoard);
+            bombs[i]->explode(explosions, gameBoard, explosionTexture);
             bombs.erase(bombs.begin() + i);
             bombsSize = bombs.size();
             i--;
@@ -224,20 +237,20 @@ void Game::showGameBoard() {
 
 void Game::draw() {
     for (Bomb *bomb : bombs)
-        window->draw(bomb->rect);
+        window->draw(bomb->sprite);
     for (Bonus *bonus : bonuses)
         window->draw(bonus->rect);
     for (Explosion *explosion : explosions)
-        window->draw(explosion->rect);
+        window->draw(explosion->sprite);
     for (SpecialWeapon *specialWeapon : specialWeapons)
-        window->draw(specialWeapon->rect);
+        window->draw(specialWeapon->sprite);
     for (Box *box : boxes) {
         if(gameBoard[box->posY][box->posX] == "explosion") {
             if(!box->isDestroyable)
-                window->draw(box->rect);
+                window->draw(box->sprite);
         }
         else
-            window->draw(box->rect);
+            window->draw(box->sprite);
     }
     for (Character *character : characters)
         window->draw(character->rect);

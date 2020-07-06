@@ -15,9 +15,9 @@ class Bomb : public Object {
         Bomb(int _posX, int _posY, int _range, char _color, int *_charactersBombLimit);
         ~Bomb();
 
-        void explode(std::vector<Explosion *> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard); // create an explosion in four directions
+        void explode(std::vector<Explosion *> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard, sf::Texture &explosionTexture); // create an explosion in four directions
         bool moveBomb(char _direction, std::array<std::array<std::string, 16>, 16> &gameBoard);                     // 
         bool collisionCheckForExplosion();
         // function below can be optimalised (for example check every 10-20 frames, not every frame)
-        static void checkBombsTimers(std::vector<Bomb *> &bombs, std::vector<Explosion *> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard); // check every bomb and see if it should explode
+        static void checkBombsTimers(std::vector<Bomb *> &bombs, std::vector<Explosion *> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard, sf::Texture &explosionTexture); // check every bomb and see if it should explode
 };

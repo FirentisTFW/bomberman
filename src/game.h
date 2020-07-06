@@ -24,9 +24,17 @@ public:
     std::vector<DiggedBomb*> diggedBombs;
     std::vector<SpecialWeapon*> specialWeapons;
 
+    std::array<sf::Texture, 10> boxesTextures;
+    std::array<sf::Texture, 2> specialWeaponsTextures;          // 0 fire, 1 - ice
+    // std::array<sf::Texture, 9> bonusesTextures;
+    sf::Texture bombTexture;
+    sf::Texture explosionTexture;
+    
     Game(sf::RenderWindow* _window, Player *_player);
 
     ~Game();
+
+    void loadTextures();
 
     void updateGameTime();
 
@@ -38,3 +46,4 @@ public:
 
     void draw();                                                // draw objects on the screen
 };  // Game
+

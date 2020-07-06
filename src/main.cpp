@@ -18,7 +18,7 @@ int main() {
 
     Game *game = new Game(&window, player);
 
-    mapLoader::loadMap(game->boxes, game->characters);
+    mapLoader::loadMap(game->boxes, game->characters, game->boxesTextures);
 
     while (window.isOpen()) {
 
@@ -54,7 +54,7 @@ int main() {
                     } // Character movement
 
                     else if(event.key.code == sf::Keyboard::Space) {
-                        game->characters[0]->placeBomb(game->bombs, game->gameBoard, game->diggedBombs, game->specialWeapons);
+                        game->characters[0]->placeBomb(game->bombs, game->gameBoard, game->diggedBombs, game->specialWeapons, game->bombTexture, game->specialWeaponsTextures);
                         std::cout << "bomb!" << std::endl;
                     }
                 }
@@ -67,7 +67,7 @@ int main() {
 
             game->updateGameTime();
             game->updateGameBoard();
-            Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard);
+            Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard, game->explosionTexture);
             Explosion::checkForInactiveExplosions(game->explosions);
             if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again
                 game->updateCharacterMovementFramerate();

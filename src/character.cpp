@@ -183,10 +183,10 @@ void Character::move(char direction) {
     lastDirection = direction;
 }
 
-void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard,std::vector<DiggedBomb*> &diggedBombs, std::vector<SpecialWeapon*> &specialWeapons) {
+void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard,std::vector<DiggedBomb*> &diggedBombs, std::vector<SpecialWeapon*> &specialWeapons, sf::Texture &bombTexture, std::array<sf::Texture, 2> &specialWeaponsTextures) {
     
     if(specialWeaponCounter > 0) {                  // character has a special weapon
-        useSpecialWeapon(bombs, gameBoard, diggedBombs, specialWeapons);
+        useSpecialWeapon(bombs, gameBoard, diggedBombs, specialWeapons, specialWeaponsTextures);
         return;
     }
 
@@ -194,12 +194,13 @@ void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std:
         if(gameBoard[posY][posX] != "bomb" && gameBoard[posY][posX] != "digged_bomb") {                                   // two bombs can't be placed on the same field
             bombLimit--;
             bombs.push_back(new Bomb(posX, posY, range, color, &bombLimit));
+            bombs[bombs.size()-1]->setTexture(bombTexture);
             gameBoard[posY][posX] = "bomb";
         }
     }
 }
 
-void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons) {
+void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, std::array<sf::Texture, 2> &specialWeaponsTextures) {
     
     if(specialWeapon == 'd') {          // digged bomb
         if (gameBoard[posY][posX] != "bomb" && gameBoard[posY][posX] != "digged_bomb") { // two bombs can't be placed on the same field
@@ -243,15 +244,18 @@ void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::arr
             if(Object::isPositionOnTheMap(posX + addX, posY + addY)) {
                 if (gameBoard[posY + addY][posX + addX] != "wall") {
                     specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
+                    specialWeapons[specialWeapons.size()-1]->setTexture(specialWeaponsTextures[0]);
                     gameBoard[posY + addY][posX + addX] = typeOfWeapon;
                     wasSpecialWeaponUsed = true;
                     if(Object::isPositionOnTheMap(posX + addX * 2, posY + addY * 2)) {
                         if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall") {
                             specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
+                            specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[0]);
                             gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
                             if(Object::isPositionOnTheMap(posX + addX * 3, posY + addY * 3)) {
                                 if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall"){
                                     specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
+                                    specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[0]);
                                     gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
                                 }
                             }
@@ -264,15 +268,18 @@ void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::arr
             if(Object::isPositionOnTheMap(posX + addX, posY + addY)) {
                 if (gameBoard[posY + addY][posX + addX] != "wall" && gameBoard[posY + addY][posX + addX] != "box") {
                     specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
+                    specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[1]);
                     gameBoard[posY + addY][posX + addX] = typeOfWeapon;
                     wasSpecialWeaponUsed = true;
                     if(Object::isPositionOnTheMap(posX + addX * 2, posY + addY * 2)) {
                         if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall" && gameBoard[posY + addY * 2][posX + addX * 2] != "box") {
                             specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
+                            specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[1]);
                             gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
                             if(Object::isPositionOnTheMap(posX + addX * 3, posY + addY * 3)) {
                                 if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall" && gameBoard[posY + addY * 3][posX + addX * 3] != "box"){
                                     specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
+                                    specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[1]);
                                     gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
                                 }
                             }

@@ -22,16 +22,18 @@ Bomb::~Bomb() {}
 
 // ------------------------------------------ METHODS -------------------------------------------------
 
-void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard) {
+void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard,  sf::Texture &explosionTexture) {
     
     std::cout << "Explosion!" << std::endl;
 
     explosions.push_back(new Explosion(posX, posY, color));
+    explosions[explosions.size() - 1]->setTexture(explosionTexture);
 
     for(int i=0; i<range; i++) {                             // DOWN
         if (posY + (i + 1) > 15)                             // explosion can't get outside of the map
             break; 
         explosions.push_back(new Explosion(posX, posY + (i + 1), color));
+        explosions[explosions.size() - 1]->setTexture(explosionTexture);
 
         // if there is a bomb or box on the way, stop exploding in this direction, updateGameBoard() method in Game class will check if the explosion should destroy this object or not
         if (gameBoard[posY + (i + 1)][posX] == "bomb" || gameBoard[posY + (i + 1)][posX] == "box" || gameBoard[posY + (i + 1)][posX] == "wall")
@@ -41,6 +43,8 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
         if (posY - (i + 1) < 0)                          
             break;
         explosions.push_back(new Explosion(posX, posY - (i + 1), color));
+        explosions[explosions.size() - 1]->setTexture(explosionTexture);
+
         if (gameBoard[posY - (i + 1)][posX] == "bomb" || gameBoard[posY - (i + 1)][posX] == "box" || gameBoard[posY - (i + 1)][posX] == "wall")
             break;
     }
@@ -48,6 +52,8 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
         if (posX + (i + 1) > 15)                           
             break;
         explosions.push_back(new Explosion(posX+(i+1), posY, color));
+        explosions[explosions.size() - 1]->setTexture(explosionTexture);
+
         if (gameBoard[posY][posX + (i + 1)] == "bomb" || gameBoard[posY][posX + (i + 1)] == "box" || gameBoard[posY][posX + (i + 1)] == "wall")
             break;
     }
@@ -55,6 +61,8 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
         if (posX - (i + 1) < 0)                         
             break;
         explosions.push_back(new Explosion(posX - (i + 1), posY, color));
+        explosions[explosions.size() - 1]->setTexture(explosionTexture);
+
         if (gameBoard[posY][posX - (i + 1)] == "bomb" || gameBoard[posY][posX - (i + 1)] == "box" || gameBoard[posY][posX - (i + 1)] == "wall")
             break;
     }
@@ -95,6 +103,7 @@ bool Bomb::moveBomb(char _direction, std::array<std::array<std::string, 16>, 16>
             posX += addX;
             posY += addY;
             rect.setPosition(posX * 50, posY * 50);
+            sprite.setPosition(rect.getPosition());
             gameBoard[posY][posX] = "bomb";
             movingBombTimer = 6;                                       // speed: 10 fields for one second (60 frames / 6)
 
@@ -106,13 +115,13 @@ bool Bomb::moveBomb(char _direction, std::array<std::array<std::string, 16>, 16>
     return false;
 }
 
-void Bomb::checkBombsTimers(std::vector<Bomb*> &bombs, std::vector<Explosion*> &explosions,std::array<std::array<std::string, 16>, 16> &gameBoard) {
+void Bomb::checkBombsTimers(std::vector<Bomb*> &bombs, std::vector<Explosion*> &explosions,std::array<std::array<std::string, 16>, 16> &gameBoard, sf::Texture &explosionTexture) {
     int bombsSize = bombs.size();
     for(int i = 0; i < bombsSize; i++) {
         if(bombs[i]->movingBombTimer == -1) {                                   // bomb is not moving
             bombs[i]->timeToExplode--;
             if(bombs[i]->timeToExplode <= 0) {
-                bombs[i]->explode(explosions, gameBoard);
+                bombs[i]->explode(explosions, gameBoard, explosionTexture);
                 bombs.erase(bombs.begin() + i);
                 bombsSize = bombs.size();
                 i--;

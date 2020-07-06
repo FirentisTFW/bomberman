@@ -5,3 +5,8 @@ bool Object::isPositionOnTheMap(int posX, int posY) {
         return true;
     return false;
 }
+
+void Object::setTexture(sf::Texture &texture) {
+    sprite.setTexture(texture);
+    sprite.setPosition(rect.getPosition());
+}
