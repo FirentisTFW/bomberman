@@ -18,7 +18,7 @@ int main() {
 
     Game *game = new Game(&window, player);
 
-    mapLoader::loadMap(game->boxes, game->characters, game->boxesTextures);
+    mapLoader::loadMap(game->boxes, game->characters, game->boxesTextures, game->charactersTextures);
 
     while (window.isOpen()) {
 

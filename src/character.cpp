@@ -25,6 +25,9 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
     howManyFramesAfterMove = 0;
     lastDirection = ' ';
     lastTriedDirection = ' ';
+    animationDirection = 0;
+    animationCounter = 0;
+    animationTimer = 0;
 
     range = 2;
     specialWeapon = '0';                  
@@ -44,8 +47,17 @@ Character::~Character() {}
 void Character::shouldCharacterMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
     
     howManyFramesAfterMove++;  
+    animationTimer++;
 
-    if(frozen) return;
+    if(frozen) return;                                  // character can't move if frozen by another character
+
+    if(animationTimer >= 5) {
+        animationTimer = 0;
+        sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
+        animationCounter++;
+        if(animationCounter >=4)
+            animationCounter = 0;
+    }
 
     if(lastDirection != direction) {
         if(isMovePossible(direction, gameBoard, bombs)) {
@@ -155,18 +167,24 @@ void Character::move(char direction) {
         case 'u':
             if(posY > 0) {        // character can move -> still on the map
                 rect.move(0, -50);
+                sprite.move(0, -50);
+                animationDirection = 3;
                 posY--;
             }
             break;
         case 'd':
             if(posY < 15) {        // character can move -> still on the map
-                rect.move(0, +50);
+                rect.move(0, 50);
+                sprite.move(0, 50);
+                animationDirection = 0;
                 posY++;
             }
             break;
         case 'l':
             if(posX > 0) {        // character can move -> still on the map
                 rect.move(-50, 0);
+                sprite.move(-50, 0);
+                animationDirection = 2;
                 posX--;
             }
             break;
@@ -174,12 +192,15 @@ void Character::move(char direction) {
             // std::cout << "move right" << std::endl;
             if(posX < 15) {        // character can move -> still on the map
                 rect.move(50, 0);
+                sprite.move(50, 0);
+                animationDirection = 1;
                 posX++;
             }
             break;
         default:
             break;
     }
+    sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
     lastDirection = direction;
 }
 

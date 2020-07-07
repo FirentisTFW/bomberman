@@ -2,7 +2,7 @@
 
 namespace mapLoader {
 
-    void loadMap(std::vector<Box *> &boxes, std::vector<Character*> &characters, std::array<sf::Texture, 10> &boxesTextures) {
+    void loadMap(std::vector<Box *> &boxes, std::vector<Character*> &characters, std::array<sf::Texture, 10> &boxesTextures, std::array<sf::Texture, 4> &charactersTextures) {
         // zaladuj plik
         std::fstream mapFile;
         mapFile.open("maps/testMap.txt", std::ios::in);
@@ -64,6 +64,8 @@ namespace mapLoader {
 
                             // std::cout << _isDestroyable << " " << _posX << " " << _posY << std::endl;
                             characters.push_back(new Character(_isHuman, _posX, _posY, _color));
+                            characters[characters.size()-1]->setTexture(charactersTextures[0]);
+                            characters[characters.size() - 1]->sprite.setTextureRect(sf::IntRect(0, 0, 50, 50));
                             getline(mapFile, line); // isHuman
                         }
                     }

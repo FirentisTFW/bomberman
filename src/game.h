@@ -24,9 +24,13 @@ public:
     std::vector<DiggedBomb*> diggedBombs;
     std::vector<SpecialWeapon*> specialWeapons;
 
+    sf::Texture backgroundTexture;
+    sf::Sprite background;
+
+    std::array<sf::Texture, 4> charactersTextures;
     std::array<sf::Texture, 10> boxesTextures;
     std::array<sf::Texture, 2> specialWeaponsTextures;          // 0 fire, 1 - ice
-    // std::array<sf::Texture, 9> bonusesTextures;
+    std::array<sf::Texture, 9> bonusesTextures;
     sf::Texture bombTexture;
     sf::Texture explosionTexture;
     

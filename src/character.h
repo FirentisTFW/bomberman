@@ -14,6 +14,9 @@ public:
     int howManyFramesAfterMove; // how many frames passed after last move -> needed for movement system based on speed
     char lastDirection;
     char lastTriedDirection;
+    int animationDirection;     // 0 - down, 1 - right, 2 - left, 3 - up
+    int animationTimer;       // change animation frame after every 10 frames in game
+    int animationCounter;      // which frame in animation is currently being displayed
 
     char color;
     bool shield;

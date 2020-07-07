@@ -30,7 +30,32 @@ char Bonus::shouldBonusBeCreated() {
 
     std::cout << randomNumber << " " << type << std::endl;
 
-    type = 'i';
+    // type = 'd';
 
     return type;
+}
+
+int Bonus::getTextureId() {
+    switch (type) {
+        case 'f':
+            return 0;
+        case 'i':
+            return 1;
+        case 'r':
+            return 2;
+        case 'b':
+            return 3;
+        case 'h':
+            return 4;
+        case 'l':
+            return 5;
+        case 'p':
+            return 6;
+        case 's':
+            return 7;
+        case 'd':
+            return 8;
+        default:
+            return 0;
+    }
 }

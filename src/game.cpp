@@ -12,6 +12,12 @@ Game::Game(sf::RenderWindow* _window, Player *_player) {                   // st
 
     // LOADING TEXTURES
 
+    backgroundTexture.loadFromFile("images/background_1.png");
+    background.setTexture(backgroundTexture);
+    background.setPosition(0, 0);
+
+    charactersTextures[0].loadFromFile("images/character_1.png");
+
     for(int i = 1; i < 6; i++) {
         boxesTextures[i-1].loadFromFile("images/box_" + std::to_string(i) + ".png");
     }
@@ -24,6 +30,16 @@ Game::Game(sf::RenderWindow* _window, Player *_player) {                   // st
 
     specialWeaponsTextures[0].loadFromFile("images/fire.png");
     specialWeaponsTextures[1].loadFromFile("images/ice.png");
+
+    bonusesTextures[0].loadFromFile("images/bonuses/b_fire.png");
+    bonusesTextures[1].loadFromFile("images/bonuses/b_ice.png");
+    bonusesTextures[2].loadFromFile("images/bonuses/b_range.png");
+    bonusesTextures[3].loadFromFile("images/bonuses/b_bomb.png");
+    bonusesTextures[4].loadFromFile("images/bonuses/b_shield.png");
+    bonusesTextures[5].loadFromFile("images/bonuses/b_live.png");
+    bonusesTextures[6].loadFromFile("images/bonuses/b_push.png");
+    bonusesTextures[7].loadFromFile("images/bonuses/b_speed.png");
+    bonusesTextures[8].loadFromFile("images/bonuses/b_digged_bomb.png");
 
     // ~ LOADING TEXTURES
 
@@ -52,6 +68,15 @@ void Game::updateGameTime() {
 void Game::updateCharacterMovementFramerate() {            
     for(Character* character : characters) {
         character->howManyFramesAfterMove++;
+        character->animationTimer++;
+
+        // if(character->animationTimer >= 10) {
+        //     character->animationTimer = 0;
+        //     character->sprite.setTextureRect(sf::IntRect(50 * character->animationCounter, 50 * character->animationDirection, 50, 50));
+        //     character->animationCounter++;
+        //     if (character->animationCounter >= 4)
+        //         character->animationCounter = 0;
+        // }
     }
 }
 
@@ -187,6 +212,8 @@ void Game::updateGameBoard() {
                 char possibleBonus = Bonus::shouldBonusBeCreated();                     // calculate the chance fr a bonus to appear here
                 if(possibleBonus != '0') {                                              // create a bonus in place of destroyed box 
                     bonuses.push_back(new Bonus(boxes[i]->posX, boxes[i]->posY, possibleBonus));
+                    int textureId = bonuses[bonuses.size()-1]->getTextureId();
+                    bonuses[bonuses.size()-1]->setTexture(bonusesTextures[textureId]);
                     gameBoard[boxes[i]->posY][boxes[i]->posX] = "bonus";
                 }
                 boxes.erase(boxes.begin() + i);
@@ -236,10 +263,13 @@ void Game::showGameBoard() {
 }
 
 void Game::draw() {
+
+    window->draw(background);
+
     for (Bomb *bomb : bombs)
         window->draw(bomb->sprite);
     for (Bonus *bonus : bonuses)
-        window->draw(bonus->rect);
+        window->draw(bonus->sprite);
     for (Explosion *explosion : explosions)
         window->draw(explosion->sprite);
     for (SpecialWeapon *specialWeapon : specialWeapons)
@@ -253,6 +283,6 @@ void Game::draw() {
             window->draw(box->sprite);
     }
     for (Character *character : characters)
-        window->draw(character->rect);
+        window->draw(character->sprite);
     // std::cout << "draaaaw" << std::endl;
 }
