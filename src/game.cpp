@@ -12,24 +12,27 @@ Game::Game(sf::RenderWindow* _window, Player *_player) {                   // st
 
     // LOADING TEXTURES
 
-    backgroundTexture.loadFromFile("images/background_1.png");
+    backgroundTexture.loadFromFile("images/backgrounds/background_1.png");
     background.setTexture(backgroundTexture);
     background.setPosition(0, 0);
 
-    charactersTextures[0].loadFromFile("images/character_1.png");
+    charactersTextures[0].loadFromFile("images/characters/character_1.png");
+    charactersTextures[1].loadFromFile("images/characters/character_2.png");
+    charactersTextures[2].loadFromFile("images/characters/character_3.png");
+    charactersTextures[3].loadFromFile("images/characters/character_4.png");
 
     for(int i = 1; i < 6; i++) {
-        boxesTextures[i-1].loadFromFile("images/box_" + std::to_string(i) + ".png");
+        boxesTextures[i-1].loadFromFile("images/boxes/box_" + std::to_string(i) + ".png");
     }
     for(int i = 1; i < 5; i++) {
-        boxesTextures[i+4].loadFromFile("images/stone_wall_" + std::to_string(i) + ".png");
+        boxesTextures[i+4].loadFromFile("images/boxes/stone_wall_" + std::to_string(i) + ".png");
     }
 
-    bombTexture.loadFromFile("images/bomb.png");
-    explosionTexture.loadFromFile("images/explosion.png");
+    bombTexture.loadFromFile("images/weapons_effects/bomb.png");
+    explosionTexture.loadFromFile("images/weapons_effects/explosion.png");
 
-    specialWeaponsTextures[0].loadFromFile("images/fire.png");
-    specialWeaponsTextures[1].loadFromFile("images/ice.png");
+    specialWeaponsTextures[0].loadFromFile("images/weapons_effects/fire.png");
+    specialWeaponsTextures[1].loadFromFile("images/weapons_effects/ice.png");
 
     bonusesTextures[0].loadFromFile("images/bonuses/b_fire.png");
     bonusesTextures[1].loadFromFile("images/bonuses/b_ice.png");
@@ -285,4 +288,6 @@ void Game::draw() {
     for (Character *character : characters)
         window->draw(character->sprite);
     // std::cout << "draaaaw" << std::endl;
+
+    gameUI->updateUI(window);
 }

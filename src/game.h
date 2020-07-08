@@ -6,11 +6,14 @@
 #include "bonus.h"
 #include "diggedBomb.h"
 #include "specialWeapon.h"
+#include "gameUI.h"
 
 class Game {
     
 public:
     sf::RenderWindow* window;                                   // passing window by reference here to avoid drawing objects in main file
+    GameUI* gameUI;
+
     bool isGamePaused;              
     std::array<int, 3> gameTime;                                // {minutes, seconds, frames}
     std::array<std::array<std::string, 16>, 16> gameBoard;      // what kind of object is on a given field on map (i.e. 'bomb')

@@ -5,7 +5,7 @@
 
 int main() {
 
-    sf::VideoMode vm(800, 800);									// create window
+    sf::VideoMode vm(1000, 800);									// create window
 	sf::RenderWindow window(vm, "Bomberman");
     
     sf::Clock clock;
@@ -17,6 +17,8 @@ int main() {
     Player *player = new Player(1);
 
     Game *game = new Game(&window, player);
+
+    game->gameUI = new GameUI();
 
     mapLoader::loadMap(game->boxes, game->characters, game->boxesTextures, game->charactersTextures);
 

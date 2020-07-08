@@ -51,7 +51,7 @@ void Character::shouldCharacterMove(char direction, std::array<std::array<std::s
 
     if(frozen) return;                                  // character can't move if frozen by another character
 
-    if(animationTimer >= 5) {
+    if(animationTimer >= 3) {
         animationTimer = 0;
         sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
         animationCounter++;
