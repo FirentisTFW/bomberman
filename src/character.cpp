@@ -8,7 +8,8 @@ std::array<float, 5> Character::movementSpeedFramerate = {5.0, 4.0, 3.0, 2.0, 1.
 // ------------------------------------------ CONSTRUCTORS -------------------------------------------------
 
 Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
-    std::cout << "character created!" << std::endl;
+    
+    score = 0;
 
     isHuman = _isHuman;
     speed = 1;
@@ -81,7 +82,7 @@ bool Character::isMovePossible(char direction, std::array<std::array<std::string
         case 'u':
             if(posY > 0) {        // character can move -> still on the map
                 // if(gameBoard[posY-1][posX] == "0" || gameBoard[posY-1][posX] == "bonus" || gameBoard[posY-1][posX] == "explosion") {    // field character wants to step on is possible to step on
-                if(gameBoard[posY-1][posX] != "box" && gameBoard[posY-1][posX] != "wall" && gameBoard[posY-1][posX] != "bomb") {    // field character wants to step on is possible to step on
+                if(gameBoard[posY-1][posX] != "box" && gameBoard[posY-1][posX] != "wall" && gameBoard[posY-1][posX] != "bomb" && gameBoard[posY-1][posX] != "ice" ) {    // field character wants to step on is possible to step on
                     return true;
                 }
                 if (gameBoard[posY - 1][posX] == "bomb" && bombPushing == true) {              // character wants to step on the bomb and character can push the bombs
@@ -100,7 +101,7 @@ bool Character::isMovePossible(char direction, std::array<std::array<std::string
             break;
         case 'd':
             if(posY < 15) {        // character can move -> still on the map
-                if(gameBoard[posY+1][posX] != "box" && gameBoard[posY+1][posX] != "wall" && gameBoard[posY+1][posX] != "bomb") {
+                if(gameBoard[posY+1][posX] != "box" && gameBoard[posY+1][posX] != "wall" && gameBoard[posY+1][posX] != "bomb" && gameBoard[posY+1][posX] != "ice") {
                     return true;
                 }
                 if (gameBoard[posY + 1][posX] == "bomb" && bombPushing == true) {              // character wants to step on the bomb and character can push the bombs
@@ -119,7 +120,7 @@ bool Character::isMovePossible(char direction, std::array<std::array<std::string
             break;
         case 'l':
             if(posX > 0) {        // character can move -> still on the map
-                if(gameBoard[posY][posX-1] != "box" && gameBoard[posY][posX-1] != "wall" && gameBoard[posY][posX-1] != "bomb") {
+                if(gameBoard[posY][posX-1] != "box" && gameBoard[posY][posX-1] != "wall" && gameBoard[posY][posX-1] != "bomb" && gameBoard[posY][posX-1] != "ice") {
                     return true;
                 }
                 if (gameBoard[posY][posX-1] == "bomb" && bombPushing == true) {              // character wants to step on the bomb and character can push the bombs
@@ -139,7 +140,7 @@ bool Character::isMovePossible(char direction, std::array<std::array<std::string
         case 'r':
             // std::cout << "move right" << std::endl;
             if(posX < 15) {        // character can move -> still on the map
-                if(gameBoard[posY][posX+1] != "box" && gameBoard[posY][posX+1] != "wall" && gameBoard[posY][posX+1] != "bomb") {
+                if(gameBoard[posY][posX+1] != "box" && gameBoard[posY][posX+1] != "wall" && gameBoard[posY][posX+1] != "bomb" && gameBoard[posY][posX+1] != "ice") {
                     return true;
                 }
                 if (gameBoard[posY][posX+1] == "bomb" && bombPushing == true) {              // character wants to step on the bomb and character can push the bombs
@@ -264,18 +265,18 @@ void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::arr
         if(specialWeapon == 'f') {
             if(Object::isPositionOnTheMap(posX + addX, posY + addY)) {
                 if (gameBoard[posY + addY][posX + addX] != "wall") {
-                    specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
+                    specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon, color));
                     specialWeapons[specialWeapons.size()-1]->setTexture(specialWeaponsTextures[0]);
                     gameBoard[posY + addY][posX + addX] = typeOfWeapon;
                     wasSpecialWeaponUsed = true;
                     if(Object::isPositionOnTheMap(posX + addX * 2, posY + addY * 2)) {
                         if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall") {
-                            specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
+                            specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon, color));
                             specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[0]);
                             gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
                             if(Object::isPositionOnTheMap(posX + addX * 3, posY + addY * 3)) {
                                 if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall"){
-                                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
+                                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon, color));
                                     specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[0]);
                                     gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
                                 }
@@ -288,18 +289,18 @@ void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::arr
         else {
             if(Object::isPositionOnTheMap(posX + addX, posY + addY)) {
                 if (gameBoard[posY + addY][posX + addX] != "wall" && gameBoard[posY + addY][posX + addX] != "box") {
-                    specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon));
+                    specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon, color));
                     specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[1]);
                     gameBoard[posY + addY][posX + addX] = typeOfWeapon;
                     wasSpecialWeaponUsed = true;
                     if(Object::isPositionOnTheMap(posX + addX * 2, posY + addY * 2)) {
                         if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall" && gameBoard[posY + addY * 2][posX + addX * 2] != "box") {
-                            specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon));
+                            specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon, color));
                             specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[1]);
                             gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
                             if(Object::isPositionOnTheMap(posX + addX * 3, posY + addY * 3)) {
                                 if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall" && gameBoard[posY + addY * 3][posX + addX * 3] != "box"){
-                                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon));
+                                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon, color));
                                     specialWeapons[specialWeapons.size() - 1]->setTexture(specialWeaponsTextures[1]);
                                     gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
                                 }
@@ -325,7 +326,8 @@ void Character::steppedOnBonus(char type, int &playersLives) {
             std::cout << "Bomb limit increased!" << std::endl;
             break;
         case 's':
-            speed++;
+            if(speed <5)                // 5 - maximal speed
+                speed++;
             std::cout << "Speed increased!" << std::endl;
             break;
         case 'h':

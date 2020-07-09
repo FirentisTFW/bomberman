@@ -5,6 +5,8 @@ Bonus::Bonus(int _posX, int _posY, char _type) {
     type = _type;
     posX = _posX;
     posY = _posY;
+    animationCounter = 0;
+    animationDirectionUp = true;
 
     rect.setSize(sf::Vector2f(50, 50));
     rect.setPosition(posX * 50, posY * 50);
@@ -30,7 +32,7 @@ char Bonus::shouldBonusBeCreated() {
 
     std::cout << randomNumber << " " << type << std::endl;
 
-    // type = 'd';
+    // type = 'i';
 
     return type;
 }

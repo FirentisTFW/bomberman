@@ -60,13 +60,18 @@ namespace mapLoader {
                             getline(mapFile, line); // posY
                             int _posY = std::stoi(line);
                             getline(mapFile, line); // color
-                            char _color = line[0];
+                            char _color = line[line.find_first_of("bgry")];
 
-                            // std::cout << _isDestroyable << " " << _posX << " " << _posY << std::endl;
                             characters.push_back(new Character(_isHuman, _posX, _posY, _color));
-                            characters[characters.size()-1]->setTexture(charactersTextures[0]);
+                            int textureId = 0;
+                            if(_color == 'b') textureId = 0;
+                            else if(_color == 'g') textureId = 1;
+                            else if(_color == 'r') textureId = 2;
+                            else if(_color == 'y') textureId = 3;
+
+                            characters[characters.size()-1]->setTexture(charactersTextures[textureId]);
                             characters[characters.size() - 1]->sprite.setTextureRect(sf::IntRect(0, 0, 50, 50));
-                            getline(mapFile, line); // isHuman
+                            getline(mapFile, line);
                         }
                     }
                 }

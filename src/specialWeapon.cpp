@@ -1,10 +1,11 @@
 #include "specialWeapon.h"
 
-SpecialWeapon::SpecialWeapon(int _posX, int _posY, char _type) {
+SpecialWeapon::SpecialWeapon(int _posX, int _posY, char _type, char _color) {
 
     posX = _posX;
     posY = _posY;
     type = _type;
+    color = _color;
     timeToDisappear = 120;
 
     if(type == 'f') {

@@ -1,9 +1,10 @@
 #include "explosion.h"
 
-Explosion::Explosion(int _posX, int _posY, char color) {
+Explosion::Explosion(int _posX, int _posY, char _color) {
 
     posX = _posX;
     posY = _posY;
+    color = _color;
 
     rect.setSize(sf::Vector2f(50, 50));
     rect.setPosition(posX * 50, posY * 50);

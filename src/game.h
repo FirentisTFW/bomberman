@@ -41,13 +41,19 @@ public:
 
     ~Game();
 
-    void loadTextures();
+    void loadTextures();                                           // load textures in the beginning of the game
 
     void updateGameTime();
 
     void updateCharacterMovementFramerate();                       // function called every frame for character movement to work properly
 
     void updateGameBoard();
+
+    void updateAnimationsOnBoard();                                             // bonuses animations
+
+    char findExplosionOrFire(const int objectPosX, const int objectPosY);       // when object (box, character) meets explosion or fire -> function search for this explosion or fire 
+
+    void addScoreToCharacter(const char color, const int scoreToAdd);           // when object (boc, character) is destroyed -> function finds out who destryoed it and icreases its score
 
     void showGameBoard();
 

@@ -14,11 +14,11 @@ int main() {
 
     srand(time(NULL));                                          // for RNG
 
-    Player *player = new Player(1);
+    Player *player = new Player('b');
 
     Game *game = new Game(&window, player);
 
-    game->gameUI = new GameUI();
+    game->gameUI = new GameUI(player->lives, player->color);
 
     mapLoader::loadMap(game->boxes, game->characters, game->boxesTextures, game->charactersTextures);
 
@@ -29,6 +29,28 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
 
+
+            // MOUSE BUTTONS
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                auto mouse_pos = sf::Mouse::getPosition(window);
+                auto translated_pos = window.mapPixelToCoords(mouse_pos);
+
+                // check which button was clicked
+                if (game->gameUI->pauseRect.getGlobalBounds().contains(translated_pos)) {
+                    if(!game->isGamePaused)
+                        game->isGamePaused = true;
+                    else
+                        game->isGamePaused = false;
+                    std::cout << "Game paused/unpaused" << std::endl;
+                }
+                else if (game->gameUI->exitRect.getGlobalBounds().contains(translated_pos)) {
+                    std::cout << "EXIT" << std::endl;
+                    window.close();
+                }
+            }   // ~ MOUSE BUTTONS
+
+            
+            // KEYBOARD KEYS
             if (event.type == sf::Event::KeyPressed) {          
                 if(event.key.code == sf::Keyboard::Escape) {        // ESC pause the game
                     // if(!game->isGamePaused)
@@ -60,7 +82,7 @@ int main() {
                         std::cout << "bomb!" << std::endl;
                     }
                 }
-            }
+            } // ~ KEYBOARD KEYS
         }
 
 
@@ -69,6 +91,7 @@ int main() {
 
             game->updateGameTime();
             game->updateGameBoard();
+            game->updateAnimationsOnBoard();
             Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard, game->explosionTexture);
             Explosion::checkForInactiveExplosions(game->explosions);
             if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again

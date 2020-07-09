@@ -5,10 +5,9 @@ class Player {
     public:
         int lives;
         int score;
-        // char color;
-        int color;
+        char color;
 
-        Player(int _color);
+        Player(char _color);
 
         ~Player();
 };

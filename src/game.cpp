@@ -10,6 +10,15 @@ Game::Game(sf::RenderWindow* _window, Player *_player) {                   // st
     window = _window;
     player = _player;
 
+    loadTextures();
+}
+
+Game::~Game() {}
+
+// ------------------------------------------ METHODS -------------------------------------------------
+
+void Game::loadTextures() {
+
     // LOADING TEXTURES
 
     backgroundTexture.loadFromFile("images/backgrounds/background_1.png");
@@ -21,12 +30,11 @@ Game::Game(sf::RenderWindow* _window, Player *_player) {                   // st
     charactersTextures[2].loadFromFile("images/characters/character_3.png");
     charactersTextures[3].loadFromFile("images/characters/character_4.png");
 
-    for(int i = 1; i < 6; i++) {
-        boxesTextures[i-1].loadFromFile("images/boxes/box_" + std::to_string(i) + ".png");
-    }
-    for(int i = 1; i < 5; i++) {
-        boxesTextures[i+4].loadFromFile("images/boxes/stone_wall_" + std::to_string(i) + ".png");
-    }
+    for (int i = 1; i < 6; i++)
+        boxesTextures[i - 1].loadFromFile("images/boxes/box_" + std::to_string(i) + ".png");
+
+    for (int i = 1; i < 5; i++)
+        boxesTextures[i + 4].loadFromFile("images/boxes/stone_wall_" + std::to_string(i) + ".png");
 
     bombTexture.loadFromFile("images/weapons_effects/bomb.png");
     explosionTexture.loadFromFile("images/weapons_effects/explosion.png");
@@ -45,15 +53,7 @@ Game::Game(sf::RenderWindow* _window, Player *_player) {                   // st
     bonusesTextures[8].loadFromFile("images/bonuses/b_digged_bomb.png");
 
     // ~ LOADING TEXTURES
-
-    // characters.push_back(new Character(true, 0, 0, 'g'));
-    // characters.push_back(new Character(false, 8, 8, 'r'));
-    // std::fill(begin(gameBoard), begin(gameBoard) + 16, 0); // set gameTime to 0:0:0
 }
-
-Game::~Game() {}
-
-// ------------------------------------------ METHODS -------------------------------------------------
 
 void Game::updateGameTime() {
     
@@ -72,14 +72,6 @@ void Game::updateCharacterMovementFramerate() {
     for(Character* character : characters) {
         character->howManyFramesAfterMove++;
         character->animationTimer++;
-
-        // if(character->animationTimer >= 10) {
-        //     character->animationTimer = 0;
-        //     character->sprite.setTextureRect(sf::IntRect(50 * character->animationCounter, 50 * character->animationDirection, 50, 50));
-        //     character->animationCounter++;
-        //     if (character->animationCounter >= 4)
-        //         character->animationCounter = 0;
-        // }
     }
 }
 
@@ -136,7 +128,7 @@ void Game::updateGameBoard() {
     for (int i = 0; i < characters.size(); i++) {
         if (characters[i]->lostShieldTimeSpan > 0)                               // character just lost its shield, can't be hurt again 
                 characters[i]->lostShieldTimeSpan--;
-        if(characters[i]->frozenTime > 0) {                                      // slowly unfreezing    
+        if(characters[i]->frozenTime > 0) {                                      // slow unfreezing    
             characters[i]->frozenTime--;
             if (characters[i]->frozenTime <= 0)
                 characters[i]->frozen = false;
@@ -150,7 +142,13 @@ void Game::updateGameBoard() {
                 gameBoard[characters[i]->posY][characters[i]->posX] = "character";
             }
             else if(characters[i]->lostShieldTimeSpan <= 0) {                              // character doesn't have "after-hit protection"
-                if (characters[i]->isHuman) {                                             // character is controlled by a player (living person)
+
+                char colorOfExplosion = findExplosionOrFire(characters[i]->posX, characters[i]->posY);       // find which explosion (or fire) killed the character
+                
+                if(characters[i]->color != colorOfExplosion)                                            // you won't get points for killing yourself
+                    addScoreToCharacter(colorOfExplosion, 1000);
+
+                if (characters[i]->isHuman) {                                               // character is controlled by a player (living person)
                     player->lives--;
                     // gameOver();
                     std::cout << "Game Over 1!" << std::endl;
@@ -158,6 +156,9 @@ void Game::updateGameBoard() {
                 else {                                                                      // character is controlled by AI
                     characters.erase(characters.begin() + i);
                     i--;
+                    if(characters.size() == 1) {                                            // player is the only one character left -> next level
+                        std::cout << "Next level!" << std::endl;
+                    }
                 }
             }
         }
@@ -166,8 +167,7 @@ void Game::updateGameBoard() {
             for (int j = 0; j < bonusesSize; j++) {
                 if(characters[i]->posY == bonuses[j]->posY && characters[i]->posX == bonuses[j]->posX) {
                     characters[i]->steppedOnBonus(bonuses[j]->type, player->lives);
-                    std::cout << "y: " << characters[i]->posY << std::endl;
-                    std::cout << "x: " << characters[i]->posX << std::endl;
+                    addScoreToCharacter(characters[i]->color, 10);
                     bonuses.erase(bonuses.begin() + j);     
                     break;
                 }
@@ -212,7 +212,11 @@ void Game::updateGameBoard() {
     for (int i=0; i< boxesSize; i++) {
         if (gameBoard[boxes[i]->posY][boxes[i]->posX] == "explosion" || gameBoard[boxes[i]->posY][boxes[i]->posX] == "fire") {
             if(boxes[i]->isDestroyable) {
-                char possibleBonus = Bonus::shouldBonusBeCreated();                     // calculate the chance fr a bonus to appear here
+                
+                char colorOfExplosion = findExplosionOrFire(boxes[i]->posX, boxes[i]->posY);                // find which explosion (or fire) destroyed the box
+                addScoreToCharacter(colorOfExplosion, 50);
+
+                char possibleBonus = Bonus::shouldBonusBeCreated();                     // calculate the chance for a bonus to appear here
                 if(possibleBonus != '0') {                                              // create a bonus in place of destroyed box 
                     bonuses.push_back(new Bonus(boxes[i]->posX, boxes[i]->posY, possibleBonus));
                     int textureId = bonuses[bonuses.size()-1]->getTextureId();
@@ -221,6 +225,7 @@ void Game::updateGameBoard() {
                 }
                 boxes.erase(boxes.begin() + i);
                 i--;
+
             }
             else 
                 gameBoard[boxes[i]->posY][boxes[i]->posX] = "wall";
@@ -254,6 +259,60 @@ void Game::updateGameBoard() {
 
 }
 
+void Game::updateAnimationsOnBoard() {
+    for (Bonus* bonus : bonuses) {
+        int direction;
+        if(bonus->animationDirectionUp) direction = -1;
+        else direction = 1;
+
+        bonus->animationCounter++;
+        if (bonus->animationCounter % 3 == 0)
+            bonus->sprite.setPosition(bonus->sprite.getPosition().x, bonus->sprite.getPosition().y + direction);
+        if (bonus->animationCounter >= 50) {
+            bonus->animationCounter = 0;
+            if (bonus->animationDirectionUp) bonus->animationDirectionUp = false;
+            else bonus->animationDirectionUp = true;
+        }
+    }
+}
+
+char Game::findExplosionOrFire(const int objectPosX, const int objectPosY) {
+    
+    for(Explosion* explosion : explosions) {                                   // find the right explosion
+        if (explosion->posX == objectPosX && explosion->posY == objectPosY) {
+            for(Character* character : characters) {                           //find the character who planted this bomb and increase its score
+                if(explosion->color == character->color) {
+                    return explosion->color;
+                }
+            }
+        }
+    }                                                       
+
+    for(SpecialWeapon* fire : specialWeapons) {                                // find the right fire (if it was fire)
+        if (fire->posX == objectPosX && fire->posY == objectPosY) {
+            for(Character* character : characters) {                           //find the character who started this fire and increase its score
+                if(fire->color == character->color) {
+                    return fire->color;
+                }
+            }
+        }
+    }
+
+    return '0';                                                                // function shouldn't have been called
+}
+
+void Game::addScoreToCharacter(const char color, const int scoreToAdd) {
+
+    for(Character* character : characters) {                           //find the character who started this fire and increase its score
+        if(color == character->color) {
+            character->score += scoreToAdd;
+            if(character->isHuman)
+                player->score += scoreToAdd;
+            break;
+        }
+    }
+}
+
 void Game::showGameBoard() {
 
     for(int i=0; i<16; i++) {                           // print an array
@@ -271,8 +330,6 @@ void Game::draw() {
 
     for (Bomb *bomb : bombs)
         window->draw(bomb->sprite);
-    for (Bonus *bonus : bonuses)
-        window->draw(bonus->sprite);
     for (Explosion *explosion : explosions)
         window->draw(explosion->sprite);
     for (SpecialWeapon *specialWeapon : specialWeapons)
@@ -285,9 +342,12 @@ void Game::draw() {
         else
             window->draw(box->sprite);
     }
+    for (Bonus *bonus : bonuses)
+        window->draw(bonus->sprite);
     for (Character *character : characters)
         window->draw(character->sprite);
     // std::cout << "draaaaw" << std::endl;
 
-    gameUI->updateUI(window);
+    gameUI->updateUI(characters, player->score);
+    gameUI->drawUI(window);
 }

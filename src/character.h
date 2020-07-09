@@ -25,6 +25,7 @@ public:
     bool frozen;                           // is character frozen by an ice weapon (character can't move)
     int frozenTime;                        // how many frames longer character will be frozen
 
+    int score;
     int speed;
     int range;
     int bombLimit;                         // how many bombs can character place at the same time (before some of them explode)

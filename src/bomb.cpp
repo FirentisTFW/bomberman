@@ -73,9 +73,8 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
 }
 
 bool Bomb::moveBomb(char _direction, std::array<std::array<std::string, 16>, 16> &gameBoard) {
+    
     int addX, addY;
-    std::cout << posY << std::endl;
-
     direction = _direction;
 
     switch(direction){                                                          // check the rolling bomb's direction
