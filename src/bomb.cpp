@@ -10,6 +10,9 @@ Bomb::Bomb(int _posX, int _posY, int _range, char _color, int *_charactersBombLi
     posX = _posX;
     posY = _posY;
 
+    animationCounter = 0;
+    animationDirectionUp = true;
+
     movingBombTimer = -1;
     charactersBombLimit = _charactersBombLimit;
 
@@ -26,14 +29,12 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
     
     std::cout << "Explosion!" << std::endl;
 
-    explosions.push_back(new Explosion(posX, posY, color));
-    explosions[explosions.size() - 1]->setTexture(explosionTexture);
+    explosions.push_back(new Explosion(posX, posY, color, explosionTexture));
 
     for(int i=0; i<range; i++) {                             // DOWN
         if (posY + (i + 1) > 15)                             // explosion can't get outside of the map
-            break; 
-        explosions.push_back(new Explosion(posX, posY + (i + 1), color));
-        explosions[explosions.size() - 1]->setTexture(explosionTexture);
+            break;
+        explosions.push_back(new Explosion(posX, posY + (i + 1), color, explosionTexture));
 
         // if there is a bomb or box on the way, stop exploding in this direction, updateGameBoard() method in Game class will check if the explosion should destroy this object or not
         if (gameBoard[posY + (i + 1)][posX] == "bomb" || gameBoard[posY + (i + 1)][posX] == "box" || gameBoard[posY + (i + 1)][posX] == "wall")
@@ -42,8 +43,7 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
     for(int i=0; i<range; i++) {                           // UP
         if (posY - (i + 1) < 0)                          
             break;
-        explosions.push_back(new Explosion(posX, posY - (i + 1), color));
-        explosions[explosions.size() - 1]->setTexture(explosionTexture);
+        explosions.push_back(new Explosion(posX, posY - (i + 1), color, explosionTexture));
 
         if (gameBoard[posY - (i + 1)][posX] == "bomb" || gameBoard[posY - (i + 1)][posX] == "box" || gameBoard[posY - (i + 1)][posX] == "wall")
             break;
@@ -51,8 +51,7 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
     for(int i=0; i<range; i++) {                            // RIGHT
         if (posX + (i + 1) > 15)                           
             break;
-        explosions.push_back(new Explosion(posX+(i+1), posY, color));
-        explosions[explosions.size() - 1]->setTexture(explosionTexture);
+        explosions.push_back(new Explosion(posX + (i + 1), posY, color, explosionTexture));
 
         if (gameBoard[posY][posX + (i + 1)] == "bomb" || gameBoard[posY][posX + (i + 1)] == "box" || gameBoard[posY][posX + (i + 1)] == "wall")
             break;
@@ -60,8 +59,7 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
     for(int i=0; i<range; i++) {                            // LEFT
         if (posX - (i + 1) < 0)                         
             break;
-        explosions.push_back(new Explosion(posX - (i + 1), posY, color));
-        explosions[explosions.size() - 1]->setTexture(explosionTexture);
+        explosions.push_back(new Explosion(posX - (i + 1), posY, color, explosionTexture));
 
         if (gameBoard[posY][posX - (i + 1)] == "bomb" || gameBoard[posY][posX - (i + 1)] == "box" || gameBoard[posY][posX - (i + 1)] == "wall")
             break;

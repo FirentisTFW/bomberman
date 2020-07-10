@@ -265,13 +265,49 @@ void Game::updateAnimationsOnBoard() {
         if(bonus->animationDirectionUp) direction = -1;
         else direction = 1;
 
-        bonus->animationCounter++;
-        if (bonus->animationCounter % 3 == 0)
+        bonus->animationCounter++;  
+        if (bonus->animationCounter % 3 == 0)                                                           // move bonus slightly every 3 frames
             bonus->sprite.setPosition(bonus->sprite.getPosition().x, bonus->sprite.getPosition().y + direction);
         if (bonus->animationCounter >= 50) {
             bonus->animationCounter = 0;
             if (bonus->animationDirectionUp) bonus->animationDirectionUp = false;
             else bonus->animationDirectionUp = true;
+        }
+    }
+
+    for (Bomb* bomb : bombs) {
+        int direction;
+        if(bomb->animationDirectionUp) direction = -1;
+        else direction = 1;
+
+        bomb->animationCounter++;
+            bomb->sprite.setPosition(bomb->sprite.getPosition().x, bomb->sprite.getPosition().y + direction);
+        if (bomb->animationCounter >= 10) {
+            bomb->animationCounter = 0;
+            if (bomb->animationDirectionUp) bomb->animationDirectionUp = false;
+            else bomb->animationDirectionUp = true;
+        }
+    }
+
+    for (SpecialWeapon* weapon : specialWeapons) {
+        if (weapon->type == 'f') {
+
+            if(weapon->animationCounter % 6 == 0)                                                           // change animation frame every 6 game frames
+                weapon->sprite.setTextureRect(sf::IntRect(weapon->animationCounter/6*50, 0, 50, 50));
+            weapon->animationCounter++;
+            if (weapon->animationCounter >= 36) {
+                weapon->animationCounter = 0;
+            }
+        }
+    }
+
+    for (Explosion* explosion : explosions) {
+
+        if(explosion->animationCounter % 6 == 0)                                                           // change animation frame every 6 game frames
+            explosion->sprite.setTextureRect(sf::IntRect(explosion->animationCounter/6*50, 0, 50, 50));
+        explosion->animationCounter++;
+        if (explosion->animationCounter >= 36) {
+            explosion->animationCounter = 0;
         }
     }
 }

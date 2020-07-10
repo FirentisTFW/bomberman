@@ -79,7 +79,6 @@ int main() {
 
                     else if(event.key.code == sf::Keyboard::Space) {
                         game->characters[0]->placeBomb(game->bombs, game->gameBoard, game->diggedBombs, game->specialWeapons, game->bombTexture, game->specialWeaponsTextures);
-                        std::cout << "bomb!" << std::endl;
                     }
                 }
             } // ~ KEYBOARD KEYS
@@ -108,30 +107,3 @@ int main() {
 
     return 0;
 }
-
-
-    // sf::VideoMode vm(800, 800);									//Tworzenie objektu videomode - tworzenie ekranu
-	// sf::RenderWindow window(vm, "Bomberman");
-
-    // window.setFramerateLimit(60);
-
-    //sf::CircleShape shape(100.f);
-
-    //Character* player_1 = new Character();
-
-    // while (window.isOpen())
-    // {
-    //     sf::Event event;
-    //     while (window.pollEvent(event))
-    //     {
-    //         if (event.type == sf::Event::Closed)
-    //             window.close();
-    //     }
-
-    //     sf::Time time = clock.getElapsedTime();
-	// 	clock.restart().asSeconds();
-
-    //     window.clear();
-    //     //window.draw(shape);
-    //     game->draw();
-    //     window.display();

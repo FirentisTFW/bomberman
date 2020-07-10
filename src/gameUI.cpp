@@ -25,7 +25,7 @@ GameUI::GameUI(const int playersLives, const char color) {
         charactersLives[i].setFillColor(sf::Color::White);
         charactersLives[i].setOutlineThickness(1);
         charactersLives[i].setOutlineColor(sf::Color::Black);
-        charactersLives[i].setPosition(845, 116 + 140 * i);
+        charactersLives[i].setPosition(847, 116 + 140 * i);
     }
 
     switch(color) {

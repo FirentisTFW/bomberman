@@ -10,6 +10,9 @@ class Bomb : public Object {
         int movingBombTimer;                // to control speed while bomb is rolling after somebody pushed it (how many frames has to past before the bomb will be moved) | -1 means bomb wasn't pushed by anybody
         int direction;                      // for moving bombs
 
+        int animationCounter;
+        bool animationDirectionUp;          // animation - is bomb currently moving up or down
+
         int *charactersBombLimit;
 
         Bomb(int _posX, int _posY, int _range, char _color, int *_charactersBombLimit);
