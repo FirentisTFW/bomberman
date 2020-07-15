@@ -32,7 +32,7 @@ char Bonus::shouldBonusBeCreated() {
 
     std::cout << randomNumber << " " << type << std::endl;
 
-    // type = 'i';                                             // TEST
+    // type = 'f';                                             // TEST
 
     return type;
 }

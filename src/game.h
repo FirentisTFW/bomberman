@@ -6,6 +6,7 @@
 #include "bonus.h"
 #include "diggedBomb.h"
 #include "specialWeapon.h"
+#include "specialWeaponIcon.h"
 #include "gameUI.h"
 
 class Game {
@@ -26,6 +27,7 @@ public:
     std::vector<Bonus*> bonuses;
     std::vector<DiggedBomb*> diggedBombs;
     std::vector<SpecialWeapon*> specialWeapons;
+    std::vector<Icon*> specialWeaponsIcons;
 
     sf::Texture backgroundTexture;
     sf::Sprite background;
@@ -33,6 +35,7 @@ public:
     std::array<sf::Texture, 4> charactersTextures;
     std::array<sf::Texture, 10> boxesTextures;
     std::array<sf::Texture, 2> specialWeaponsTextures;          // 0 fire, 1 - ice
+    std::array<sf::Texture, 3> iconsTextures;             // 0 fire, 1 - ice, 2 - digged bomb
     std::array<sf::Texture, 9> bonusesTextures;
     sf::Texture bombTexture;
     sf::Texture explosionTexture;
@@ -48,6 +51,20 @@ public:
     void updateCharacterMovementFramerate();                       // function called every frame for character movement to work properly
 
     void updateGameBoard();
+
+    void updateExplosionsOnBoard();
+
+    void updateBonusesOnBoard();
+
+    void updateSpecialWeaponsOnBoard();
+
+    void updateCharactersOnBoard();
+
+    void updateBoxesOnBoard();
+
+    void updateBombsOnBoard();
+
+    void updateIconsOnBoard();
 
     void updateAnimationsOnBoard();                                             // bonuses animations
 

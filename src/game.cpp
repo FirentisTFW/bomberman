@@ -42,6 +42,10 @@ void Game::loadTextures() {
     specialWeaponsTextures[0].loadFromFile("images/weapons_effects/fire.png");
     specialWeaponsTextures[1].loadFromFile("images/weapons_effects/ice.png");
 
+    iconsTextures[0].loadFromFile("images/special_weapons_icons/i_fire.png");
+    iconsTextures[1].loadFromFile("images/special_weapons_icons/i_ice.png");
+    iconsTextures[2].loadFromFile("images/special_weapons_icons/i_digged_bomb.png");
+
     bonusesTextures[0].loadFromFile("images/bonuses/b_fire.png");
     bonusesTextures[1].loadFromFile("images/bonuses/b_ice.png");
     bonusesTextures[2].loadFromFile("images/bonuses/b_range.png");
@@ -76,20 +80,42 @@ void Game::updateCharacterMovementFramerate() {
 }
 
 void Game::updateGameBoard() {
-    for (int i = 0; i < 16; i++) {                      // fill everything with empty strings assuming there's nothing there
+
+    for (int i = 0; i < 16; i++) {                      // fill everything with zeros assuming there's nothing there
         for (int j = 0; j < 16; j++) {
             gameBoard[i][j] = "0";
         }
     }
+    updateExplosionsOnBoard();
 
+    updateBonusesOnBoard();
+
+    updateSpecialWeaponsOnBoard();
+
+    updateCharactersOnBoard();
+
+    updateBoxesOnBoard();
+
+    updateBombsOnBoard();
+
+    updateIconsOnBoard();
+}
+
+void Game::updateExplosionsOnBoard() {
     for (Explosion* explosion : explosions){           // put the explosions on the map
         gameBoard[explosion->posY][explosion->posX] = "explosion";
     }
+
+}
+
+void Game::updateBonusesOnBoard() {
     for (Bonus* bonus : bonuses){                      // put the bonuses on the map
         gameBoard[bonus->posY][bonus->posX] = "bonus";
     }
+}
 
-    int specialWeaponsSize = specialWeapons.size();
+void Game::updateSpecialWeaponsOnBoard() {
+   int specialWeaponsSize = specialWeapons.size();
     for (int i = 0; i < specialWeaponsSize; i++) {
         specialWeapons[i]->timeToDisappear--;
         if (specialWeapons[i]->timeToDisappear == 0) {
@@ -123,8 +149,9 @@ void Game::updateGameBoard() {
         else
             gameBoard[diggedBombs[i]->posY][diggedBombs[i]->posX] = "digged_bomb";
     }
+}
 
-    // CHARACTERS LOOP
+void Game::updateCharactersOnBoard() {
     for (int i = 0; i < characters.size(); i++) {
         if (characters[i]->lostShieldTimeSpan > 0)                               // character just lost its shield, can't be hurt again 
                 characters[i]->lostShieldTimeSpan--;
@@ -166,7 +193,7 @@ void Game::updateGameBoard() {
             int bonusesSize = bonuses.size();
             for (int j = 0; j < bonusesSize; j++) {
                 if(characters[i]->posY == bonuses[j]->posY && characters[i]->posX == bonuses[j]->posX) {
-                    characters[i]->steppedOnBonus(bonuses[j]->type, player->lives);
+                    characters[i]->steppedOnBonus(bonuses[j]->type, player->lives, specialWeaponsIcons, iconsTextures, gameUI->font);
                     addScoreToCharacter(characters[i]->color, 10);
                     bonuses.erase(bonuses.begin() + j);     
                     break;
@@ -206,8 +233,10 @@ void Game::updateGameBoard() {
         }
         else                                                                                // character is on empty field
             gameBoard[characters[i]->posY][characters[i]->posX] = "character";
-    }   // CHARACTERS LOOP
+    }
+}
 
+void Game::updateBoxesOnBoard() {
     int boxesSize = boxes.size();
     for (int i=0; i< boxesSize; i++) {
         if (gameBoard[boxes[i]->posY][boxes[i]->posX] == "explosion" || gameBoard[boxes[i]->posY][boxes[i]->posX] == "fire") {
@@ -238,7 +267,9 @@ void Game::updateGameBoard() {
 
         }
     }
+}
 
+void Game::updateBombsOnBoard() {
     int bombsSize = bombs.size();
     for (int i = 0; i < bombsSize; i++) {
         if (gameBoard[bombs[i]->posY][bombs[i]->posX] == "explosion" || gameBoard[bombs[i]->posY][bombs[i]->posX] == "fire") {
@@ -256,7 +287,24 @@ void Game::updateGameBoard() {
         else
             gameBoard[bombs[i]->posY][bombs[i]->posX] = "bomb";
     }
+}
 
+void Game::updateIconsOnBoard() {
+    int iconsSize = specialWeaponsIcons.size();
+    for (int i = 0; i < iconsSize; i++) {
+        for(Character* character : characters) {
+            if(character->color == specialWeaponsIcons[i]->color) {                 // icon belongs to this character
+                if(character->specialWeaponCounter == 0) {
+                    specialWeaponsIcons.erase(specialWeaponsIcons.begin()+i);
+                    i--;
+                    iconsSize--;
+                    break;
+                }
+                specialWeaponsIcons[i]->updatePosition(character->posX, character->posY, character->specialWeaponCounter);
+                break;
+            }
+        }
+    }
 }
 
 void Game::updateAnimationsOnBoard() {
@@ -382,6 +430,10 @@ void Game::draw() {
         window->draw(bonus->sprite);
     for (Character *character : characters)
         window->draw(character->sprite);
+    for (Icon *icon : specialWeaponsIcons) {
+        window->draw(icon->sprite);
+        window->draw(icon->counter);
+    }
     // std::cout << "draaaaw" << std::endl;
 
     gameUI->updateUI(characters, player->score);

@@ -309,7 +309,7 @@ void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::arr
     }
 }
 
-void Character::steppedOnBonus(char type, int &playersLives) {
+void Character::steppedOnBonus(char type, int &playersLives, std::vector<Icon*> &specialWeaponsIcons, std::array<sf::Texture, 3> &iconsTextures, sf::Font &font) {
     switch(type) {                                                    // check bonus type                
         case 'r':
             range++;
@@ -343,16 +343,19 @@ void Character::steppedOnBonus(char type, int &playersLives) {
             std::cout << "Special weapon: fire!" << std::endl;
             specialWeapon = 'f';     
             specialWeaponCounter = 2;
+            specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[0], font));
             break;
         case 'i':
             std::cout << "Special weapon: ice!" << std::endl;
             specialWeapon = 'i';     
             specialWeaponCounter = 1;
+            specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[1], font));
             break;
         case 'd':
             std::cout << "Special weapon: digged bombs!" << std::endl;
             specialWeapon = 'd';     
             specialWeaponCounter = 2;
+            specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[2], font));
             break;
         default:
             break;
