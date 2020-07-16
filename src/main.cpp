@@ -98,7 +98,7 @@ int main() {
         }
 
         sf::Time time = clock.getElapsedTime();
-		clock.restart().asSeconds();
+		// clock.restart().asSeconds();
 
         window.clear();
         game->draw();
