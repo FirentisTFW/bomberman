@@ -12,7 +12,7 @@
 class Game {
     
 public:
-    sf::RenderWindow* window;                                   // passing window by reference here to avoid drawing objects in main file
+    sf::RenderWindow* window;                                   // passing window by pointer here to avoid drawing objects in main file
     GameUI* gameUI;
 
     bool isGamePaused;              
