@@ -15,6 +15,7 @@ class LevelEditorUI {
 
         sf::Text backgroundsText;
         sf::Text boxesText;
+        sf::Text wallsText;
         sf::Text charactersText;
 
         sf::Text save;
@@ -24,11 +25,13 @@ class LevelEditorUI {
         sf::RectangleShape resetButton;
         sf::RectangleShape exitButton;
 
-        std::array<sf::Sprite, 10> boxes;
+        std::array<sf::Sprite, 4> boxes;
+        std::array<sf::Sprite, 4> walls;
         std::array<sf::Sprite, 4> characters;
         std::array<sf::Sprite, 2> backgrounds;
 
-        std::array<sf::Texture, 10> boxesTextures;
+        std::array<sf::Texture, 4> boxesTextures;
+        std::array<sf::Texture, 4> wallsTextures;
         std::array<sf::Texture, 4> charactersTextures;
         std::array<sf::Texture, 2> backgroundsTextures;
 
@@ -43,6 +46,14 @@ class LevelEditorUI {
         void loadTexts();
 
         void loadButtons();
+
+        void loadBackgrounds();
+
+        void loadBoxes();
+
+        void loadWalls();
+
+        void loadCharacters();
 
         void draw();
 };

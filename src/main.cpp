@@ -3,6 +3,8 @@
 #include "character.h"
 #include "mapLoader.h"
 #include "levelEditorUI.h"
+#include "levelEditorEvent.h"
+#include "editorMapHighlight.h"
 
 int main() {
 
@@ -46,11 +48,17 @@ int main() {
             } // ~ KEYBOARD KEYS
         }
 
+        auto mouse_pos = sf::Mouse::getPosition(window);
+        auto translated_pos = window.mapPixelToCoords(mouse_pos);
+
+        MapHighlight *mapHighlight = new MapHighlight(translated_pos);
+
         sf::Time time = clock.getElapsedTime();
-		clock.restart().asSeconds();
+        clock.restart().asSeconds();
 
         window.clear();
         levelEditorUI->draw();
+        window.draw(mapHighlight->rect);
         window.display();
 
     }
