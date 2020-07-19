@@ -3,7 +3,7 @@
 #include "character.h"
 #include "mapLoader.h"
 #include "levelEditorUI.h"
-#include "levelEditorEvent.h"
+#include "levelEditorClickEvent.h"
 #include "editorMapHighlight.h"
 
 int main() {
@@ -17,7 +17,9 @@ int main() {
 
     srand(time(NULL));                                          // for RNG
 
-    LevelEditorUI *levelEditorUI = new LevelEditorUI(&window);
+    LevelEditorUI* levelEditorUI = new LevelEditorUI(&window);
+
+    Level* level = new Level(&window);
 
     while (window.isOpen()) {
 
@@ -26,41 +28,41 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-
-            // MOUSE BUTTONS
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                auto mouse_pos = sf::Mouse::getPosition(window);
-                auto translated_pos = window.mapPixelToCoords(mouse_pos);
+                auto mousePos = sf::Mouse::getPosition(window);
+                auto translatedPos = window.mapPixelToCoords(mousePos);
 
-                if (levelEditorUI->saveButton.getGlobalBounds().contains(translated_pos)) {
-                    std::cout << "save level" << std::endl;
-                } // ~ MOUSE BUTTONS
-                else if (levelEditorUI->resetButton.getGlobalBounds().contains(translated_pos)) {
-                    std::cout << "reset level" << std::endl;
-                } // ~ MOUSE BUTTONS
-                else if (levelEditorUI->exitButton.getGlobalBounds().contains(translated_pos))
+                if (levelEditorUI->exitButton.getGlobalBounds().contains(translatedPos))
                     window.close();
-            } // ~ MOUSE BUTTONS
+                else {
+                    LevelEditorClickEvent eventCheck = LevelEditorClickEvent(event, levelEditorUI);
+                    std::string clickResult = eventCheck.checkMouseClick(translatedPos);
+                    if(clickResult != "0") {
+                        if(clickResult != "map")
+                            level->assetWasChosen(clickResult);
+                        else {
+                            level->putAssetOnMap(translatedPos); 
+                            std::cout << "Put " << level->chosenAsset << " on the map!" << std::endl;
+                        }
+                    }
+                }
 
-            // KEYBOARD KEYS
-            if (event.type == sf::Event::KeyPressed) {          
-
-            } // ~ KEYBOARD KEYS
+            }
         }
 
         auto mouse_pos = sf::Mouse::getPosition(window);
         auto translated_pos = window.mapPixelToCoords(mouse_pos);
 
-        MapHighlight *mapHighlight = new MapHighlight(translated_pos);
+        MapHighlight mapHighlight = MapHighlight(translated_pos);
 
         sf::Time time = clock.getElapsedTime();
         clock.restart().asSeconds();
 
         window.clear();
         levelEditorUI->draw();
-        window.draw(mapHighlight->rect);
+        level->draw();
+        window.draw(mapHighlight.rect);
         window.display();
-
     }
 
     return 0;
