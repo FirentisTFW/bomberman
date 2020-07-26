@@ -28,7 +28,6 @@ LevelEditorUI::LevelEditorUI(sf::RenderWindow* _window) {
 LevelEditorUI::~LevelEditorUI() {}
 
 void LevelEditorUI::loadTextures() {
-
     for(int i = 0; i < 5; i++) {
         boxesTextures[i].loadFromFile("images/boxes/box_" + std::to_string(i+1) + ".png");
         boxes[i].setTexture(boxesTextures[i]);
@@ -52,7 +51,6 @@ void LevelEditorUI::loadFont() {
 }
 
 void LevelEditorUI::loadTexts() {
-
     save = sf::Text("SAVE", font);
     textProperties::setProperties(save, 40, 868, 615);
 
@@ -76,7 +74,6 @@ void LevelEditorUI::loadTexts() {
 }
 
 void LevelEditorUI::loadButtons() { 
-
     saveButton.setPosition(807, 616);
     saveButton.setSize(sf::Vector2f(185, 52));
     saveButton.setFillColor(sf::Color::White);
@@ -91,14 +88,12 @@ void LevelEditorUI::loadButtons() {
 }
 
 void LevelEditorUI::loadBackgrounds() {
-
     for (int i = 0; i < 2; i++) {
         backgrounds[i].setPosition(813 + i * 62, 55);
     }
 }
 
 void LevelEditorUI::loadBoxes() {
-
     for (int i = 0; i < 5; i++) {
         if (i < 3)
             boxes[i].setPosition(813 + i * 62, 160);
@@ -108,7 +103,6 @@ void LevelEditorUI::loadBoxes() {
 }
 
 void LevelEditorUI::loadWalls() {
-
     for (int i = 0; i < 5; i++) {
         if (i < 3)
             walls[i].setPosition(813 + i * 62, 325);
@@ -118,11 +112,20 @@ void LevelEditorUI::loadWalls() {
 }
 
 void LevelEditorUI::loadCharacters() {
-
     characters[0].setPosition(830, 490);
     characters[1].setPosition(920, 490);
     characters[2].setPosition(830, 550);
     characters[3].setPosition(920, 550);
+}
+
+sf::Texture& LevelEditorUI::getTextureForAsset(std::string asset) {
+    if (asset.find("box") != std::string::npos)
+        return boxesTextures[stoi(asset.substr(4))];
+    else if (asset.find("wall") != std::string::npos)
+        return wallsTextures[stoi(asset.substr(5))];
+    else if (asset.find("character") != std::string::npos)
+        return charactersTextures[stoi(asset.substr(10))];
+
 }
 
 void LevelEditorUI::draw() {

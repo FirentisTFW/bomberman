@@ -14,7 +14,6 @@ std::string LevelEditorClickEvent::checkMouseClick(sf::Vector2f _mousePosition) 
     if(!checkClickOnButtons()) {
         std::string clickResult = checkClickOnAssets();
         if(clickResult == "0") {
-            std::cout << "Click not on asset!" << std::endl;
             if(!isClickOnMap())
                 return "0";
             else
@@ -51,7 +50,7 @@ std::string LevelEditorClickEvent::checkClickOnAssets() {
             return "wall_" + std::to_string(i);
     }
     for (int i = 0; i < 4; i++) {
-        if (ui->characters[i].getGlobalBounds().contains(mousePosition)) 
+        if (ui->characters[i].getGlobalBounds().contains(mousePosition))
             return "character_" + std::to_string(i);
     }
     for (int i = 0; i < 4; i++) {

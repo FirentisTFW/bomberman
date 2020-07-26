@@ -19,7 +19,15 @@ class Level {
 
         void assetWasChosen(std::string assetName);
 
-        void putAssetOnMap(sf::Vector2f mousePosition);
+        void putAssetOnMap(sf::Vector2f mousePosition, sf::Texture &texture);
+
+        void makeFieldEmpty(const int posX, const int posY);
+
+        void checkWhatAssetIsOnPosition(const int posX,const  int posY);
+
+        void removeBoxFromPosition(const int _posX, const int _posY);
+
+        void removeCharacterFromPosition(const int _posX, const int _posY);
 
         void draw();
 };

@@ -41,12 +41,12 @@ int main() {
                         if(clickResult != "map")
                             level->assetWasChosen(clickResult);
                         else {
-                            level->putAssetOnMap(translatedPos); 
+                            sf::Texture &textureForAsset = levelEditorUI->getTextureForAsset(level->chosenAsset);
                             std::cout << "Put " << level->chosenAsset << " on the map!" << std::endl;
+                            level->putAssetOnMap(translatedPos, textureForAsset);
                         }
                     }
                 }
-
             }
         }
 

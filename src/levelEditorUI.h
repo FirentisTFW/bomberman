@@ -55,5 +55,7 @@ class LevelEditorUI {
 
         void loadCharacters();
 
+        sf::Texture& getTextureForAsset(std::string asset);
+
         void draw();
 };
