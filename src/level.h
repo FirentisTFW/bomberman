@@ -8,20 +8,29 @@ class Level {
 
         std::array<std::array<std::string, 16>, 16> gameBoard;
         sf::Sprite background;
+        int backgroundTextureId;
         std::string chosenAsset;
         
         std::vector<Box *> boxes;
         std::vector<Character *> characters;
 
-        Level(sf::RenderWindow* _window);
+        Level(sf::RenderWindow *_window, sf::Texture &_background);
 
         ~Level();
+
+        void clearGameBoard();
+
+        void resetLevel();
+
+        void setBackground(sf::Texture &_background, int _textureId);
 
         void assetWasChosen(std::string assetName);
 
         void putAssetOnMap(sf::Vector2f mousePosition, sf::Texture &texture);
 
         void makeFieldEmpty(const int posX, const int posY);
+
+        void removeCharacterFromMap(char _color);
 
         void checkWhatAssetIsOnPosition(const int posX,const  int posY);
 

@@ -1,11 +1,33 @@
 #include "level.h"
 
-Level::Level(sf::RenderWindow* _window) {
+Level::Level(sf::RenderWindow* _window, sf::Texture &_background) {
+    clearGameBoard();
+    setBackground(_background, 0);
     chosenAsset = "box_0";
     window = _window;
 }
 
 Level::~Level() {}
+
+void Level::clearGameBoard() {
+    for (int i = 0; i < 16; i++) {                      
+        for (int j = 0; j < 16; j++) {
+            gameBoard[i][j] = "0";
+        }
+    }
+}
+
+void Level::resetLevel() {
+    clearGameBoard();
+    boxes.clear();
+    characters.clear();
+}
+
+void Level::setBackground(sf::Texture &_background, int _textureId) {
+    background.setPosition(0, 0);
+    background.setTexture(_background);
+    backgroundTextureId = _textureId;
+}
 
 void Level::assetWasChosen(std::string assetName) {
     chosenAsset = assetName;
@@ -29,6 +51,7 @@ void Level::putAssetOnMap(sf::Vector2f mousePosition, sf::Texture &texture) {
     }
     else if (chosenAsset.find("character") != std::string::npos) {
         std::string charactersColors = "bgry";
+        removeCharacterFromMap(charactersColors[chosenAsset[10]]);
         characters.push_back(new Character(false, posXOnBoard, posYOnBoard, charactersColors[chosenAsset[10]]));
         characters[characters.size() - 1]->setTexture(texture);
         gameBoard[posYOnBoard][posXOnBoard] = "character";
@@ -39,6 +62,13 @@ void Level::putAssetOnMap(sf::Vector2f mousePosition, sf::Texture &texture) {
 void Level::makeFieldEmpty(const int posX, const int posY) {
     if (gameBoard[posY][posX] != "0")
         checkWhatAssetIsOnPosition(posX, posY);
+    gameBoard[posY][posX] = "0";
+}
+
+void Level::removeCharacterFromMap(char _color) {
+    for(int i = 0; i < characters.size(); i++)
+        if (characters[i]->color == _color)
+            makeFieldEmpty(characters[i]->posX, characters[i]->posY);
 }
 
 void Level::checkWhatAssetIsOnPosition(const int posX,const  int posY) {
@@ -69,6 +99,7 @@ void Level::removeCharacterFromPosition(const int _posX, const int _posY) {
 }
 
 void Level::draw() {
+    window->draw(background);
     for(Box* box : boxes)
         window->draw(box->sprite);   
     for(Character* character : characters)

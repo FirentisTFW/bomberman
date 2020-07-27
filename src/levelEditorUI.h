@@ -34,6 +34,7 @@ class LevelEditorUI {
         std::array<sf::Texture, 4> wallsTextures;
         std::array<sf::Texture, 4> charactersTextures;
         std::array<sf::Texture, 2> backgroundsTextures;
+        std::array<sf::Texture, 2> backgroundsTexturesFullSize;
 
         LevelEditorUI(sf::RenderWindow* _window);
 

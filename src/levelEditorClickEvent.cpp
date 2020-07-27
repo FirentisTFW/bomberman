@@ -1,8 +1,9 @@
 #include "levelEditorClickEvent.h"
 
-LevelEditorClickEvent::LevelEditorClickEvent(const sf::Event &_event, LevelEditorUI* &_ui) {
+LevelEditorClickEvent::LevelEditorClickEvent(const sf::Event &_event, LevelEditorUI* &_ui, Level* &_level) {
     event = _event;
     ui = _ui;
+    level = _level;
 }
 
 LevelEditorClickEvent::~LevelEditorClickEvent() {}
@@ -30,10 +31,13 @@ bool LevelEditorClickEvent::checkClickOnButtons() {
 
     if (ui->saveButton.getGlobalBounds().contains(mousePosition)) {
         std::cout << "save level" << std::endl;
+        LevelSaver saver;
+        saver.saveLevel(level->backgroundTextureId, level->boxes, level->characters);
         return true;
     }
     else if (ui->resetButton.getGlobalBounds().contains(mousePosition)) {
         std::cout << "reset level" << std::endl;
+        level->resetLevel();
         return true;
     }
 

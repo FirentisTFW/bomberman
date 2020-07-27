@@ -19,7 +19,7 @@ int main() {
 
     LevelEditorUI* levelEditorUI = new LevelEditorUI(&window);
 
-    Level* level = new Level(&window);
+    Level* level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0]);
 
     while (window.isOpen()) {
 
@@ -28,24 +28,35 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+            if (event.type == sf::Event::MouseButtonPressed) {
                 auto mousePos = sf::Mouse::getPosition(window);
                 auto translatedPos = window.mapPixelToCoords(mousePos);
 
-                if (levelEditorUI->exitButton.getGlobalBounds().contains(translatedPos))
-                    window.close();
-                else {
-                    LevelEditorClickEvent eventCheck = LevelEditorClickEvent(event, levelEditorUI);
-                    std::string clickResult = eventCheck.checkMouseClick(translatedPos);
-                    if(clickResult != "0") {
-                        if(clickResult != "map")
-                            level->assetWasChosen(clickResult);
-                        else {
-                            sf::Texture &textureForAsset = levelEditorUI->getTextureForAsset(level->chosenAsset);
-                            std::cout << "Put " << level->chosenAsset << " on the map!" << std::endl;
-                            level->putAssetOnMap(translatedPos, textureForAsset);
+                LevelEditorClickEvent eventCheck = LevelEditorClickEvent(event, levelEditorUI, level);
+
+                if(event.mouseButton.button == sf::Mouse::Left) {
+                    if (levelEditorUI->exitButton.getGlobalBounds().contains(translatedPos))
+                        window.close();
+                    else {
+                        std::string clickResult = eventCheck.checkMouseClick(translatedPos);
+                        if (clickResult != "0") {
+                            if(clickResult.find("background") != std::string::npos) {
+                                sf::Texture &textureForBackground = levelEditorUI->getTextureForAsset(clickResult);
+                                level->setBackground(textureForBackground, int(clickResult[11]) - 48);
+                            }
+                            else if (clickResult != "map")
+                                level->assetWasChosen(clickResult);
+                            else {
+                                sf::Texture &textureForAsset = levelEditorUI->getTextureForAsset(level->chosenAsset);
+                                level->putAssetOnMap(translatedPos, textureForAsset);
+                                std::cout << "Put " << level->chosenAsset << " on the map!" << std::endl;
+                            }
                         }
                     }
+                }
+                else if (event.mouseButton.button == sf::Mouse::Right) {
+                    if(eventCheck.isClickOnMap())
+                        level->makeFieldEmpty(translatedPos.x/50, translatedPos.y/50);
                 }
             }
         }

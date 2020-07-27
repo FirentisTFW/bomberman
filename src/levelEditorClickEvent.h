@@ -1,5 +1,6 @@
 #pragma once
 #include "level.h"
+#include "levelSaver.h"
 
 class LevelEditorClickEvent {
 
@@ -9,7 +10,7 @@ class LevelEditorClickEvent {
         LevelEditorUI* ui;
         Level* level;
 
-        LevelEditorClickEvent(const sf::Event &_event, LevelEditorUI* &_ui);
+        LevelEditorClickEvent(const sf::Event &_event, LevelEditorUI* &_ui, Level* &_level);
 
         ~LevelEditorClickEvent();
 

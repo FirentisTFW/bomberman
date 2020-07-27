@@ -44,6 +44,8 @@ void LevelEditorUI::loadTextures() {
         backgroundsTextures[i].loadFromFile("images/level_editor_icons/backgrounds/background_" + std::to_string(i+1) + ".png");
         backgrounds[i].setTexture(backgroundsTextures[i]);
     }
+    for(int i = 0; i < 2; i++)
+        backgroundsTexturesFullSize[i].loadFromFile("images/backgrounds/background_" + std::to_string(i+1) + ".png");
 }
 
 void LevelEditorUI::loadFont() {
@@ -125,7 +127,8 @@ sf::Texture& LevelEditorUI::getTextureForAsset(std::string asset) {
         return wallsTextures[stoi(asset.substr(5))];
     else if (asset.find("character") != std::string::npos)
         return charactersTextures[stoi(asset.substr(10))];
-
+    else if (asset.find("background") != std::string::npos)
+        return backgroundsTexturesFullSize[stoi(asset.substr(11))];
 }
 
 void LevelEditorUI::draw() {
