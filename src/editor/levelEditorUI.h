@@ -1,7 +1,7 @@
 #pragma once
-#include "box.h"
-#include "character.h"
-#include "textProperties.h"
+#include "assets/boxEditor.h"
+#include "assets/characterEditor.h"
+#include "../textProperties.h"
 
 class LevelEditorUI {
 

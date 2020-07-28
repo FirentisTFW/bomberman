@@ -40,23 +40,24 @@ void Level::putAssetOnMap(sf::Vector2f mousePosition, sf::Texture &texture) {
     makeFieldEmpty(posXOnBoard, posYOnBoard);
 
     if (chosenAsset.find("box") != std::string::npos) {
-        boxes.push_back(new Box(1, posXOnBoard, posYOnBoard));
+        boxes.push_back(new BoxEditor(1, posXOnBoard, posYOnBoard));
         boxes[boxes.size()-1]->setTexture(texture);  
+        boxes[boxes.size()-1]->textureId = std::stoi(chosenAsset.substr(4));  
         gameBoard[posYOnBoard][posXOnBoard] = "box";
     }
     else if (chosenAsset.find("wall") != std::string::npos) {
-        boxes.push_back(new Box(0, posXOnBoard, posYOnBoard));
+        boxes.push_back(new BoxEditor(0, posXOnBoard, posYOnBoard));
         boxes[boxes.size() - 1]->setTexture(texture);
+        boxes[boxes.size()-1]->textureId = std::stoi(chosenAsset.substr(5)) + 4;  
         gameBoard[posYOnBoard][posXOnBoard] = "wall";
     }
     else if (chosenAsset.find("character") != std::string::npos) {
         std::string charactersColors = "bgry";
-        removeCharacterFromMap(charactersColors[chosenAsset[10]]);
-        characters.push_back(new Character(false, posXOnBoard, posYOnBoard, charactersColors[chosenAsset[10]]));
+        removeCharacterFromMap(charactersColors[int(chosenAsset[10]) - 48]);
+        characters.push_back(new CharacterEditor(false, posXOnBoard, posYOnBoard, charactersColors[int(chosenAsset[10]) - 48]));
         characters[characters.size() - 1]->setTexture(texture);
         gameBoard[posYOnBoard][posXOnBoard] = "character";
     }
-
 }
 
 void Level::makeFieldEmpty(const int posX, const int posY) {
@@ -100,8 +101,8 @@ void Level::removeCharacterFromPosition(const int _posX, const int _posY) {
 
 void Level::draw() {
     window->draw(background);
-    for(Box* box : boxes)
+    for (BoxEditor *box : boxes)
         window->draw(box->sprite);   
-    for(Character* character : characters)
+    for(CharacterEditor* character : characters)
         window->draw(character->sprite);
 }

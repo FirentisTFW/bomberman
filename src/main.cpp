@@ -2,9 +2,9 @@
 #include "game.h"
 #include "character.h"
 #include "mapLoader.h"
-#include "levelEditorUI.h"
-#include "levelEditorClickEvent.h"
-#include "editorMapHighlight.h"
+#include "editor/levelEditorUI.h"
+#include "editor/levelEditorClickEvent.h"
+#include "editor/editorMapHighlight.h"
 
 int main() {
 

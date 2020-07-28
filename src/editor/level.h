@@ -11,8 +11,9 @@ class Level {
         int backgroundTextureId;
         std::string chosenAsset;
         
-        std::vector<Box *> boxes;
-        std::vector<Character *> characters;
+        std::vector<BoxEditor *> boxes;
+        std::vector<CharacterEditor *> characters;
+        std::vector<int> boxesTexturesIds;
 
         Level(sf::RenderWindow *_window, sf::Texture &_background);
 

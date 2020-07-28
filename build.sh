@@ -8,12 +8,12 @@ while [ $appRunning == 1 ]; do
 
     if [[ $userChoice == 1 ]]; then
         echo -e "\e[93mCompiling and running...\e[39m"
-        g++ -c src/*.cpp -std=c++14 -Werror
+        g++ -c $(find . -type f -iregex ".*\.cpp") -std=c++14 -Werror
         g++ *.o -o bin/Bomberman -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
         ./bin/Bomberman
     elif [[ $userChoice == 2 ]]; then
         echo -e "\e[93mCompiling...\e[39m"
-        g++ -c src/*.cpp -std=c++14 -Werror
+        g++ -c $(find . -type f -iregex ".*\.cpp") -std=c++14 -Werror
         g++ *.o -o bin/Bomberman -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
     elif [[ $userChoice == 3 ]]; then
         ./bin/Bomberman
