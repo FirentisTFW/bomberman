@@ -10,12 +10,12 @@ class Level {
         sf::Sprite background;
         int backgroundTextureId;
         std::string chosenAsset;
+        sf::Texture chosenAssetTexture;
         
         std::vector<BoxEditor *> boxes;
         std::vector<CharacterEditor *> characters;
-        std::vector<int> boxesTexturesIds;
 
-        Level(sf::RenderWindow *_window, sf::Texture &_background);
+        Level(sf::RenderWindow *_window, sf::Texture &_background, sf::Texture &_chosenAssetTexture);
 
         ~Level();
 
@@ -38,6 +38,10 @@ class Level {
         void removeBoxFromPosition(const int _posX, const int _posY);
 
         void removeCharacterFromPosition(const int _posX, const int _posY);
+
+        void putBoxOnMap(const bool isDestroyable, const int _posX, const int _posY, sf::Texture &texture);
+
+        void putCharacterOnMap(const int _posX, const int _posY, sf::Texture &texture);
 
         void draw();
 };

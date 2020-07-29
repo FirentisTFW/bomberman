@@ -1,15 +1,11 @@
 #pragma once
 #include "level.h"
 
-class MapHighlight {
+class MapHighlight : public Object {
 
     public:
 
-        int posX;
-        int posY;
-        sf::RectangleShape rect;
-
-        MapHighlight(const sf::Vector2f mousePosition);
+        MapHighlight(const sf::Vector2f mousePosition, sf::Texture &texture);
 
         ~MapHighlight();
 

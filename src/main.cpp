@@ -19,7 +19,8 @@ int main() {
 
     LevelEditorUI* levelEditorUI = new LevelEditorUI(&window);
 
-    Level* level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0]);
+    sf::Texture &startingAssetTexture = levelEditorUI->getTextureForAsset("box_0");
+    Level *level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0], startingAssetTexture);
 
     while (window.isOpen()) {
 
@@ -44,8 +45,10 @@ int main() {
                                 sf::Texture &textureForBackground = levelEditorUI->getTextureForAsset(clickResult);
                                 level->setBackground(textureForBackground, int(clickResult[11]) - 48);
                             }
-                            else if (clickResult != "map")
+                            else if (clickResult != "map") {
                                 level->assetWasChosen(clickResult);
+                                level->chosenAssetTexture = levelEditorUI->getTextureForAsset(level->chosenAsset);
+                            }
                             else {
                                 sf::Texture &textureForAsset = levelEditorUI->getTextureForAsset(level->chosenAsset);
                                 level->putAssetOnMap(translatedPos, textureForAsset);
@@ -64,7 +67,7 @@ int main() {
         auto mouse_pos = sf::Mouse::getPosition(window);
         auto translated_pos = window.mapPixelToCoords(mouse_pos);
 
-        MapHighlight mapHighlight = MapHighlight(translated_pos);
+        MapHighlight mapHighlight = MapHighlight(translated_pos, level->chosenAssetTexture);
 
         sf::Time time = clock.getElapsedTime();
         clock.restart().asSeconds();
@@ -72,7 +75,7 @@ int main() {
         window.clear();
         levelEditorUI->draw();
         level->draw();
-        window.draw(mapHighlight.rect);
+        window.draw(mapHighlight.sprite);
         window.display();
     }
 

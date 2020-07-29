@@ -7,16 +7,35 @@ LevelSaver::LevelSaver() {
 LevelSaver::~LevelSaver() {}
 
 void LevelSaver::saveLevel(const int backgroundId, const std::vector<BoxEditor *> &boxes, const std::vector<CharacterEditor *> &characters) {
-    mapFile.open("maps/map_2.txt", std::ios::out);
+    int nrOfMap = getNumberOfNextMap();
+    mapFile.open("maps/map_" + std::to_string(nrOfMap) + ".txt", std::ios::out);
     if(mapFile.good()) {
         saveBackground(backgroundId);
         saveBoxes(boxes);
         saveCharacters(characters);
         mapFile.close();
+        updateLevelCounter(nrOfMap);
     }
     else {
         std::cout << "Couldn't open the file!" << std::endl;
     }
+}
+
+int LevelSaver::getNumberOfNextMap() {
+    std::fstream counterFile;
+    counterFile.open("maps/map_counter.txt", std::ios::in);
+    std::string line;
+    getline(counterFile, line);
+    counterFile.close();
+    int counter = std::stoi(line);
+    return counter + 1;
+}
+
+void LevelSaver::updateLevelCounter(int updatedCounter) {
+    std::fstream counterFile;
+    counterFile.open("maps/map_counter.txt", std::ios::out);
+    counterFile << std::to_string(updatedCounter);
+    counterFile.close();
 }
 
 void LevelSaver::saveBackground(const int backgroundId) {

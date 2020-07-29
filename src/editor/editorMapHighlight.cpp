@@ -1,12 +1,12 @@
 #include "editorMapHighlight.h"
 
-MapHighlight::MapHighlight(sf::Vector2f mousePosition) {
-
+MapHighlight::MapHighlight(sf::Vector2f mousePosition, sf::Texture &texture) {
     posX = fixPositionOnMap(mousePosition.x);
     posY = fixPositionOnMap(mousePosition.y);
-
-    if(isCursorOnMap())
+    if(isCursorOnMap()) {
         setRectOnMap();
+        setTexture(texture);
+    }
 }
 
 MapHighlight::~MapHighlight() {}

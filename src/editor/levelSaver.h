@@ -2,19 +2,24 @@
 #include "levelEditorUI.h"
 
 class LevelSaver {
-    
-    public:
+    private:
         std::fstream mapFile;
 
-        LevelSaver();
+        int getNumberOfNextMap();
 
-        ~LevelSaver();
-
-        void saveLevel(const int backgroundId, const std::vector<BoxEditor *> &boxes, const std::vector<CharacterEditor *> &characters);
+        void updateLevelCounter(int updatedCounter);
 
         void saveBackground(const int backgroundId);
 
         void saveBoxes(const std::vector<BoxEditor *> &boxes);
 
         void saveCharacters(const std::vector<CharacterEditor *> &characters);
+
+    public:
+
+        LevelSaver();
+
+        ~LevelSaver();
+
+        void saveLevel(const int backgroundId, const std::vector<BoxEditor *> &boxes, const std::vector<CharacterEditor *> &characters);
 };
