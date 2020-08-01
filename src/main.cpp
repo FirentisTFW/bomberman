@@ -2,9 +2,7 @@
 #include "game.h"
 #include "character.h"
 #include "mapLoader.h"
-#include "editor/levelEditorUI.h"
-#include "editor/levelEditorClickEvent.h"
-#include "editor/editorMapHighlight.h"
+#include "editor/levelEditorEventChecker.h"
 
 int main() {
 
@@ -26,48 +24,14 @@ int main() {
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-
-            if (event.type == sf::Event::MouseButtonPressed) {
-                auto mousePos = sf::Mouse::getPosition(window);
-                auto translatedPos = window.mapPixelToCoords(mousePos);
-
-                LevelEditorClickEvent eventCheck = LevelEditorClickEvent(event, levelEditorUI, level);
-
-                if(event.mouseButton.button == sf::Mouse::Left) {
-                    if (levelEditorUI->exitButton.getGlobalBounds().contains(translatedPos))
-                        window.close();
-                    else {
-                        std::string clickResult = eventCheck.checkMouseClick(translatedPos);
-                        if (clickResult != "0") {
-                            if(clickResult.find("background") != std::string::npos) {
-                                sf::Texture &textureForBackground = levelEditorUI->getTextureForAsset(clickResult);
-                                level->setBackground(textureForBackground, int(clickResult[11]) - 48);
-                            }
-                            else if (clickResult != "map") {
-                                level->assetWasChosen(clickResult);
-                                level->chosenAssetTexture = levelEditorUI->getTextureForAsset(level->chosenAsset);
-                            }
-                            else {
-                                sf::Texture &textureForAsset = levelEditorUI->getTextureForAsset(level->chosenAsset);
-                                level->putAssetOnMap(translatedPos, textureForAsset);
-                                std::cout << "Put " << level->chosenAsset << " on the map!" << std::endl;
-                            }
-                        }
-                    }
-                }
-                else if (event.mouseButton.button == sf::Mouse::Right) {
-                    if(eventCheck.isClickOnMap())
-                        level->makeFieldEmpty(translatedPos.x/50, translatedPos.y/50);
-                }
-            }
+            LevelEditorEventChecker eventChecker(event, levelEditorUI, level);
+            eventChecker.checkEvent(window);
         }
 
-        auto mouse_pos = sf::Mouse::getPosition(window);
-        auto translated_pos = window.mapPixelToCoords(mouse_pos);
+        auto mousePos = sf::Mouse::getPosition(window);
+        auto translatedPos = window.mapPixelToCoords(mousePos);
 
-        MapHighlight mapHighlight = MapHighlight(translated_pos, level->chosenAssetTexture);
+        MapHighlight mapHighlight = MapHighlight(translatedPos, level->chosenAssetTexture);
 
         sf::Time time = clock.getElapsedTime();
         clock.restart().asSeconds();

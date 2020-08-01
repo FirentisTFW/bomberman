@@ -45,22 +45,18 @@ bool LevelEditorClickEvent::checkClickOnButtons() {
 }
 
 std::string LevelEditorClickEvent::checkClickOnAssets() {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
         if (ui->boxes[i].getGlobalBounds().contains(mousePosition))
             return "box_" + std::to_string(i);
-    }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
         if (ui->walls[i].getGlobalBounds().contains(mousePosition)) 
             return "wall_" + std::to_string(i);
-    }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
         if (ui->characters[i].getGlobalBounds().contains(mousePosition))
             return "character_" + std::to_string(i);
-    }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
         if (ui->backgrounds[i].getGlobalBounds().contains(mousePosition)) 
             return "background_" + std::to_string(i);
-    }
     return "0";
 }
 

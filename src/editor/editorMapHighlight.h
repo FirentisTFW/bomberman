@@ -2,6 +2,12 @@
 #include "level.h"
 
 class MapHighlight : public Object {
+    private:
+        int fixPositionOnMap(int position);
+
+        bool isCursorOnMap();
+
+        void setRectOnMap();
 
     public:
 
@@ -9,9 +15,4 @@ class MapHighlight : public Object {
 
         ~MapHighlight();
 
-        int fixPositionOnMap(int position);
-
-        bool isCursorOnMap();
-
-        void setRectOnMap();
 };

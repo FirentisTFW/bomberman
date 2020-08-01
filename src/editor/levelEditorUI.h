@@ -4,14 +4,12 @@
 #include "../textProperties.h"
 
 class LevelEditorUI {
-
-    public:
-        sf::RenderWindow* window;              
+    private:
+        sf::RenderWindow *window;
+        sf::Font font;
 
         sf::Texture sideBarTexture;
         sf::Sprite sideBar;
-
-        sf::Font font;
 
         sf::Text backgroundsText;
         sf::Text boxesText;
@@ -21,6 +19,24 @@ class LevelEditorUI {
         sf::Text save;
         sf::Text reset;
         sf::Text exit;
+
+        void loadTextures();
+
+        void loadFont();
+
+        void loadTexts();
+
+        void loadButtons();
+
+        void loadBackgrounds();
+
+        void loadBoxes();
+
+        void loadWalls();
+
+        void loadCharacters();
+
+    public:
         sf::RectangleShape saveButton;
         sf::RectangleShape resetButton;
         sf::RectangleShape exitButton;
@@ -39,22 +55,6 @@ class LevelEditorUI {
         LevelEditorUI(sf::RenderWindow* _window);
 
         ~LevelEditorUI();
-
-        void loadTextures();
-
-        void loadFont();
-
-        void loadTexts();
-
-        void loadButtons();
-
-        void loadBackgrounds();
-
-        void loadBoxes();
-
-        void loadWalls();
-
-        void loadCharacters();
 
         sf::Texture& getTextureForAsset(std::string asset);
 
