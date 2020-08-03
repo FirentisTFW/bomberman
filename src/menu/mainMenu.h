@@ -11,9 +11,13 @@ class MainMenu {
         sf::Text title;
         std::array<sf::Text, 6> buttonsTexts;
 
-        void setBackground(sf::Texture &_background);
+        static std::array<std::string, 6> stringsForButtonsTexts;
+
+        void setBackground();
 
         void loadFont();
+
+        void loadTitle();
 
         void loadTexts();
 
@@ -22,10 +26,11 @@ class MainMenu {
     public:
         std::array<sf::RectangleShape, 6> buttons;
 
-        MainMenu(sf::RenderWindow* _window);
+        MainMenu(sf::RenderWindow *_window);
 
         ~MainMenu();
 
-        void draw();
+        void setBackgroundTexture();
 
+        void draw();
 };

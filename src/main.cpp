@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "menu/mainMenu.h"
 #include "game.h"
 #include "character.h"
 #include "mapLoader.h"
@@ -20,26 +21,29 @@ int main() {
     sf::Texture &startingAssetTexture = levelEditorUI->getTextureForAsset("box_0");
     Level *level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0], startingAssetTexture);
 
+    MainMenu mainMenu = MainMenu(&window);
+
     while (window.isOpen()) {
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            LevelEditorEventChecker eventChecker(event, levelEditorUI, level);
-            eventChecker.checkEvent(window);
+            if (event.type == sf::Event::Closed)
+                window.close();
         }
 
-        auto mousePos = sf::Mouse::getPosition(window);
-        auto translatedPos = window.mapPixelToCoords(mousePos);
+        // auto mousePos = sf::Mouse::getPosition(window);
+        // auto translatedPos = window.mapPixelToCoords(mousePos);
 
-        MapHighlight mapHighlight = MapHighlight(translatedPos, level->chosenAssetTexture);
+        // MapHighlight mapHighlight = MapHighlight(translatedPos, level->chosenAssetTexture);
 
         sf::Time time = clock.getElapsedTime();
         clock.restart().asSeconds();
 
         window.clear();
-        levelEditorUI->draw();
-        level->draw();
-        window.draw(mapHighlight.sprite);
+        // levelEditorUI->draw();
+        // level->draw();
+        // window.draw(mapHighlight.sprite);
+        mainMenu.draw();
         window.display();
     }
 
