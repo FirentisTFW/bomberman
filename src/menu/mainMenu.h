@@ -21,6 +21,8 @@ class MainMenu {
 
         void loadTexts();
 
+        void centerTextInButtons();
+
         void loadButtons();
 
     public:

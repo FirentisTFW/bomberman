@@ -33,14 +33,21 @@ void MainMenu::loadTitle() {
 void MainMenu::loadTexts() {
     for(int i = 0; i < 6; i++) {
         buttonsTexts[i] = sf::Text(stringsForButtonsTexts[i], font);
-        textProperties::setProperties(buttonsTexts[i], 50, 260, 270 + i * 85);
+        textProperties::setProperties(buttonsTexts[i], 50, 0, 270 + i * 85);
         textProperties::setLetterSpacing(buttonsTexts[i], 3);
-        std::string currentText = buttonsTexts[i].getString();
-        buttonsTexts[i].setPosition((buttons[i].getPosition().x + buttons[i].getSize().x + (i % 2 == 0 ? 34 : 50)) /2 
-        - currentText.length() * 4.5, 
-        buttonsTexts[i].getPosition().y);
     }
+    centerTextInButtons();
 }
+
+void MainMenu::centerTextInButtons() {
+    buttonsTexts[0].setPosition(288, buttonsTexts[0].getPosition().y);
+    buttonsTexts[1].setPosition(306, buttonsTexts[1].getPosition().y);
+    buttonsTexts[2].setPosition(262, buttonsTexts[2].getPosition().y);
+    buttonsTexts[3].setPosition(288, buttonsTexts[3].getPosition().y);
+    buttonsTexts[4].setPosition(352, buttonsTexts[4].getPosition().y);
+    buttonsTexts[5].setPosition(426, buttonsTexts[5].getPosition().y);
+}
+
 void MainMenu::loadButtons() { 
     for(int i = 0; i < 6; i++) {
         buttons[i].setPosition(i%2 == 0 ? 87 : 200, 273 + i * 85);  
@@ -55,8 +62,8 @@ void MainMenu::setBackgroundTexture() {
 void MainMenu::draw() {
     window->draw(background);
     window->draw(title);
-    for(sf::RectangleShape button : buttons)
-        window->draw(button);
+    // for(sf::RectangleShape button : buttons)
+    //     window->draw(button);
     for(sf::Text text : buttonsTexts)
         window->draw(text);
 }
