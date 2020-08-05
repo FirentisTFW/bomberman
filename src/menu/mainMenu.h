@@ -34,5 +34,7 @@ class MainMenu {
 
         void setBackgroundTexture();
 
+        std::array<sf::Text, 6>& getButtonsTexts();
+
         void draw();
 };

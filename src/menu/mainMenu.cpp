@@ -59,6 +59,10 @@ void MainMenu::setBackgroundTexture() {
     backgroundTexture.loadFromFile("images/UI/main_menu.png");
 }
 
+std::array<sf::Text, 6>& MainMenu::getButtonsTexts() {
+    return buttonsTexts;
+}
+
 void MainMenu::draw() {
     window->draw(background);
     window->draw(title);

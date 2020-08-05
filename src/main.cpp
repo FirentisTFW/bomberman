@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "menu/mainMenu.h"
+#include "menu/mainMenuNavigation.h"
+#include "menu/mainMenuEventHandler.h"
 #include "game.h"
 #include "character.h"
 #include "mapLoader.h"
@@ -22,6 +24,7 @@ int main() {
     Level *level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0], startingAssetTexture);
 
     MainMenu mainMenu = MainMenu(&window);
+    MainMenuNavigation menuNavigation = MainMenuNavigation(&window, mainMenu.getButtonsTexts());
 
     while (window.isOpen()) {
 
@@ -29,6 +32,8 @@ int main() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            MainMenuEventHandler eventHandler = MainMenuEventHandler(event, &menuNavigation);
         }
 
         // auto mousePos = sf::Mouse::getPosition(window);
@@ -44,6 +49,7 @@ int main() {
         // level->draw();
         // window.draw(mapHighlight.sprite);
         mainMenu.draw();
+        menuNavigation.drawSelection();
         window.display();
     }
 
