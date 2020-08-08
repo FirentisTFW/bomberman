@@ -5,6 +5,7 @@ class MainMenuEventHandler {
     private:
         sf::Event event;
         MainMenuNavigation* navigation;
+        std::string result;
 
         void handleEvent();
         
@@ -12,5 +13,7 @@ class MainMenuEventHandler {
         MainMenuEventHandler(sf::Event &_event, MainMenuNavigation* _navigation);
 
         ~MainMenuEventHandler();
+
+        std::string getResult();
 
 };

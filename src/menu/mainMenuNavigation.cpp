@@ -32,24 +32,23 @@ bool MainMenuNavigation::selectionStillInRange(const int selectionNumber) {
     return selectionNumber >= 0 && selectionNumber < buttonsTexts.size();
 }
 
-void MainMenuNavigation::selectOption() {
+std::string MainMenuNavigation::getSelectedOption() {
     switch(selectedOption) {
         case(0):
-            break;
+            return "new";
         case(1):
-            break;
+            return "load";
         case(2):
-            break;
+            return "editor";
         case(3):
-            break;
+            return "highscores";
         case(4):
-            break;
+            return "credits";
         case(5):
-            break;
+            return "exit";
         default:
-            break;
+            return "";
     }
-    std::cout << "Selected option: " << selectedOption << std::endl;
 }
 
 void MainMenuNavigation::drawSelection() {

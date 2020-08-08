@@ -3,6 +3,7 @@
 MainMenuEventHandler::MainMenuEventHandler(sf::Event &_event, MainMenuNavigation* _navigation) {
     event = _event;
     navigation = _navigation;
+    result = "";
 
     handleEvent();
 }
@@ -16,6 +17,10 @@ void MainMenuEventHandler::handleEvent() {
         else if(event.key.code == sf::Keyboard::Down)
             navigation->down();
         else if(event.key.code == sf::Keyboard::Return)
-            navigation->selectOption();
+            result = navigation->getSelectedOption();
     }
+}
+
+std::string MainMenuEventHandler::getResult() {
+    return result;
 }

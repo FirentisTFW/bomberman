@@ -7,6 +7,19 @@
 #include "mapLoader.h"
 #include "editor/levelEditorEventChecker.h"
 
+void handleMenuResult(const std::string result, sf::RenderWindow &window, LevelEditorUI* &levelEditorUI, Level* &level) {
+    if(result == "new") {
+        
+    }
+    else if(result == "editor") {
+        levelEditorUI = new LevelEditorUI(&window);
+        level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0], levelEditorUI->getTextureForAsset("box_0"));
+    }
+    else if(result == "exit") {
+        // window.close();
+    }
+}
+
 int main() {
 
     sf::VideoMode vm(1000, 800);									// create window
@@ -18,10 +31,16 @@ int main() {
 
     srand(time(NULL));                                          // for RNG
 
-    LevelEditorUI* levelEditorUI = new LevelEditorUI(&window);
+    std::string currentScreen = "menu";
 
-    sf::Texture &startingAssetTexture = levelEditorUI->getTextureForAsset("box_0");
-    Level *level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0], startingAssetTexture);
+    // LevelEditorUI *levelEditorUI = new LevelEditorUI(&window);
+
+    LevelEditorUI *levelEditorUI;
+
+    // sf::Texture &startingAssetTexture = levelEditorUI->getTextureForAsset("box_0");
+    // Level *level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0], startingAssetTexture);
+
+    Level *level;
 
     MainMenu mainMenu = MainMenu(&window);
     MainMenuNavigation menuNavigation = MainMenuNavigation(&window, mainMenu.getButtonsTexts());
@@ -34,22 +53,29 @@ int main() {
                 window.close();
 
             MainMenuEventHandler eventHandler = MainMenuEventHandler(event, &menuNavigation);
+            std::string menuEventResult = eventHandler.getResult();
+            handleMenuResult(menuEventResult, window, levelEditorUI, level);
+            if (menuEventResult != "")
+                currentScreen = menuEventResult;
         }
 
-        // auto mousePos = sf::Mouse::getPosition(window);
-        // auto translatedPos = window.mapPixelToCoords(mousePos);
-
-        // MapHighlight mapHighlight = MapHighlight(translatedPos, level->chosenAssetTexture);
+        auto mousePos = sf::Mouse::getPosition(window);
+        auto translatedPos = window.mapPixelToCoords(mousePos);
 
         sf::Time time = clock.getElapsedTime();
         clock.restart().asSeconds();
 
         window.clear();
-        // levelEditorUI->draw();
-        // level->draw();
-        // window.draw(mapHighlight.sprite);
-        mainMenu.draw();
-        menuNavigation.drawSelection();
+        if(currentScreen == "menu") {
+            mainMenu.draw();
+            menuNavigation.drawSelection();
+        }
+        else if (currentScreen == "editor") {
+            levelEditorUI->draw();
+            level->draw();
+            MapHighlight mapHighlight = MapHighlight(translatedPos, level->chosenAssetTexture);
+            window.draw(mapHighlight.sprite);
+        }
         window.display();
     }
 

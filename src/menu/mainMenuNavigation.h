@@ -9,6 +9,8 @@ class MainMenuNavigation {
 
         void setSelectionColor();
 
+        bool selectionStillInRange(const int selectionNumber);
+
     public:
         MainMenuNavigation(sf::RenderWindow *_window, std::array<sf::Text, 6> _buttonsTexts);
 
@@ -18,9 +20,7 @@ class MainMenuNavigation {
 
         void down();
 
-        bool selectionStillInRange(const int selectionNumber);
-
-        void selectOption();
+        std::string getSelectedOption();
 
         void drawSelection();
 };
