@@ -16,7 +16,7 @@ void handleMenuResult(const std::string result, sf::RenderWindow &window, LevelE
         level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0], levelEditorUI->getTextureForAsset("box_0"));
     }
     else if(result == "exit") {
-        // window.close();
+        window.close();
     }
 }
 
@@ -33,12 +33,7 @@ int main() {
 
     std::string currentScreen = "menu";
 
-    // LevelEditorUI *levelEditorUI = new LevelEditorUI(&window);
-
     LevelEditorUI *levelEditorUI;
-
-    // sf::Texture &startingAssetTexture = levelEditorUI->getTextureForAsset("box_0");
-    // Level *level = new Level(&window, levelEditorUI->backgroundsTexturesFullSize[0], startingAssetTexture);
 
     Level *level;
 
@@ -49,14 +44,20 @@ int main() {
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
+            // if (event.type == sf::Event::Closed)
+            //     window.close();
 
-            MainMenuEventHandler eventHandler = MainMenuEventHandler(event, &menuNavigation);
-            std::string menuEventResult = eventHandler.getResult();
-            handleMenuResult(menuEventResult, window, levelEditorUI, level);
-            if (menuEventResult != "")
-                currentScreen = menuEventResult;
+            if(currentScreen == "menu") {
+                MainMenuEventHandler eventHandler = MainMenuEventHandler(event, &menuNavigation);
+                std::string menuEventResult = eventHandler.getResult();
+                handleMenuResult(menuEventResult, window, levelEditorUI, level);
+                if (menuEventResult != "")
+                    currentScreen = menuEventResult;
+            }
+            else if(currentScreen == "editor"){
+                LevelEditorEventChecker eventChecker(event, levelEditorUI, level);
+                eventChecker.checkEvent(window);
+            }
         }
 
         auto mousePos = sf::Mouse::getPosition(window);
