@@ -35,7 +35,7 @@ bool MainMenuNavigation::selectionStillInRange(const int selectionNumber) {
 std::string MainMenuNavigation::getSelectedOption() {
     switch(selectedOption) {
         case(0):
-            return "new";
+            return "game";
         case(1):
             return "load";
         case(2):

@@ -2,14 +2,15 @@
 #include "menu/mainMenu.h"
 #include "menu/mainMenuNavigation.h"
 #include "menu/mainMenuEventHandler.h"
-#include "game.h"
-#include "character.h"
-#include "mapLoader.h"
+// #include "game.h"
+// #include "character.h"
+// #include "mapLoader.h"
+#include "gameExecutor.h"
 #include "editor/levelEditorEventChecker.h"
 
-void handleMenuResult(const std::string result, sf::RenderWindow &window, LevelEditorUI* &levelEditorUI, Level* &level) {
-    if(result == "new") {
-        
+void handleMenuResult(const std::string result, sf::RenderWindow &window, LevelEditorUI* &levelEditorUI, Level* &level, GameExecutor* &gameExecutor) {
+    if(result == "game") {
+        gameExecutor = new GameExecutor(&window);
     }
     else if(result == "editor") {
         levelEditorUI = new LevelEditorUI(&window);
@@ -33,12 +34,13 @@ int main() {
 
     std::string currentScreen = "menu";
 
-    LevelEditorUI *levelEditorUI;
-
-    Level *level;
-
     MainMenu mainMenu = MainMenu(&window);
     MainMenuNavigation menuNavigation = MainMenuNavigation(&window, mainMenu.getButtonsTexts());
+
+    LevelEditorUI *levelEditorUI;
+    Level *level;
+
+    GameExecutor *gameExecutor;
 
     while (window.isOpen()) {
 
@@ -50,13 +52,16 @@ int main() {
             if(currentScreen == "menu") {
                 MainMenuEventHandler eventHandler = MainMenuEventHandler(event, &menuNavigation);
                 std::string menuEventResult = eventHandler.getResult();
-                handleMenuResult(menuEventResult, window, levelEditorUI, level);
+                handleMenuResult(menuEventResult, window, levelEditorUI, level, gameExecutor);
                 if (menuEventResult != "")
                     currentScreen = menuEventResult;
             }
-            else if(currentScreen == "editor"){
+            else if(currentScreen == "editor") {
                 LevelEditorEventChecker eventChecker(event, levelEditorUI, level);
                 eventChecker.checkEvent(window);
+            }
+            else if(currentScreen == "game") {
+                gameExecutor->handleEvent(event);
             }
         }
 
@@ -67,6 +72,11 @@ int main() {
         clock.restart().asSeconds();
 
         window.clear();
+
+        if (currentScreen == "game") {
+            gameExecutor->updateGame(event);
+        }
+
         if(currentScreen == "menu") {
             mainMenu.draw();
             menuNavigation.drawSelection();
@@ -76,6 +86,10 @@ int main() {
             level->draw();
             MapHighlight mapHighlight = MapHighlight(translatedPos, level->chosenAssetTexture);
             window.draw(mapHighlight.sprite);
+        }
+         else if(currentScreen == "game") {
+            gameExecutor->draw();
+            // game->draw();
         }
         window.display();
     }

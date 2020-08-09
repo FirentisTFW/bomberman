@@ -62,6 +62,6 @@ void LevelEditorEventChecker::clickOnAsset(const std::string clickResult) {
 
 void LevelEditorEventChecker::clickOnMap(const std::string clickResult, const sf::Vector2<float> &mousePos) {
     sf::Texture &textureForAsset = ui->getTextureForAsset(level->chosenAsset);
-    level->putAssetOnMap(mousePos, textureForAsset);
+    level->putAssetOnMap(mousePos, ui->getTextureForAsset(level->chosenAsset));
     std::cout << "Put " << level->chosenAsset << " on the map!" << std::endl;
 }
