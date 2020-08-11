@@ -8,7 +8,10 @@ GameExecutor::GameExecutor(sf::RenderWindow *_window) {
     game = new Game(_window, player);
     std::cout << game->gameTime[0] << std::endl;
     game->gameUI = new GameUI(player->lives, player->color);
-    mapLoader::loadMap(game->boxes, game->characters, game->boxesTextures, game->charactersTextures);
+    MapLoader mapLoader;
+    mapLoader.loadMap(game->boxes, game->characters, game->boxesTextures, game->charactersTextures, game->backgroundTexture);
+    game->loadBackground();
+    game->characters[0]->isHuman = true;
 }
 
 GameExecutor::~GameExecutor() {}
@@ -28,9 +31,6 @@ void GameExecutor::updateGame(sf::Event &event) {
         if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again
             game->updateCharacterMovementFramerate();
     }
-
-    // sf::Time time = clock.getElapsedTime();
-    // clock.restart().asSeconds();
 }
 
 void GameExecutor::draw() {

@@ -30,11 +30,11 @@ void Game::loadTextures() {
     charactersTextures[2].loadFromFile("images/characters/character_3.png");
     charactersTextures[3].loadFromFile("images/characters/character_4.png");
 
-    for (int i = 1; i < 6; i++)
+    for (int i = 1; i < 5; i++)
         boxesTextures[i - 1].loadFromFile("images/boxes/box_" + std::to_string(i) + ".png");
 
     for (int i = 1; i < 5; i++)
-        boxesTextures[i + 4].loadFromFile("images/boxes/stone_wall_" + std::to_string(i) + ".png");
+        boxesTextures[i + 3].loadFromFile("images/boxes/stone_wall_" + std::to_string(i) + ".png");
 
     bombTexture.loadFromFile("images/weapons_effects/bomb.png");
     explosionTexture.loadFromFile("images/weapons_effects/explosion.png");
@@ -57,6 +57,11 @@ void Game::loadTextures() {
     bonusesTextures[8].loadFromFile("images/bonuses/b_digged_bomb.png");
 
     // ~ LOADING TEXTURES
+}
+
+void Game::loadBackground() {
+    background.setTexture(backgroundTexture);
+    background.setPosition(0, 0);
 }
 
 void Game::updateGameTime() {

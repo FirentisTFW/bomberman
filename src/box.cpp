@@ -10,4 +10,4 @@ Box::Box(bool _isDestroyable, int _posX, int _posY) {
     rect.setFillColor(sf::Color::Red);
 }
 
-Box::~Box() {};
+Box::~Box() {}

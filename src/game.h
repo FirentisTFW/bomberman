@@ -45,6 +45,8 @@ public:
 
     void loadTextures();                                           // load textures in the beginning of the game
 
+    void loadBackground();
+
     void updateGameTime();
 
     void updateCharacterMovementFramerate();                       // function called every frame for character movement to work properly
