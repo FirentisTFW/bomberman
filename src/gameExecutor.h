@@ -2,6 +2,7 @@
 #include "game.h"
 #include "character.h"
 #include "mapLoader.h"
+#include "gameEventHandler.h"
 
 class GameExecutor {
     private:

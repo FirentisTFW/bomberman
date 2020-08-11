@@ -397,6 +397,14 @@ void Game::addScoreToCharacter(const char color, const int scoreToAdd) {
     }
 }
 
+void Game::pauseOrUnpauseGame() {
+    if (!isGamePaused)
+        isGamePaused = true;
+    else
+        isGamePaused = false;
+    std::cout << "Game paused/unpaused" << std::endl;
+}
+
 void Game::showGameBoard() {
 
     for(int i=0; i<16; i++) {                           // print an array
@@ -407,7 +415,6 @@ void Game::showGameBoard() {
     }
     std::cout << std::endl << std::endl;
 }
-
 void Game::draw() {
 
     window->draw(background);

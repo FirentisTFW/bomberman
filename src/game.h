@@ -10,7 +10,6 @@
 #include "gameUI.h"
 
 class Game {
-    
 public:
     sf::RenderWindow* window;                                   // passing window by pointer here to avoid drawing objects in main file
     GameUI* gameUI;
@@ -72,8 +71,11 @@ public:
 
     void addScoreToCharacter(const char color, const int scoreToAdd);           // when object (boc, character) is destroyed -> function finds out who destryoed it and icreases its score
 
+    void pauseOrUnpauseGame();
+
     void showGameBoard();
 
     void draw();                                                // draw objects on the screen
+
 };  // Game
 
