@@ -20,6 +20,8 @@ Icon::Icon(int _posX, int _posY, char _color, sf::Texture &_texture, sf::Font &f
     counter.setPosition(rect.getPosition().x + 35, rect.getPosition().y -3);
 }
 
+Icon::~Icon() {}
+
 void Icon::updatePosition(int _posX, int _posY, int _counter) {
     posX = _posX;
     posY = _posY;

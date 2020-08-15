@@ -297,8 +297,10 @@ void Game::updateBombsOnBoard() {
 void Game::updateIconsOnBoard() {
     int iconsSize = specialWeaponsIcons.size();
     for (int i = 0; i < iconsSize; i++) {
+        bool isOwnerStillAlive = false;
         for(Character* character : characters) {
             if(character->color == specialWeaponsIcons[i]->color) {                 // icon belongs to this character
+                isOwnerStillAlive = true;
                 if(character->specialWeaponCounter == 0) {
                     specialWeaponsIcons.erase(specialWeaponsIcons.begin()+i);
                     i--;
@@ -309,7 +311,12 @@ void Game::updateIconsOnBoard() {
                 break;
             }
         }
-    }
+        if(!isOwnerStillAlive) {
+            specialWeaponsIcons.erase(specialWeaponsIcons.begin() + i);
+            i--;
+            iconsSize--;
+        }
+    }   
 }
 
 void Game::updateAnimationsOnBoard() {

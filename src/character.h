@@ -42,9 +42,17 @@ public:
 
     void shouldCharacterMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs); // check if enough frames passed without move so character can be finally moved on the map
 
-    bool isMovePossible(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs); // collision check
+    bool isMovePossible(const int posX, const int posY, char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs); // collision check
+
+    bool isMoveSafe(const int posX, const int posY, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
 
     void move(char direction);
+
+    int getSuggestedXPosition(const char direction);
+
+    int getSuggestedYPosition(const char direction);
+
+    bool didCharacterPushBomb(const int posX, const int posY, std::vector<Bomb *> &bombs, char direction, std::array<std::array<std::string, 16>, 16> &gameBoard);
 
     void placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &bombTexture, std::array<sf::Texture, 2> &specialWeaponsTextures);
 
