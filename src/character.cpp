@@ -91,8 +91,17 @@ bool Character::isMovePossible(const int posX, const int posY, char direction, s
 }
 
 bool Character::isMoveSafe(const int posX, const int posY, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
-    // TODO: check bombs which are about to explode
-    return gameBoard[posY][posX] != "explosion" && gameBoard[posY][posX] != "fire";
+    if (gameBoard[posY][posX] == "explosion" || gameBoard[posY][posX] == "fire")
+        return false;
+
+    std::vector<int> bombsPositionsVertical = AiBombChecker::getPositionOfClosestBombsVertical(posX, posY, gameBoard);
+    std::vector<int> bombsPositionsHorizontal = AiBombChecker::getPositionOfClosestBombsHorizontal(posX, posY, gameBoard);
+
+    // check bombs and their ranges
+    bool isVerticalSafe = AiBombChecker::isVerticalDirectionSafe(posX, posY, bombsPositionsVertical, bombs);
+    bool isHorizontalSafe = AiBombChecker::isHorizontalDirectionSafe(posX, posY, bombsPositionsHorizontal, bombs);
+
+    return isVerticalSafe && isHorizontalSafe;
 }
 
 void Character::move(char direction) {

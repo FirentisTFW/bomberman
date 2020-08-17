@@ -6,6 +6,7 @@
 #include "box.h"
 #include "specialWeapon.h"
 #include "specialWeaponIcon.h"
+#include "aiBombChecker.h"
 
 class Character: public Object {
 

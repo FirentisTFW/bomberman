@@ -17,5 +17,4 @@ class Ai {
 
         static bool isMovePossible(const int posX, const int posY, const std::array<std::array<std::string, 16>, 16> &gameBoard);
 
-        // static bool canCharacterPlaceBomb(const int availableBombs);
 };
