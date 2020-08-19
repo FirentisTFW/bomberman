@@ -41,6 +41,8 @@ public:
     Character(bool isHuman, int _posX, int _posY, char _color);
     ~Character();
 
+    void updateAnimationIfNeeded();
+
     void tryToMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
 
     bool shouldCharacterMove(char direction); // check if enough frames passed without move so character can be finally moved on the map
@@ -49,7 +51,11 @@ public:
 
     int getDangerOfMove(const int posX, const int posY, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
 
+    int getDangerOfCurrentPosition(std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
+
     void move(char direction);
+
+    bool didCharacterMove(const int expectedXPos, const int expectedYPos);
 
     int getSuggestedXPosition(const char direction);
 

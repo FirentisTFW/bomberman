@@ -91,9 +91,9 @@ void Game::updateGameBoard() {
             gameBoard[i][j] = "0";
         }
     }
-    updateExplosionsOnBoard();
-
     updateBonusesOnBoard();
+
+    updateExplosionsOnBoard();
 
     updateSpecialWeaponsOnBoard();
 

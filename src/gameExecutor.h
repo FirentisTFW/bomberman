@@ -3,7 +3,7 @@
 #include "character.h"
 #include "mapLoader.h"
 #include "gameEventHandler.h"
-#include "ai.h"
+#include "aiMovement.h"
 
 class GameExecutor {
     private:

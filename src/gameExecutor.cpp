@@ -26,10 +26,9 @@ void GameExecutor::updateGame(sf::Event &event) {
         game->updateGameTime();
         game->updateGameBoard();
         game->updateAnimationsOnBoard();
-        Ai::createCharactersMovement(game->characters, game->gameBoard, game->bombs);
+        AiMovement::createCharactersMovement(game->characters, game->gameBoard, game->bombs);
         Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard, game->explosionTexture);
         Explosion::checkForInactiveExplosions(game->explosions);
-        // if (event.type != sf::Event::KeyPressed)        // if player pressed a key during this frame, the framerate was already updated, don't do it again
         game->updateCharacterMovementFramerate();
     }
 }

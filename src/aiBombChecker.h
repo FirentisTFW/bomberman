@@ -10,6 +10,4 @@ class AiBombChecker {
         static int getVerticalDirectionDanger(const int posX, const int posY, const std::vector<int> bombsPositionsVertical, const std::vector<Bomb *> &bombs);
 
         static int getHorizontalDirectionDanger(const int posX, const int posY, const std::vector<int> bombsPositionsHorizontal, const std::vector<Bomb *> &bombs);
-
-        static int getSafetyOfMove(const int posX, const int posY, const std::vector<int> bombsPositionsVertical, const std::vector<int> bombsPositionsHorizontal, const std::vector<Bomb *> &bombs);
 };

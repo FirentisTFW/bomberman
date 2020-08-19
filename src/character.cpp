@@ -44,9 +44,19 @@ Character::~Character() {}
 
 // ------------------------------------------ METHODS -------------------------------------------------
 
+void Character::updateAnimationIfNeeded() {
+    if (animationTimer >= 3) {
+        animationTimer = 0;
+        sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
+        animationCounter++;
+        if(animationCounter >= 4)
+            animationCounter = 0;
+    }
+}
 
 void Character::tryToMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
     if(shouldCharacterMove(direction)) {
+        updateAnimationIfNeeded();
         const int newXPosition = getSuggestedXPosition(direction);
         const int newYPosition = getSuggestedYPosition(direction);
         if (isMovePossible(newXPosition, newYPosition, direction, gameBoard, bombs)) {
@@ -56,32 +66,19 @@ void Character::tryToMove(char direction, std::array<std::array<std::string, 16>
                 int dangerOfMove = getDangerOfMove(newXPosition, newYPosition, gameBoard, bombs);
                 if (dangerOfMove <= 0)
                     move(direction);
-                else {
-                    std::cout << dangerOfMove << std::endl;
-                    // add danger of move to the list
-                }
             }
         }
     }
+    lastTriedDirection = direction;
 }
 
 bool Character::shouldCharacterMove(char direction) {
     if (frozen)                                               // character can't move if frozen by another character
         return false;                                  
-    if(animationTimer >= 3) {
-        animationTimer = 0;
-        sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
-        animationCounter++;
-        if(animationCounter >= 4)
-            animationCounter = 0;
-    }
-
     if(lastDirection != direction && isHuman)                 // player can change directions whenever he wants because he won't do it as fast as computer
         return true;
     if(howManyFramesAfterMove >= Character::movementSpeedFramerate[speed-1])
         return true;
-
-    lastTriedDirection = direction;
     return false;
 }
 
@@ -97,6 +94,8 @@ bool Character::isMovePossible(const int posX, const int posY, char direction, s
 }
 
 int Character::getDangerOfMove(const int posX, const int posY, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
+    if(!isPositionOnTheMap(posX, posY))
+        return 200;
     if (gameBoard[posY][posX] == "explosion" || gameBoard[posY][posX] == "fire")
         return 100;
 
@@ -108,6 +107,10 @@ int Character::getDangerOfMove(const int posX, const int posY, std::array<std::a
     int horizontalDanger = AiBombChecker::getHorizontalDirectionDanger(posX, posY, bombsPositionsHorizontal, bombs);
 
     return std::max(verticalDanger, horizontalDanger);
+}
+
+int Character::getDangerOfCurrentPosition(std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs) {
+    return getDangerOfMove(posX, posY, gameBoard, bombs);
 }
 
 void Character::move(char direction) {
@@ -151,6 +154,10 @@ void Character::move(char direction) {
     sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
     lastDirection = direction;
     howManyFramesAfterMove = 0;
+}
+
+bool Character::didCharacterMove(const int expectedXPos, const int expectedYPos) {
+    return posX == expectedXPos && posY == expectedYPos;
 }
 
 int Character::getSuggestedXPosition(char direction) {

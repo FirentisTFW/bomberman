@@ -63,9 +63,3 @@ int AiBombChecker::getHorizontalDirectionDanger(const int posX, const int posY, 
     }
     return danger;
 }
-
-int AiBombChecker::getSafetyOfMove(const int posX, const int posY, const std::vector<int> bombsPositionsVertical, const std::vector<int> bombsPositionsHorizontal, const std::vector<Bomb *> &bombs) {
-    // calculate safety
-
-    return 1;
-}
