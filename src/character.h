@@ -41,11 +41,13 @@ public:
     Character(bool isHuman, int _posX, int _posY, char _color);
     ~Character();
 
-    void shouldCharacterMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs); // check if enough frames passed without move so character can be finally moved on the map
+    void tryToMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
+
+    bool shouldCharacterMove(char direction); // check if enough frames passed without move so character can be finally moved on the map
 
     bool isMovePossible(const int posX, const int posY, char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs); // collision check
 
-    bool isMoveSafe(const int posX, const int posY, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
+    int getDangerOfMove(const int posX, const int posY, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
 
     void move(char direction);
 

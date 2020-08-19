@@ -34,26 +34,38 @@ std::vector<int> AiBombChecker::getPositionOfClosestBombsHorizontal(const int po
     return bombsPositions;
 }
 
-bool AiBombChecker::isVerticalDirectionSafe(const int posX, const int posY, const std::vector<int> bombsPositionsVertical, const std::vector<Bomb *> &bombs) {
+int AiBombChecker::getVerticalDirectionDanger(const int posX, const int posY, const std::vector<int> bombsPositionsVertical, const std::vector<Bomb *> &bombs) {
+    int danger = 0;
     for (int i = 0; i < bombsPositionsVertical.size(); i++) {
         for (Bomb *bomb : bombs) {
             if (bomb->posX == posX && bomb->posY == bombsPositionsVertical[i]) {
-                if ((bomb->posY + bomb->range >= posY && posY >= bomb->posY) || (bomb->posY - bomb->range <= posY && posY <= bomb->posY))
-                    return false;
+                if (bomb->posY + bomb->range >= posY && posY >= bomb->posY) 
+                    danger = (bomb->posY + bomb->range) - posY + 1;
+                else if(bomb->posY - bomb->range <= posY && posY <= bomb->posY)
+                    danger = posY - (bomb->posY - bomb->range) + 1;
             }
         }
     }
-    return true;
+    return danger;
 }
 
-bool AiBombChecker::isHorizontalDirectionSafe(const int posX, const int posY, const std::vector<int> bombsPositionsHorizontal, const std::vector<Bomb *> &bombs) {
+int AiBombChecker::getHorizontalDirectionDanger(const int posX, const int posY, const std::vector<int> bombsPositionsHorizontal, const std::vector<Bomb *> &bombs) {
+    int danger = 0;
     for (int i = 0; i < bombsPositionsHorizontal.size(); i++) {
         for (Bomb *bomb : bombs) {
             if (bomb->posY == posY && bomb->posX == bombsPositionsHorizontal[i]) {
-                if ((bomb->posX + bomb->range >= posX && posX >= bomb->posX) || (bomb->posX - bomb->range <= posX && posX <= bomb->posX))
-                    return false;
+                if (bomb->posX + bomb->range >= posX && posX >= bomb->posX)
+                    danger = (bomb->posX + bomb->range) - posX + 1;
+                else if (bomb->posX - bomb->range <= posX && posX <= bomb->posX)
+                    danger = posX - (bomb->posX - bomb->range) + 1;
             }
         }
     }
-    return true;
+    return danger;
+}
+
+int AiBombChecker::getSafetyOfMove(const int posX, const int posY, const std::vector<int> bombsPositionsVertical, const std::vector<int> bombsPositionsHorizontal, const std::vector<Bomb *> &bombs) {
+    // calculate safety
+
+    return 1;
 }

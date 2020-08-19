@@ -40,13 +40,13 @@ void GameEventHandler::handlePressedKey() {
     // Character movement
     else if(!game->isGamePaused) {
         if(event.key.code == sf::Keyboard::Up)                            // move up
-            game->characters[0]->shouldCharacterMove('u', game->gameBoard, game->bombs);
+            game->characters[0]->tryToMove('u', game->gameBoard, game->bombs);
         else if(event.key.code == sf::Keyboard::Down)                     // move down
-            game->characters[0]->shouldCharacterMove('d', game->gameBoard, game->bombs);
+            game->characters[0]->tryToMove('d', game->gameBoard, game->bombs);
         else if(event.key.code == sf::Keyboard::Left)                     // move left
-            game->characters[0]->shouldCharacterMove('l', game->gameBoard, game->bombs);
+            game->characters[0]->tryToMove('l', game->gameBoard, game->bombs);
         else if(event.key.code == sf::Keyboard::Right)                    // move right
-            game->characters[0]->shouldCharacterMove('r', game->gameBoard, game->bombs);
+            game->characters[0]->tryToMove('r', game->gameBoard, game->bombs);
 
         else if(event.key.code == sf::Keyboard::Space)
             game->characters[0]->placeBomb(game->bombs, game->gameBoard, game->diggedBombs, game->specialWeapons, game->bombTexture, game->specialWeaponsTextures);

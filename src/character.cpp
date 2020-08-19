@@ -45,38 +45,44 @@ Character::~Character() {}
 // ------------------------------------------ METHODS -------------------------------------------------
 
 
-void Character::shouldCharacterMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
-    
-    if(frozen) return;                                  // character can't move if frozen by another character
-
-    if(animationTimer >= 3) {
-        animationTimer = 0;
-        sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
-        animationCounter++;
-        if(animationCounter >=4)
-            animationCounter = 0;
-    }
-
-    const int newXPosition = getSuggestedXPosition(direction);
-    const int newYPosition = getSuggestedYPosition(direction);
-
-    if(lastDirection != direction && isHuman) {                 // player can change directions whenever he wants because he won't do it as fast as computer
-        if(isMovePossible(newXPosition, newYPosition, direction, gameBoard, bombs))
-            move(direction);
-    }
-    // TODO: different ways for player and AI
-    else if(howManyFramesAfterMove >= Character::movementSpeedFramerate[speed-1]) {
+void Character::tryToMove(char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
+    if(shouldCharacterMove(direction)) {
+        const int newXPosition = getSuggestedXPosition(direction);
+        const int newYPosition = getSuggestedYPosition(direction);
         if (isMovePossible(newXPosition, newYPosition, direction, gameBoard, bombs)) {
             if(isHuman)
                 move(direction);
             else {
-                if (isMoveSafe(newXPosition, newYPosition, gameBoard, bombs))
+                int dangerOfMove = getDangerOfMove(newXPosition, newYPosition, gameBoard, bombs);
+                if (dangerOfMove <= 0)
                     move(direction);
+                else {
+                    std::cout << dangerOfMove << std::endl;
+                    // add danger of move to the list
+                }
             }
         }
     }
+}
+
+bool Character::shouldCharacterMove(char direction) {
+    if (frozen)                                               // character can't move if frozen by another character
+        return false;                                  
+    if(animationTimer >= 3) {
+        animationTimer = 0;
+        sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
+        animationCounter++;
+        if(animationCounter >= 4)
+            animationCounter = 0;
+    }
+
+    if(lastDirection != direction && isHuman)                 // player can change directions whenever he wants because he won't do it as fast as computer
+        return true;
+    if(howManyFramesAfterMove >= Character::movementSpeedFramerate[speed-1])
+        return true;
 
     lastTriedDirection = direction;
+    return false;
 }
 
 bool Character::isMovePossible(const int posX, const int posY, char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
@@ -90,18 +96,18 @@ bool Character::isMovePossible(const int posX, const int posY, char direction, s
     return false;
 }
 
-bool Character::isMoveSafe(const int posX, const int posY, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
+int Character::getDangerOfMove(const int posX, const int posY, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
     if (gameBoard[posY][posX] == "explosion" || gameBoard[posY][posX] == "fire")
-        return false;
+        return 100;
 
     std::vector<int> bombsPositionsVertical = AiBombChecker::getPositionOfClosestBombsVertical(posX, posY, gameBoard);
     std::vector<int> bombsPositionsHorizontal = AiBombChecker::getPositionOfClosestBombsHorizontal(posX, posY, gameBoard);
 
     // check bombs and their ranges
-    bool isVerticalSafe = AiBombChecker::isVerticalDirectionSafe(posX, posY, bombsPositionsVertical, bombs);
-    bool isHorizontalSafe = AiBombChecker::isHorizontalDirectionSafe(posX, posY, bombsPositionsHorizontal, bombs);
+    int verticalDanger = AiBombChecker::getVerticalDirectionDanger(posX, posY, bombsPositionsVertical, bombs);
+    int horizontalDanger = AiBombChecker::getHorizontalDirectionDanger(posX, posY, bombsPositionsHorizontal, bombs);
 
-    return isVerticalSafe && isHorizontalSafe;
+    return std::max(verticalDanger, horizontalDanger);
 }
 
 void Character::move(char direction) {
