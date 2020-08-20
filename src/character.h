@@ -35,11 +35,14 @@ public:
     int specialWeaponCounter;           // how many times can character use special weapons
 
     static std::array<float, 5> movementSpeedFramerate; // how many frames need to pass before you move a character (based on character's speed)
+    static std::array<float, 5> aiMovementSpeedFramerate; // how many frames need to pass before you move a character (based on character's speed)
 
     // ------------------------------------------ METHODS -------------------------------------------------
 
     Character(bool isHuman, int _posX, int _posY, char _color);
     ~Character();
+
+    void updateAnimationDirection();
 
     void updateAnimationIfNeeded();
 
@@ -54,6 +57,8 @@ public:
     int getDangerOfCurrentPosition(std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
 
     void move(char direction);
+
+    void setAnimationDirection();
 
     bool didCharacterMove(const int expectedXPos, const int expectedYPos);
 

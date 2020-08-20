@@ -4,6 +4,7 @@
 // ------------------------------------------ STATIC PROPERTIES -------------------------------------------------
 
 std::array<float, 5> Character::movementSpeedFramerate = {5.0, 4.0, 3.0, 2.0, 1.0};
+std::array<float, 5> Character::aiMovementSpeedFramerate = {12.0, 9.0, 6.0, 4.0, 3.0};
 
 // ------------------------------------------ CONSTRUCTORS -------------------------------------------------
 
@@ -15,7 +16,7 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
     speed = 1;
     bombLimit = 1;
     shield = false;
-    bombPushing = false;
+    bombPushing = true;
     lostShieldTimeSpan = 0;
     frozen = false;
     frozenTime = 0;
@@ -44,10 +45,13 @@ Character::~Character() {}
 
 // ------------------------------------------ METHODS -------------------------------------------------
 
+void Character::updateAnimationDirection() {
+    sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
+}
+
 void Character::updateAnimationIfNeeded() {
     if (animationTimer >= 3) {
         animationTimer = 0;
-        sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
         animationCounter++;
         if(animationCounter >= 4)
             animationCounter = 0;
@@ -64,12 +68,18 @@ void Character::tryToMove(char direction, std::array<std::array<std::string, 16>
                 move(direction);
             else {
                 int dangerOfMove = getDangerOfMove(newXPosition, newYPosition, gameBoard, bombs);
-                if (dangerOfMove <= 0)
+                if (dangerOfMove <= 0) {
                     move(direction);
+                    updateAnimationDirection();
+                }
             }
         }
     }
+
     lastTriedDirection = direction;
+    setAnimationDirection();
+    if(isHuman)
+        updateAnimationDirection();
 }
 
 bool Character::shouldCharacterMove(char direction) {
@@ -77,7 +87,11 @@ bool Character::shouldCharacterMove(char direction) {
         return false;                                  
     if(lastDirection != direction && isHuman)                 // player can change directions whenever he wants because he won't do it as fast as computer
         return true;
-    if(howManyFramesAfterMove >= Character::movementSpeedFramerate[speed-1])
+    if(isHuman) {
+        if(howManyFramesAfterMove >= Character::movementSpeedFramerate[speed-1])
+            return true;
+    }
+    else if (howManyFramesAfterMove >= Character::aiMovementSpeedFramerate[speed - 1])
         return true;
     return false;
 }
@@ -87,7 +101,7 @@ bool Character::isMovePossible(const int posX, const int posY, char direction, s
         if (gameBoard[posY][posX] != "box" && gameBoard[posY][posX] != "wall" && gameBoard[posY][posX] != "bomb" && gameBoard[posY][posX] != "ice") // field character wants to step on is possible to step on
             return true;
         if (gameBoard[posY][posX] == "bomb" && bombPushing == true)                            // character wants to step on the bomb and character can push the bombs
-            return didCharacterPushBomb(posX, posY - 1, bombs, direction, gameBoard);
+            return didCharacterPushBomb(posX, posY, bombs, direction, gameBoard);
         return false;
     }
     return false;
@@ -119,7 +133,7 @@ void Character::move(char direction) {
             if(posY > 0) {        // character can move -> still on the map
                 rect.move(0, -50);
                 sprite.move(0, -50);
-                animationDirection = 3;
+                // animationDirection = 3;
                 posY--;
             }
             break;
@@ -127,7 +141,7 @@ void Character::move(char direction) {
             if(posY < 15) {        
                 rect.move(0, 50);
                 sprite.move(0, 50);
-                animationDirection = 0;
+                // animationDirection = 0;
                 posY++;
             }
             break;
@@ -135,7 +149,7 @@ void Character::move(char direction) {
             if(posX > 0) {        
                 rect.move(-50, 0);
                 sprite.move(-50, 0);
-                animationDirection = 2;
+                // animationDirection = 2;
                 posX--;
             }
             break;
@@ -143,7 +157,7 @@ void Character::move(char direction) {
             if(posX < 15) {        
                 rect.move(50, 0);
                 sprite.move(50, 0);
-                animationDirection = 1;
+                // animationDirection = 1;
                 posX++;
             }
             break;
@@ -154,6 +168,25 @@ void Character::move(char direction) {
     sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));
     lastDirection = direction;
     howManyFramesAfterMove = 0;
+}
+
+void Character::setAnimationDirection() {
+    switch (lastTriedDirection) {
+        case 'u':
+            animationDirection = 3;
+            break;
+        case 'd':
+            animationDirection = 0;
+            break;
+        case 'l':
+            animationDirection = 2;
+            break;
+        case 'r':
+            animationDirection = 1;
+            break;
+        default:
+            break;
+    }
 }
 
 bool Character::didCharacterMove(const int expectedXPos, const int expectedYPos) {
@@ -296,46 +329,37 @@ void Character::steppedOnBonus(char type, int &playersLives, std::vector<Icon*> 
     switch(type) {                                                    // check bonus type                
         case 'r':
             range++;
-            std::cout << "Range increased!" << std::endl;
             break;
         case 'b':
             bombLimit++;
-            std::cout << "Bomb limit increased!" << std::endl;
             break;
         case 's':
             if(speed <5)                // 5 - maximal speed
                 speed++;
-            std::cout << "Speed increased!" << std::endl;
             break;
         case 'h':
             shield = true;
-            std::cout << "Shield!" << std::endl;
             break;
         case 'l':
-            std::cout << "Another live!" << std::endl;
             if (isHuman)
                 playersLives++;
             break;  
         case 'p':
-            std::cout << "Bomb pushing skill!" << std::endl;
             bombPushing = true;
             break;  
 
             // SPECIAL WEAPONS
         case 'f':
-            std::cout << "Special weapon: fire!" << std::endl;
             specialWeapon = 'f';     
             specialWeaponCounter = 2;
             specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[0], font));
             break;
         case 'i':
-            std::cout << "Special weapon: ice!" << std::endl;
             specialWeapon = 'i';     
             specialWeaponCounter = 1;
             specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[1], font));
             break;
         case 'd':
-            std::cout << "Special weapon: digged bombs!" << std::endl;
             specialWeapon = 'd';     
             specialWeaponCounter = 2;
             specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[2], font));

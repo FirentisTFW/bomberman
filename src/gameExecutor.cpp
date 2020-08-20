@@ -26,6 +26,7 @@ void GameExecutor::updateGame(sf::Event &event) {
         game->updateGameTime();
         game->updateGameBoard();
         game->updateAnimationsOnBoard();
+        game->placeAiBombs();
         AiMovement::createCharactersMovement(game->characters, game->gameBoard, game->bombs);
         Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard, game->explosionTexture);
         Explosion::checkForInactiveExplosions(game->explosions);

@@ -72,6 +72,9 @@ void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<st
 
 bool Bomb::moveBomb(char _direction, std::array<std::array<std::string, 16>, 16> &gameBoard) {
     
+    if(movingBombTimer != -1)                                                   // bomb is already moving
+        return false;
+
     int addX, addY;
     direction = _direction;
 

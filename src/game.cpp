@@ -18,17 +18,12 @@ Game::~Game() {}
 // ------------------------------------------ METHODS -------------------------------------------------
 
 void Game::loadTextures() {
-
-    // LOADING TEXTURES
-
     backgroundTexture.loadFromFile("images/backgrounds/background_1.png");
     background.setTexture(backgroundTexture);
     background.setPosition(0, 0);
 
-    charactersTextures[0].loadFromFile("images/characters/character_1.png");
-    charactersTextures[1].loadFromFile("images/characters/character_2.png");
-    charactersTextures[2].loadFromFile("images/characters/character_3.png");
-    charactersTextures[3].loadFromFile("images/characters/character_4.png");
+    for (int i = 1; i < 5; i++)
+        charactersTextures[i - 1].loadFromFile("images/characters/character_" + std::to_string(i) + ".png");
 
     for (int i = 1; i < 5; i++)
         boxesTextures[i - 1].loadFromFile("images/boxes/box_" + std::to_string(i) + ".png");
@@ -55,8 +50,6 @@ void Game::loadTextures() {
     bonusesTextures[6].loadFromFile("images/bonuses/b_push.png");
     bonusesTextures[7].loadFromFile("images/bonuses/b_speed.png");
     bonusesTextures[8].loadFromFile("images/bonuses/b_digged_bomb.png");
-
-    // ~ LOADING TEXTURES
 }
 
 void Game::loadBackground() {
@@ -86,11 +79,8 @@ void Game::updateCharacterMovementFramerate() {
 
 void Game::updateGameBoard() {
 
-    for (int i = 0; i < 16; i++) {                      // fill everything with zeros assuming there's nothing there
-        for (int j = 0; j < 16; j++) {
-            gameBoard[i][j] = "0";
-        }
-    }
+    resetGameBoard();
+
     updateBonusesOnBoard();
 
     updateExplosionsOnBoard();
@@ -104,6 +94,14 @@ void Game::updateGameBoard() {
     updateBombsOnBoard();
 
     updateIconsOnBoard();
+}
+
+void Game::resetGameBoard() {
+    for (int i = 0; i < 16; i++) {                      // fill everything with zeros assuming there's nothing there
+        for (int j = 0; j < 16; j++) {
+            gameBoard[i][j] = "0";
+        }
+    }
 }
 
 void Game::updateExplosionsOnBoard() {
@@ -226,7 +224,7 @@ void Game::updateCharactersOnBoard() {
                                 i--;
                             }
                         }
-                            diggedBombs.erase(diggedBombs.begin() + j);
+                        diggedBombs.erase(diggedBombs.begin() + j);
                         break;
                     }
                 }
@@ -258,6 +256,7 @@ void Game::updateBoxesOnBoard() {
                     gameBoard[boxes[i]->posY][boxes[i]->posX] = "bonus";
                 }
                 boxes.erase(boxes.begin() + i);
+                boxesSize = boxes.size();
                 i--;
 
             }
@@ -372,6 +371,14 @@ void Game::updateAnimationsOnBoard() {
     }
 }
 
+void Game::placeAiBombs() {
+    for(int i = 1; i < characters.size(); i++) {
+        AiBombPlacer bombPlacer = AiBombPlacer(characters[i], gameBoard, bombs);
+        if(bombPlacer.isItWorthToPlaceBombHere())
+            characters[i]->placeBomb(bombs, gameBoard, diggedBombs, specialWeapons, bombTexture, specialWeaponsTextures);
+    }
+}
+
 char Game::findExplosionOrFire(const int objectPosX, const int objectPosY) {
     
     for(Explosion* explosion : explosions) {                                   // find the right explosion
@@ -410,10 +417,7 @@ void Game::addScoreToCharacter(const char color, const int scoreToAdd) {
 }
 
 void Game::pauseOrUnpauseGame() {
-    if (!isGamePaused)
-        isGamePaused = true;
-    else
-        isGamePaused = false;
+    isGamePaused = !isGamePaused;
     std::cout << "Game paused/unpaused" << std::endl;
 }
 
@@ -427,6 +431,7 @@ void Game::showGameBoard() {
     }
     std::cout << std::endl << std::endl;
 }
+
 void Game::draw() {
 
     window->draw(background);
@@ -453,7 +458,6 @@ void Game::draw() {
         window->draw(icon->sprite);
         window->draw(icon->counter);
     }
-    // std::cout << "draaaaw" << std::endl;
 
     gameUI->updateUI(characters, player->score);
     gameUI->drawUI(window);
