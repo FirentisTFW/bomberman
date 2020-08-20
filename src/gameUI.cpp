@@ -10,22 +10,12 @@ GameUI::GameUI(const int playersLives, const char color) {
    
     for(int i = 0; i < 4; i++) {
         charactersScores[i] = sf::Text("0", font);
-        charactersScores[i].setCharacterSize(25);
-        charactersScores[i].setStyle(sf::Text::Bold);
-        charactersScores[i].setFillColor(sf::Color::White);
-        charactersScores[i].setOutlineThickness(1);
-        charactersScores[i].setOutlineColor(sf::Color::Black);
-        charactersScores[i].setPosition(875, 116 + 140 * i);
+        textProperties::setProperties(charactersScores[i], 25, 875, 116 + 140 * i);
     }
    
     for(int i = 0; i < 4; i++) {
         charactersLives[i] = sf::Text("1", font);
-        charactersLives[i].setCharacterSize(25);
-        charactersLives[i].setStyle(sf::Text::Bold);
-        charactersLives[i].setFillColor(sf::Color::White);
-        charactersLives[i].setOutlineThickness(1);
-        charactersLives[i].setOutlineColor(sf::Color::Black);
-        charactersLives[i].setPosition(847, 116 + 140 * i);
+        textProperties::setProperties(charactersLives[i], 25, 847, 116 + 140 * i);
     }
 
     switch(color) {

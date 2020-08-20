@@ -27,51 +27,53 @@ Bomb::~Bomb() {}
 
 void Bomb::explode(std::vector<Explosion*> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard,  sf::Texture &explosionTexture) {
     
-    std::cout << "Explosion!" << std::endl;
-
     explosions.push_back(new Explosion(posX, posY, color, explosionTexture));
 
-    for(int i=0; i<range; i++) {                             // DOWN
-        if (posY + (i + 1) > 15)                             // explosion can't get outside of the map
-            break;
-        explosions.push_back(new Explosion(posX, posY + (i + 1), color, explosionTexture));
-
-        // if there is a bomb or box on the way, stop exploding in this direction, updateGameBoard() method in Game class will check if the explosion should destroy this object or not
-        if (gameBoard[posY + (i + 1)][posX] == "bomb" || gameBoard[posY + (i + 1)][posX] == "box" || gameBoard[posY + (i + 1)][posX] == "wall")
-            break;
-    }
-    for(int i=0; i<range; i++) {                           // UP
-        if (posY - (i + 1) < 0)                          
-            break;
-        explosions.push_back(new Explosion(posX, posY - (i + 1), color, explosionTexture));
-
-        if (gameBoard[posY - (i + 1)][posX] == "bomb" || gameBoard[posY - (i + 1)][posX] == "box" || gameBoard[posY - (i + 1)][posX] == "wall")
-            break;
-    }
-    for(int i=0; i<range; i++) {                            // RIGHT
-        if (posX + (i + 1) > 15)                           
-            break;
-        explosions.push_back(new Explosion(posX + (i + 1), posY, color, explosionTexture));
-
-        if (gameBoard[posY][posX + (i + 1)] == "bomb" || gameBoard[posY][posX + (i + 1)] == "box" || gameBoard[posY][posX + (i + 1)] == "wall")
-            break;
-    }
-    for(int i=0; i<range; i++) {                            // LEFT
-        if (posX - (i + 1) < 0)                         
-            break;
-        explosions.push_back(new Explosion(posX - (i + 1), posY, color, explosionTexture));
-
-        if (gameBoard[posY][posX - (i + 1)] == "bomb" || gameBoard[posY][posX - (i + 1)] == "box" || gameBoard[posY][posX - (i + 1)] == "wall")
-            break;
-    }
+    makeExplosionsInDirection('u', explosions, gameBoard, explosionTexture);
+    makeExplosionsInDirection('d', explosions, gameBoard, explosionTexture);
+    makeExplosionsInDirection('l', explosions, gameBoard, explosionTexture);
+    makeExplosionsInDirection('r', explosions, gameBoard, explosionTexture);
 
     *charactersBombLimit += 1;                                                  // bomb exploded so the character can place a new bomb
 
-    std::cout << "bombs limit: " << *charactersBombLimit << std::endl;
+    // std::cout << "bombs limit: " << *charactersBombLimit << std::endl;
+}
+
+void Bomb::makeExplosionsInDirection(const char direction, std::vector<Explosion *> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard, sf::Texture &explosionTexture) {
+    int xMultiplier = getXMultiplierForExplosion(direction);
+    int yMultiplier = getYMultiplierForExplosion(direction);
+    for(int i=1; i<=range; i++) {                             
+        if (isPositionOnTheMap(posX + i * xMultiplier, posY + i * yMultiplier)) {
+            explosions.push_back(new Explosion(posX + i * xMultiplier, posY + i * yMultiplier, color, explosionTexture));
+
+            // if there is a bomb or box on the way, stop exploding in this direction, updateGameBoard() method in Game class will check if the explosion should destroy this object or not
+            if (gameBoard[posY + i * yMultiplier][posX + i * xMultiplier] == "bomb" || gameBoard[posY + i * yMultiplier][posX + i * xMultiplier] == "box" || gameBoard[posY + i * yMultiplier][posX + i * xMultiplier] == "wall")
+                break;
+        }
+    }
+}
+
+int Bomb::getXMultiplierForExplosion(const char direction) {
+    if(direction == 'u')
+        return 0;
+    if(direction == 'd')
+        return 0;
+    if(direction == 'l')
+        return -1;
+    return 1;           // 'r'
+}
+
+int Bomb::getYMultiplierForExplosion(const char direction) {
+    if(direction == 'u')
+        return -1;
+    if(direction == 'd')
+        return 1;
+    if(direction == 'l')
+        return 0;
+    return 0;           // 'r'
 }
 
 bool Bomb::moveBomb(char _direction, std::array<std::array<std::string, 16>, 16> &gameBoard) {
-    
     if(movingBombTimer != -1)                                                   // bomb is already moving
         return false;
 
@@ -106,7 +108,6 @@ bool Bomb::moveBomb(char _direction, std::array<std::array<std::string, 16>, 16>
             sprite.setPosition(rect.getPosition());
             gameBoard[posY][posX] = "bomb";
             movingBombTimer = 6;                                       // speed: 10 fields for one second (60 frames / 6)
-
             return true;
         }
     }

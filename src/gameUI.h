@@ -1,5 +1,6 @@
 #pragma once
 #include "character.h"
+#include "textProperties.h"
 
 class GameUI {
     public:

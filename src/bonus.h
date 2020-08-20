@@ -2,8 +2,6 @@
 #include "object.h"
 
 class Bonus : public Object {
-    
-
     public:
         char type;     // s - speed, l - live, h - shield, r - range, b - bomb
         int animationCounter;               

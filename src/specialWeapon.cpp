@@ -14,7 +14,7 @@ SpecialWeapon::SpecialWeapon(int _posX, int _posY, char _type, char _color, sf::
         rect.setPosition(posX * 50, posY * 50);
         rect.setFillColor(sf::Color::Yellow);
     }
-    else {
+    else {                                      // 'i'
         rect.setSize(sf::Vector2f(50, 50));
         rect.setPosition(posX * 50, posY * 50);
         rect.setFillColor(sf::Color::White);

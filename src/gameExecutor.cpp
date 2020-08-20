@@ -2,15 +2,14 @@
 
 GameExecutor::GameExecutor(sf::RenderWindow *_window) {
     window = _window;
-    // player = _player;
-    // game = _game;
     player = new Player('b');
     game = new Game(_window, player);
-    std::cout << game->gameTime[0] << std::endl;
     game->gameUI = new GameUI(player->lives, player->color);
     MapLoader mapLoader;
     mapLoader.loadMap(game->boxes, game->characters, game->boxesTextures, game->charactersTextures, game->backgroundTexture);
     game->loadBackground();
+
+    // TODO: character selection
     game->characters[0]->isHuman = true;
 }
 

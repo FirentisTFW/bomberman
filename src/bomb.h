@@ -3,6 +3,13 @@
 #include "explosion.h"
 
 class Bomb : public Object {
+    private:
+        void makeExplosionsInDirection(const char direction, std::vector<Explosion *> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard, sf::Texture &explosionTexture);
+
+        int getXMultiplierForExplosion(const char direction);
+
+        int getYMultiplierForExplosion(const char direction);
+
     public:
         int range;                          // how many fields in each directions will be affected by explosion
         int timeToExplode;                  // how many frames before the bomb explodes
@@ -19,8 +26,10 @@ class Bomb : public Object {
         ~Bomb();
 
         void explode(std::vector<Explosion *> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard, sf::Texture &explosionTexture); // create an explosion in four directions
+
         bool moveBomb(char _direction, std::array<std::array<std::string, 16>, 16> &gameBoard);                     // 
+
         bool collisionCheckForExplosion();
-        // function below can be optimalised (for example check every 10-20 frames, not every frame)
+
         static void checkBombsTimers(std::vector<Bomb *> &bombs, std::vector<Explosion *> &explosions, std::array<std::array<std::string, 16>, 16> &gameBoard, sf::Texture &explosionTexture); // check every bomb and see if it should explode
 };

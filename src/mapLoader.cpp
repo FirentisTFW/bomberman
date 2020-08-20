@@ -4,8 +4,7 @@ MapLoader::MapLoader() {}
 
 MapLoader::~MapLoader() {}
 
-void MapLoader::loadMap(std::vector<Box *> &boxes, std::vector<Character *> &characters, std::array<sf::Texture, 10> &boxesTextures, std::array<sf::Texture, 4> &charactersTextures, sf::Texture &backgroundTexture)
-{
+void MapLoader::loadMap(std::vector<Box *> &boxes, std::vector<Character *> &characters, std::array<sf::Texture, 10> &boxesTextures, std::array<sf::Texture, 4> &charactersTextures, sf::Texture &backgroundTexture) {
     mapFile.open("maps/testMap.txt", std::ios::in);
     if(mapFile.good()) {
         loadBackground(backgroundTexture);
@@ -31,7 +30,6 @@ void MapLoader::loadBoxes(std::vector<Box *> &boxes, std::array<sf::Texture, 10>
     std::string line;
     getline(mapFile, line);
 
-    //  CREATE BOXES FROM FILE
     if (line.find("<Boxes>") != std::string::npos) {
         getline(mapFile, line);
         boxesCounter = getCounter(line);
@@ -46,9 +44,7 @@ void MapLoader::loadBoxes(std::vector<Box *> &boxes, std::array<sf::Texture, 10>
                 getline(mapFile, line);                 // textureId
                 int _textureId = std::stoi(line);
 
-                // std::cout << _isDestroyable << " " << _posX << " " << _posY << std::endl;
                 boxes.push_back(new Box(_isDestroyable, _posX, _posY));                                 // create box
-
                 boxes[boxes.size()-1]->sprite.setTexture(boxesTextures[_textureId]);                    // set texture
                 boxes[boxes.size()-1]->sprite.setPosition(boxes[boxes.size()-1]->rect.getPosition());
 
@@ -63,7 +59,6 @@ void MapLoader::loadCharacters(std::vector<Character *> &characters, std::array<
     std::string line;
     getline(mapFile, line);
 
-    //  CREATE CHARACTERS FROM FILE
     if (line.find("<Characters>") != std::string::npos) {
         getline(mapFile, line);
         charactersCounter = getCounter(line);
