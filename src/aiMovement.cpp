@@ -32,7 +32,8 @@ void AiMovement::characterDidNotMove() {
         if(allDirectionsTried()) {
             if(isMovingSaferThanStaying()) {
                 int bestMoveIndex = std::min_element(dangerOfMoves.begin(), dangerOfMoves.end()) - dangerOfMoves.begin();
-                character->move(triedDirections[bestMoveIndex]);
+                if(!character->frozen)
+                    character->move(triedDirections[bestMoveIndex]);
             }
             didCharacterMove = true;
         }

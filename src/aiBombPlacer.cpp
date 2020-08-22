@@ -14,7 +14,7 @@ bool AiBombPlacer::isItWorthToPlaceBombHere() {
         if(luck < 20) {
             surroundingPositions = getSurroundingPositions();
             for(Point point : surroundingPositions) {
-                if (gameBoard[point.posY][point.posX] == "box" || gameBoard[point.posY][point.posX] == "character")
+                if (gameBoard[point.posY][point.posX] == "box" || gameBoard[point.posY][point.posX] == "character" && !character->frozen)
                     return true;
             }
         }
