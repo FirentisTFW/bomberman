@@ -3,10 +3,11 @@
 GameExecutor::GameExecutor(sf::RenderWindow *_window) {
     window = _window;
     player = new Player('b');
-    game = new Game(_window, player);
-    game->gameUI = new GameUI(player->lives, player->color);
+    gameTextures = new GameTextures();
+    gameUI = new GameUI(player->lives, player->color);
+    game = new Game(_window, player, gameTextures, gameUI);
     MapLoader mapLoader;
-    mapLoader.loadMap(game->boxes, game->characters, game->boxesTextures, game->charactersTextures, game->backgroundTexture);
+    mapLoader.loadMap(game->boxes, game->characters, gameTextures->boxesTextures, gameTextures->charactersTextures, gameTextures->backgroundTexture);
     game->loadBackground();
 
     // TODO: character selection
@@ -27,7 +28,7 @@ void GameExecutor::updateGame(sf::Event &event) {
         game->updateAnimationsOnBoard();
         game->placeAiBombs();
         AiMovement::createCharactersMovement(game->characters, game->gameBoard, game->bombs);
-        Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard, game->explosionTexture);
+        Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard, gameTextures->explosionTexture);
         Explosion::checkForInactiveExplosions(game->explosions);
         game->updateCharacterMovementFramerate();
     }

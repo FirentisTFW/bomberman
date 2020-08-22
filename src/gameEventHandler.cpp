@@ -25,11 +25,11 @@ sf::Vector2<float> GameEventHandler::calculateMousePosition(sf::RenderWindow &wi
 }
 
 bool GameEventHandler::didPlayerCloseWindow(const sf::Vector2<float> &mousePos) {
-    return event.type == sf::Event::Closed || (game->gameUI->exitRect.getGlobalBounds().contains(mousePos) && event.mouseButton.button == sf::Mouse::Left);
+    return event.type == sf::Event::Closed || (game->gameUI->exitButton.getGlobalBounds().contains(mousePos) && event.mouseButton.button == sf::Mouse::Left);
 }
 
 void GameEventHandler::handleMouseClick(const sf::Vector2<float> &mousePos) {
-    if (game->gameUI->pauseRect.getGlobalBounds().contains(mousePos))
+    if (game->gameUI->pauseButton.getGlobalBounds().contains(mousePos))
         game->pauseOrUnpauseGame();
 }
 
@@ -48,6 +48,6 @@ void GameEventHandler::handlePressedKey() {
         else if(event.key.code == sf::Keyboard::Right)                    // move right
             game->characters[0]->tryToMove('r', game->gameBoard, game->bombs);
         else if(event.key.code == sf::Keyboard::Space)
-            game->characters[0]->placeBomb(game->bombs, game->gameBoard, game->diggedBombs, game->specialWeapons, game->bombTexture, game->specialWeaponsTextures);
+            game->characters[0]->placeBomb(game->bombs, game->gameBoard, game->diggedBombs, game->specialWeapons, game->gameTextures->bombTexture, game->gameTextures->specialWeaponsTextures);
     }
 }

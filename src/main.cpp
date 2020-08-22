@@ -20,7 +20,7 @@ int main() {
 
     sf::VideoMode vm(1000, 800);									// create window
 	sf::RenderWindow window(vm, "Bomberman");
-    
+
     sf::Clock clock;
 
     window.setFramerateLimit(60);

@@ -2,58 +2,25 @@
 
 // ------------------------------------------ CONSTRUCTORS -------------------------------------------------
 
-Game::Game(sf::RenderWindow* _window, Player *_player) {                   // start a game
+Game::Game(sf::RenderWindow* _window, Player* &_player, GameTextures* &_gameTextures, GameUI* &_gameUI) {                   // start a game
     std::cout << "Game started" << std::endl;
 
     std::fill(begin(gameTime), begin(gameTime)+3, 0);    // set gameTime to 0:0:0
     isGamePaused = false;
     window = _window;
     player = _player;
+    gameTextures = _gameTextures;
+    gameUI = _gameUI;
 
-    loadTextures();
+    gameTextures->loadTextures();
 }
 
 Game::~Game() {}
 
 // ------------------------------------------ METHODS -------------------------------------------------
 
-void Game::loadTextures() {
-    backgroundTexture.loadFromFile("images/backgrounds/background_1.png");
-    background.setTexture(backgroundTexture);
-    background.setPosition(0, 0);
-
-    for (int i = 1; i < 5; i++)
-        charactersTextures[i - 1].loadFromFile("images/characters/character_" + std::to_string(i) + ".png");
-
-    for (int i = 1; i < 5; i++)
-        boxesTextures[i - 1].loadFromFile("images/boxes/box_" + std::to_string(i) + ".png");
-
-    for (int i = 1; i < 5; i++)
-        boxesTextures[i + 3].loadFromFile("images/boxes/stone_wall_" + std::to_string(i) + ".png");
-
-    bombTexture.loadFromFile("images/weapons_effects/bomb.png");
-    explosionTexture.loadFromFile("images/weapons_effects/explosion.png");
-
-    specialWeaponsTextures[0].loadFromFile("images/weapons_effects/fire.png");
-    specialWeaponsTextures[1].loadFromFile("images/weapons_effects/ice.png");
-
-    iconsTextures[0].loadFromFile("images/special_weapons_icons/i_fire.png");
-    iconsTextures[1].loadFromFile("images/special_weapons_icons/i_ice.png");
-    iconsTextures[2].loadFromFile("images/special_weapons_icons/i_digged_bomb.png");
-
-    bonusesTextures[0].loadFromFile("images/bonuses/b_fire.png");
-    bonusesTextures[1].loadFromFile("images/bonuses/b_ice.png");
-    bonusesTextures[2].loadFromFile("images/bonuses/b_range.png");
-    bonusesTextures[3].loadFromFile("images/bonuses/b_bomb.png");
-    bonusesTextures[4].loadFromFile("images/bonuses/b_shield.png");
-    bonusesTextures[5].loadFromFile("images/bonuses/b_live.png");
-    bonusesTextures[6].loadFromFile("images/bonuses/b_push.png");
-    bonusesTextures[7].loadFromFile("images/bonuses/b_speed.png");
-    bonusesTextures[8].loadFromFile("images/bonuses/b_digged_bomb.png");
-}
-
 void Game::loadBackground() {
-    background.setTexture(backgroundTexture);
+    background.setTexture(gameTextures->backgroundTexture);
     background.setPosition(0, 0);
 }
 
@@ -196,7 +163,7 @@ void Game::updateCharactersOnBoard() {
             int bonusesSize = bonuses.size();
             for (int j = 0; j < bonusesSize; j++) {
                 if(characters[i]->posY == bonuses[j]->posY && characters[i]->posX == bonuses[j]->posX) {
-                    characters[i]->steppedOnBonus(bonuses[j]->type, player->lives, specialWeaponsIcons, iconsTextures, gameUI->font);
+                    characters[i]->steppedOnBonus(bonuses[j]->type, player->lives, specialWeaponsIcons, gameTextures->iconsTextures, gameUI->font);
                     addScoreToCharacter(characters[i]->color, 10);
                     bonuses.erase(bonuses.begin() + j);     
                     break;
@@ -252,7 +219,7 @@ void Game::updateBoxesOnBoard() {
                 if(possibleBonus != '0') {                                              // create a bonus in place of destroyed box 
                     bonuses.push_back(new Bonus(boxes[i]->posX, boxes[i]->posY, possibleBonus));
                     int textureId = bonuses[bonuses.size()-1]->getTextureId();
-                    bonuses[bonuses.size()-1]->setTexture(bonusesTextures[textureId]);
+                    bonuses[bonuses.size() - 1]->setTexture(gameTextures->bonusesTextures[textureId]);
                     gameBoard[boxes[i]->posY][boxes[i]->posX] = "bonus";
                 }
                 boxes.erase(boxes.begin() + i);
@@ -277,7 +244,7 @@ void Game::updateBombsOnBoard() {
     int bombsSize = bombs.size();
     for (int i = 0; i < bombsSize; i++) {
         if (gameBoard[bombs[i]->posY][bombs[i]->posX] == "explosion" || gameBoard[bombs[i]->posY][bombs[i]->posX] == "fire") {
-            bombs[i]->explode(explosions, gameBoard, explosionTexture);
+            bombs[i]->explode(explosions, gameBoard, gameTextures->explosionTexture);
             bombs.erase(bombs.begin() + i);
             bombsSize = bombs.size();
             i--;
@@ -375,7 +342,7 @@ void Game::placeAiBombs() {
     for(int i = 1; i < characters.size(); i++) {
         AiBombPlacer bombPlacer = AiBombPlacer(characters[i], gameBoard, bombs);
         if(bombPlacer.isItWorthToPlaceBombHere())
-            characters[i]->placeBomb(bombs, gameBoard, diggedBombs, specialWeapons, bombTexture, specialWeaponsTextures);
+            characters[i]->placeBomb(bombs, gameBoard, diggedBombs, specialWeapons, gameTextures->bombTexture, gameTextures->specialWeaponsTextures);
     }
 }
 

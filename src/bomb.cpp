@@ -54,13 +54,11 @@ void Bomb::makeExplosionsInDirection(const char direction, std::vector<Explosion
 }
 
 int Bomb::getXMultiplierForExplosion(const char direction) {
-    if(direction == 'u')
-        return 0;
-    if(direction == 'd')
-        return 0;
     if(direction == 'l')
         return -1;
-    return 1;           // 'r'
+    if(direction == 'r')
+        return 1;
+    return 0;           
 }
 
 int Bomb::getYMultiplierForExplosion(const char direction) {
@@ -68,9 +66,7 @@ int Bomb::getYMultiplierForExplosion(const char direction) {
         return -1;
     if(direction == 'd')
         return 1;
-    if(direction == 'l')
-        return 0;
-    return 0;           // 'r'
+    return 0;          
 }
 
 bool Bomb::moveBomb(char _direction, std::array<std::array<std::string, 16>, 16> &gameBoard) {

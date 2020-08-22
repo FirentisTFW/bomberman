@@ -16,7 +16,7 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
     speed = 1;
     bombLimit = 1;
     shield = false;
-    bombPushing = true;
+    bombPushing = false;
     lostShieldTimeSpan = 0;
     frozen = false;
     frozenTime = 0;
@@ -222,7 +222,6 @@ bool Character::didCharacterPushBomb(const int posX, const int posY, std::vector
 }
 
 void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard,std::vector<DiggedBomb*> &diggedBombs, std::vector<SpecialWeapon*> &specialWeapons, sf::Texture &bombTexture, std::array<sf::Texture, 2> &specialWeaponsTextures) {
-    
     if(specialWeaponCounter > 0) {                  // character has a special weapon
         useSpecialWeapon(bombs, gameBoard, diggedBombs, specialWeapons, specialWeaponsTextures);
         return;
@@ -239,7 +238,6 @@ void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std:
 }
 
 void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, std::array<sf::Texture, 2> &specialWeaponsTextures) {
-    
     if(specialWeapon == 'd') {          // digged bomb
         if (gameBoard[posY][posX] != "bomb" && gameBoard[posY][posX] != "digged_bomb") { // two bombs can't be placed on the same field
             diggedBombs.push_back(new DiggedBomb(posX, posY, color));
