@@ -133,7 +133,6 @@ void Character::move(char direction) {
             if(posY > 0) {        // character can move -> still on the map
                 rect.move(0, -50);
                 sprite.move(0, -50);
-                // animationDirection = 3;
                 posY--;
             }
             break;
@@ -141,7 +140,6 @@ void Character::move(char direction) {
             if(posY < 15) {        
                 rect.move(0, 50);
                 sprite.move(0, 50);
-                // animationDirection = 0;
                 posY++;
             }
             break;
@@ -149,7 +147,6 @@ void Character::move(char direction) {
             if(posX > 0) {        
                 rect.move(-50, 0);
                 sprite.move(-50, 0);
-                // animationDirection = 2;
                 posX--;
             }
             break;
@@ -157,7 +154,6 @@ void Character::move(char direction) {
             if(posX < 15) {        
                 rect.move(50, 0);
                 sprite.move(50, 0);
-                // animationDirection = 1;
                 posX++;
             }
             break;
@@ -223,7 +219,7 @@ bool Character::didCharacterPushBomb(const int posX, const int posY, std::vector
 
 void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard,std::vector<DiggedBomb*> &diggedBombs, std::vector<SpecialWeapon*> &specialWeapons, sf::Texture &bombTexture, std::array<sf::Texture, 2> &specialWeaponsTextures) {
     if(specialWeaponCounter > 0) {                  // character has a special weapon
-        useSpecialWeapon(bombs, gameBoard, diggedBombs, specialWeapons, specialWeaponsTextures);
+        useSpecialWeapon(gameBoard, diggedBombs, specialWeapons, specialWeaponsTextures);
         return;
     }
 
@@ -237,93 +233,57 @@ void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std:
     }
 }
 
-void Character::useSpecialWeapon(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, std::array<sf::Texture, 2> &specialWeaponsTextures) {
+void Character::useSpecialWeapon(std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, std::array<sf::Texture, 2> &specialWeaponsTextures) {
     if(specialWeapon == 'd') {          // digged bomb
-        if (gameBoard[posY][posX] != "bomb" && gameBoard[posY][posX] != "digged_bomb") { // two bombs can't be placed on the same field
-            diggedBombs.push_back(new DiggedBomb(posX, posY, color));
-            gameBoard[posY][posX] = "digged_bomb";
-            specialWeaponCounter--;
-        }
+        if(SpecialWeapon::canYouDigBombHere(posX, posY, gameBoard))
+            digBomb(diggedBombs, gameBoard);
     }
     else {
-        std::string typeOfWeapon;
-        if (specialWeapon == 'f')       // fire
-            typeOfWeapon = "fire";
-        else if (specialWeapon == 'i')    // ice
-            typeOfWeapon = "ice";
-
-        int addX, addY;                     
-        switch(lastTriedDirection) {              // direction check
-            case 'u':
-                addX = 0;
-                addY = -1;
-                break;
-            case 'd':
-                addX = 0;
-                addY = 1;
-                break;
-            case 'l':
-                addX = -1;
-                addY = 0;
-                break;
-            case 'r':
-                addX = 1;
-                addY = 0;
-                break;
-            default:
-                break;
-        }
-
+        int addX = SpecialWeapon::getXSummand(lastTriedDirection);
+        int addY = SpecialWeapon::getYSummand(lastTriedDirection);
         bool wasSpecialWeaponUsed = false;                                      // used to determine if you should decrease the weapon counter
-
         if(specialWeapon == 'f') {                                                      // FIRE
-            if(Object::isPositionOnTheMap(posX + addX, posY + addY)) {
-                if (gameBoard[posY + addY][posX + addX] != "wall") {
-                    specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon, color, specialWeaponsTextures[0]));
-                    gameBoard[posY + addY][posX + addX] = typeOfWeapon;
+            for(int i = 1; i < 4; i++) {
+                if(SpecialWeapon::canFireBeUsedHere(posX + addX * i, posY + addY * i, gameBoard)) {
+                    useFire(posX + addX * i, posY + addY * i, specialWeapons, specialWeaponsTextures[0], gameBoard);
                     wasSpecialWeaponUsed = true;
-                    if(Object::isPositionOnTheMap(posX + addX * 2, posY + addY * 2)) {
-                        if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall") {
-                            specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon, color, specialWeaponsTextures[0]));
-                            gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
-                            if(Object::isPositionOnTheMap(posX + addX * 3, posY + addY * 3)) {
-                                if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall"){
-                                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon, color, specialWeaponsTextures[0]));
-                                    gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
-                                }
-                            }
-                        }
-                    }
                 }
+                else
+                    break;
             }
         }
-        else {                                                                          // ICE
-            if(Object::isPositionOnTheMap(posX + addX, posY + addY)) {
-                if (gameBoard[posY + addY][posX + addX] != "wall" && gameBoard[posY + addY][posX + addX] != "box") {
-                    specialWeapons.push_back(new SpecialWeapon(posX + addX, posY + addY, specialWeapon, color, specialWeaponsTextures[1]));
-                    gameBoard[posY + addY][posX + addX] = typeOfWeapon;
+        else {                                                                       // ICE
+            for(int i = 1; i < 4; i++) {
+                if(SpecialWeapon::canIceBeUsedHere(posX + addX * i, posY + addY * i, gameBoard)) {
+                    useIce(posX + addX * i, posY + addY * i, specialWeapons, specialWeaponsTextures[1], gameBoard);
                     wasSpecialWeaponUsed = true;
-                    if(Object::isPositionOnTheMap(posX + addX * 2, posY + addY * 2)) {
-                        if (gameBoard[posY + addY * 2][posX + addX * 2] != "wall" && gameBoard[posY + addY * 2][posX + addX * 2] != "box") {
-                            specialWeapons.push_back(new SpecialWeapon(posX + addX * 2, posY + addY * 2, specialWeapon, color, specialWeaponsTextures[1]));
-                            gameBoard[posY + addY * 2][posX + addX * 2] = typeOfWeapon;
-                            if(Object::isPositionOnTheMap(posX + addX * 3, posY + addY * 3)) {
-                                if (gameBoard[posY + addY * 3][posX + addX * 3] != "wall" && gameBoard[posY + addY * 3][posX + addX * 3] != "box"){
-                                    specialWeapons.push_back(new SpecialWeapon(posX + addX * 3, posY + addY * 3, specialWeapon, color, specialWeaponsTextures[1]));
-                                    gameBoard[posY + addY * 3][posX + addX * 3] = typeOfWeapon;
-                                }
-                            }
-                        }
-                    }
                 }
-            }
+                else
+                    break;
+            }                                                                    
         }
         if (wasSpecialWeaponUsed)
             specialWeaponCounter--;
     }
 }
 
-void Character::steppedOnBonus(char type, int &playersLives, std::vector<Icon*> &specialWeaponsIcons, std::array<sf::Texture, 3> &iconsTextures, sf::Font &font) {
+void Character::digBomb(std::vector<DiggedBomb *> &diggedBombs, std::array<std::array<std::string, 16>, 16> &gameBoard) {
+    diggedBombs.push_back(new DiggedBomb(posX, posY, color));
+    gameBoard[posY][posX] = "digged_bomb";
+    specialWeaponCounter--;
+}
+
+void Character::useFire(const int posX, const int posY, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard) {
+    specialWeapons.push_back(new SpecialWeapon(posX, posY, 'f', color, texture));
+    gameBoard[posY][posX] = "fire";
+}
+
+void Character::useIce(const int posX, const int posY, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard) {
+    specialWeapons.push_back(new SpecialWeapon(posX, posY, 'i', color, texture));
+    gameBoard[posY][posX] = "ice";
+}
+
+void Character::steppedOnBonus(const char type, int &playersLives, std::vector<Icon*> &specialWeaponsIcons, std::array<sf::Texture, 3> &iconsTextures, sf::Font &font) {
     switch(type) {                                                    // check bonus type                
         case 'r':
             range++;
@@ -352,15 +312,15 @@ void Character::steppedOnBonus(char type, int &playersLives, std::vector<Icon*> 
             specialWeaponCounter = 2;
             specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[0], font));
             break;
-        case 'i':
-            specialWeapon = 'i';     
-            specialWeaponCounter = 1;
-            specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[1], font));
-            break;
         case 'd':
             specialWeapon = 'd';     
             specialWeaponCounter = 2;
             specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[2], font));
+            break;
+        case 'i':
+            specialWeapon = 'i';     
+            specialWeaponCounter = 1;
+            specialWeaponsIcons.push_back(new Icon(posX, posY, color, iconsTextures[1], font));
             break;
         default:
             break;
