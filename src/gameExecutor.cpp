@@ -25,7 +25,7 @@ void GameExecutor::updateGame(sf::Event &event) {
     if (!game->isGamePaused) {                          // game wasn't paused
         game->updateGameTime();
         game->updateGameBoard();
-        game->updateAnimationsOnBoard();
+        game->updateAnimations();
         game->placeAiBombs();
         AiMovement::createCharactersMovement(game->characters, game->gameBoard, game->bombs);
         Bomb::checkBombsTimers(game->bombs, game->explosions, game->gameBoard, gameTextures->explosionTexture);

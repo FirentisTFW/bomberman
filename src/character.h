@@ -22,7 +22,11 @@ class Character: public Object {
 
         void digBomb(std::vector<DiggedBomb *> &diggedBombs, std::array<std::array<std::string, 16>, 16> &gameBoard);
 
+        void tryToUseFire(const int xSummand, const int ySummand, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard);
+
         void useFire(const int PosX, const int posY, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard);
+
+        void tryToUseIce(const int xSummand, const int ySummand, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard);
 
         void useIce(const int PosX, const int posY, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard);
 
@@ -74,7 +78,7 @@ class Character: public Object {
 
         int getSuggestedYPosition(const char direction);
 
-        void placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &bombTexture, std::array<sf::Texture, 2> &specialWeaponsTextures);
+        void tryToPlaceBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &bombTexture, std::array<sf::Texture, 2> &specialWeaponsTextures);
 
         void useSpecialWeapon(std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, std::array<sf::Texture, 2> &specialWeaponsTextures);
 

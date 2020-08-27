@@ -23,6 +23,8 @@ class Game {
 
         void updateSpecialWeaponsOnBoard();
 
+        void updateDiggedBombsOnBoard();
+
         void updateCharactersOnBoard();
 
         void updateBoxesOnBoard();
@@ -31,9 +33,21 @@ class Game {
 
         void updateIconsOnBoard();
 
-        char findExplosionOrFire(const int objectPosX, const int objectPosY); // when object (box, character) meets explosion or fire -> function search for this explosion or fire
+        void destroyBoxAndCreateBonusIfNeeded(const int boxIndex);
+
+        char findColorOfExplosionOrFire(const int objectPosX, const int objectPosY); // when object (box, character) meets explosion or fire -> function search for this explosion or fire
 
         void addScoreToCharacter(const char color, const int scoreToAdd); // when object (boc, character) is destroyed -> function finds out who destryoed it and icreases its score
+
+        void createBonus(const int posX, const int posY);                   // create a bonus in place of destroyed box
+
+        void updateBonusesAnimations();
+
+        void updateBombsAnimations();
+
+        void updateSpecialWeaponsAnimations();
+
+        void updateExplosionsWeaponsAnimations();
 
     public: 
         sf::RenderWindow *window; // passing window by pointer here to avoid drawing objects in main file
@@ -68,7 +82,7 @@ class Game {
 
         void updateGameBoard();
 
-        void updateAnimationsOnBoard(); // bonuses animations
+        void updateAnimations(); // bonuses animations
 
         void placeAiBombs();
 

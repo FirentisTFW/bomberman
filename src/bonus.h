@@ -10,7 +10,9 @@ class Bonus : public Object {
         Bonus(int _posX, int _posY, char _type);
         ~Bonus();
 
-        static char shouldBonusBeCreated();                 // calculate a chance for a bonus to appear, returns char indicating bonus type
+        static bool shouldBonusBeCreated();      // 50% chance for a bonus
+
+        static char whichBonusShouldBeCreated(); // calculate a chance for a bonus to appear, returns char indicating bonus type
 
         int getTextureId();
 };

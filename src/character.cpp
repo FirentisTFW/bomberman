@@ -217,7 +217,7 @@ bool Character::didCharacterPushBomb(const int posX, const int posY, std::vector
     return wasBombPushed;
 }
 
-void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard,std::vector<DiggedBomb*> &diggedBombs, std::vector<SpecialWeapon*> &specialWeapons, sf::Texture &bombTexture, std::array<sf::Texture, 2> &specialWeaponsTextures) {
+void Character::tryToPlaceBomb(std::vector<Bomb *> &bombs, std::array<std::array<std::string, 16>, 16> &gameBoard,std::vector<DiggedBomb*> &diggedBombs, std::vector<SpecialWeapon*> &specialWeapons, sf::Texture &bombTexture, std::array<sf::Texture, 2> &specialWeaponsTextures) {
     if(specialWeaponCounter > 0) {                  // character has a special weapon
         useSpecialWeapon(gameBoard, diggedBombs, specialWeapons, specialWeaponsTextures);
         return;
@@ -234,36 +234,17 @@ void Character::placeBomb(std::vector<Bomb *> &bombs, std::array<std::array<std:
 }
 
 void Character::useSpecialWeapon(std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, std::array<sf::Texture, 2> &specialWeaponsTextures) {
-    if(specialWeapon == 'd') {          // digged bomb
+    if(specialWeapon == 'd') {          // DIGGED BOMB
         if(SpecialWeapon::canYouDigBombHere(posX, posY, gameBoard))
             digBomb(diggedBombs, gameBoard);
     }
     else {
         int addX = SpecialWeapon::getXSummand(lastTriedDirection);
         int addY = SpecialWeapon::getYSummand(lastTriedDirection);
-        bool wasSpecialWeaponUsed = false;                                      // used to determine if you should decrease the weapon counter
-        if(specialWeapon == 'f') {                                                      // FIRE
-            for(int i = 1; i < 4; i++) {
-                if(SpecialWeapon::canFireBeUsedHere(posX + addX * i, posY + addY * i, gameBoard)) {
-                    useFire(posX + addX * i, posY + addY * i, specialWeapons, specialWeaponsTextures[0], gameBoard);
-                    wasSpecialWeaponUsed = true;
-                }
-                else
-                    break;
-            }
-        }
-        else {                                                                       // ICE
-            for(int i = 1; i < 4; i++) {
-                if(SpecialWeapon::canIceBeUsedHere(posX + addX * i, posY + addY * i, gameBoard)) {
-                    useIce(posX + addX * i, posY + addY * i, specialWeapons, specialWeaponsTextures[1], gameBoard);
-                    wasSpecialWeaponUsed = true;
-                }
-                else
-                    break;
-            }                                                                    
-        }
-        if (wasSpecialWeaponUsed)
-            specialWeaponCounter--;
+        if(specialWeapon == 'f')                                                      // FIRE
+            tryToUseFire(addX, addY, specialWeapons, specialWeaponsTextures[0], gameBoard);
+        else                                                                       // ICE
+            tryToUseIce(addX, addY, specialWeapons, specialWeaponsTextures[1], gameBoard);
     }
 }
 
@@ -273,9 +254,37 @@ void Character::digBomb(std::vector<DiggedBomb *> &diggedBombs, std::array<std::
     specialWeaponCounter--;
 }
 
+void Character::tryToUseFire(const int xSummand, const int ySummand, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard) {
+    bool wasSpecialWeaponUsed = false;      // used to determine if you should decrease the weapon counter
+    for(int i = 1; i < 4; i++) {
+        if (SpecialWeapon::canFireBeUsedHere(posX + xSummand * i, posY + ySummand * i, gameBoard)) {
+            useFire(posX + xSummand * i, posY + ySummand * i, specialWeapons, texture, gameBoard);
+            wasSpecialWeaponUsed = true;
+        }
+        else
+            break;
+    }
+    if(wasSpecialWeaponUsed)
+        specialWeaponCounter--;
+}
+
 void Character::useFire(const int posX, const int posY, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard) {
     specialWeapons.push_back(new SpecialWeapon(posX, posY, 'f', color, texture));
     gameBoard[posY][posX] = "fire";
+}
+
+void Character::tryToUseIce(const int xSummand, const int ySummand, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard) {
+    bool wasSpecialWeaponUsed = false;      // used to determine if you should decrease the weapon counter
+    for(int i = 1; i < 4; i++) {
+        if (SpecialWeapon::canIceBeUsedHere(posX + xSummand * i, posY + ySummand * i, gameBoard)) {
+            useIce(posX + xSummand * i, posY + ySummand * i, specialWeapons, texture, gameBoard);
+            wasSpecialWeaponUsed = true;
+        }
+        else
+            break;
+    }
+    if(wasSpecialWeaponUsed)
+        specialWeaponCounter--;
 }
 
 void Character::useIce(const int posX, const int posY, std::vector<SpecialWeapon *> &specialWeapons, sf::Texture &texture, std::array<std::array<std::string, 16>, 16> &gameBoard) {

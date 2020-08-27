@@ -48,6 +48,6 @@ void GameEventHandler::handlePressedKey() {
         else if(event.key.code == sf::Keyboard::Right)                    // move right
             game->characters[0]->tryToMove('r', game->gameBoard, game->bombs);
         else if(event.key.code == sf::Keyboard::Space)
-            game->characters[0]->placeBomb(game->bombs, game->gameBoard, game->diggedBombs, game->specialWeapons, game->gameTextures->bombTexture, game->gameTextures->specialWeaponsTextures);
+            game->characters[0]->tryToPlaceBomb(game->bombs, game->gameBoard, game->diggedBombs, game->specialWeapons, game->gameTextures->bombTexture, game->gameTextures->specialWeaponsTextures);
     }
 }

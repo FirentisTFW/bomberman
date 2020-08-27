@@ -15,10 +15,15 @@ Bonus::Bonus(int _posX, int _posY, char _type) {
 
 Bonus::~Bonus() {}
 
-char Bonus::shouldBonusBeCreated() {                    
+bool Bonus::shouldBonusBeCreated() {
+    int randomNumber = rand() % 10 + 1;
+    return randomNumber < 6; 
+}
+
+char Bonus::whichBonusShouldBeCreated() {
     char type = '0';                                              // '0' means no bonus will be created
 
-    int randomNumber = rand() % 200 + 1;                          // 1 - 120
+    int randomNumber = rand() % 110 + 1;                          // 1 - 120
 
     if(randomNumber < 21) type = 'r';                             // 20 chance for increased range
     else if(randomNumber < 41 && randomNumber > 20) type = 'b';   // 20 chance for additional bomb
@@ -28,7 +33,7 @@ char Bonus::shouldBonusBeCreated() {
     else if(randomNumber < 81 && randomNumber > 75) type = 'l';   // 5 chance for additional live
     else if(randomNumber < 91 && randomNumber > 80) type = 'f';   // 10 chance for special weapon: fire
     else if(randomNumber < 101 && randomNumber > 90) type = 'i';   // 10 chance for special weapon: ice
-    else if(randomNumber < 111 && randomNumber > 100) type = 'd';   // 10 chance for special weapon: digged bombs
+    else type = 'd';   // 10 chance for special weapon: digged bombs
 
     // std::cout << randomNumber << " " << type << std::endl;
 
