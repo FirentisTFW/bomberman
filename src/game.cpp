@@ -128,76 +128,29 @@ void Game::updateCharactersOnBoard() {
     for (int i = 0; i < characters.size(); i++) {
         if (characters[i]->lostShieldTimeSpan > 0)                               // character just lost its shield, can't be hurt again 
                 characters[i]->lostShieldTimeSpan--;
-        if(characters[i]->frozenTime > 0) {                                      // slow unfreezing    
-            characters[i]->frozenTime--;
-            if (characters[i]->frozenTime <= 0)
-                characters[i]->frozen = false;
-        }
+        if(characters[i]->frozen)                                          
+            characters[i]->continueUnfreezing();
         
-        if (gameBoard[characters[i]->posY][characters[i]->posX] == "explosion" || gameBoard[characters[i]->posY][characters[i]->posX] == "fire") {      // character is on the field where explosion happened
-            if (characters[i]->shield) {
-                characters[i]->shield = false;
-                characters[i]->lostShieldTimeSpan = 180;                                    // after losing shield, character can't be hit for 3 seconds
-
-                gameBoard[characters[i]->posY][characters[i]->posX] = "character";
-            }
-            else if(characters[i]->lostShieldTimeSpan <= 0) {                              // character doesn't have "after-hit protection"
-
-                char colorOfExplosion = findColorOfExplosionOrFire(characters[i]->posX, characters[i]->posY);       // find which explosion (or fire) killed the character
-                
-                if(characters[i]->color != colorOfExplosion)                                            // you won't get points for killing yourself
-                    addScoreToCharacter(colorOfExplosion, 1000);
-
-                if (characters[i]->isHuman) {                                               // character is controlled by a player (living person)
-                    player->lives--;
-                    // gameOver();
-                    std::cout << "Game Over 1!" << std::endl;
-                }
-                else {                                                                      // character is controlled by AI
-                    characters.erase(characters.begin() + i);
+        if (gameBoard[characters[i]->posY][characters[i]->posX] == "explosion" || gameBoard[characters[i]->posY][characters[i]->posX] == "fire") {     // character is on the field where explosion happened
+            if (shouldCharacterDieBecauseOfExplosionOrFire(i)) {
+                if(!characters[i]->isHuman) {
+                    killCharacter(i);
                     i--;
-                    if(characters.size() == 1) {                                            // player is the only one character left -> next level
-                        std::cout << "Next level!" << std::endl;
-                    }
                 }
+                else
+                    gameOver();
             }
         }
-        else if (gameBoard[characters[i]->posY][characters[i]->posX] == "bonus") {          // character stepped on bonus - character gets a bonus and bonus is removed from the map
-            int bonusesSize = bonuses.size();
-            for (int j = 0; j < bonusesSize; j++) {
-                if(characters[i]->posY == bonuses[j]->posY && characters[i]->posX == bonuses[j]->posX) {
-                    characters[i]->steppedOnBonus(bonuses[j]->type, player->lives, specialWeaponsIcons, gameTextures->iconsTextures, gameUI->font);
-                    addScoreToCharacter(characters[i]->color, 10);
-                    bonuses.erase(bonuses.begin() + j);     
-                    break;
-                }
-            }
-            gameBoard[characters[i]->posY][characters[i]->posX] = "character";
-        }
+        else if (gameBoard[characters[i]->posY][characters[i]->posX] == "bonus")          // character stepped on bonus - character gets a bonus and bonus is removed from the map
+            characterSteppedOnBonus(i);
         else if (gameBoard[characters[i]->posY][characters[i]->posX] == "digged_bomb") {    // character stepped on a digged bomb
-            int diggedBombsSize = diggedBombs.size();
-            for (int j = 0; j < diggedBombsSize; j++) {                                     // search for a right bomb          
-                if (characters[i]->posX == diggedBombs[j]->posX && characters[i]->posY == diggedBombs[j]->posY) {    // the right bomb has been found
-                    if(diggedBombs[j]->color != characters[i]->color) {         // the bomb has been planted by another character (you can't lose life on your own bomb)
-                        if (characters[i]->shield) {
-                            characters[i]->shield = false;
-                            gameBoard[characters[i]->posY][characters[i]->posX] = "character";
-                        }
-                        else {
-                            if (characters[i]->isHuman) {                       // character is controlled by a player (living person)
-                                player->lives--;
-                                // gameOver();
-                                std::cout << "Game Over 1!" << std::endl;
-                            }
-                            else {                                              // character is controlled by AI
-                                characters.erase(characters.begin() + i);
-                                i--;
-                            }
-                        }
-                        diggedBombs.erase(diggedBombs.begin() + j);
-                        break;
-                    }
+            if(shouldCharacterDieBecauseOfDiggedBomb(i)) {
+                if (!characters[i]->isHuman) {
+                    killCharacter(i);
+                    i--;
                 }
+                else
+                    gameOver();
             }
         }
         else if (gameBoard[characters[i]->posY][characters[i]->posX] == "ice") {            // character is on the filed with ice - freeze the character
@@ -209,6 +162,70 @@ void Game::updateCharactersOnBoard() {
     }
 }
 
+bool Game::shouldCharacterDieBecauseOfExplosionOrFire(const int characterIndex) {
+    if (characters[characterIndex]->shield) {
+        characters[characterIndex]->shield = false;
+        characters[characterIndex]->lostShieldTimeSpan = 180;                                    // after losing shield, character can't be hit for 3 seconds
+        gameBoard[characters[characterIndex]->posY][characters[characterIndex]->posX] = "character";
+        return false;
+    }
+    else if (!characters[characterIndex]->doesHaveAfterHitProtection()){                              // character doesn't have "after-hit protection"
+        char colorOfExplosion = findColorOfExplosionOrFire(characters[characterIndex]->posX, characters[characterIndex]->posY);       // find which explosion (or fire) killed the character
+        if(characters[characterIndex]->color != colorOfExplosion)                                            // you won't get points for killing yourself
+            addScoreToCharacter(colorOfExplosion, 1000);
+
+        return true;
+    }
+    return true;
+}
+
+void Game::characterSteppedOnBonus(const int characterIndex) {
+    int bonusesSize = bonuses.size();
+    for (int j = 0; j < bonusesSize; j++) {
+        if(characters[characterIndex]->posY == bonuses[j]->posY && characters[characterIndex]->posX == bonuses[j]->posX) {
+            characters[characterIndex]->steppedOnBonus(bonuses[j]->type, player->lives, specialWeaponsIcons, gameTextures->iconsTextures, gameUI->font);
+            addScoreToCharacter(characters[characterIndex]->color, 10);
+            bonuses.erase(bonuses.begin() + j);     
+            break;
+        }
+    }
+    gameBoard[characters[characterIndex]->posY][characters[characterIndex]->posX] = "character";
+}
+
+bool Game::shouldCharacterDieBecauseOfDiggedBomb(const int characterIndex) {
+    int diggedBombsSize = diggedBombs.size();
+    for (int j = 0; j < diggedBombsSize; j++) {                                     // search for a right bomb          
+        if (characters[characterIndex]->posX == diggedBombs[j]->posX && characters[characterIndex]->posY == diggedBombs[j]->posY) {    // the right bomb has been found
+            if(diggedBombs[j]->color != characters[characterIndex]->color) {         // the bomb has been planted by another character (you can't lose life on your own bomb)
+                explosions.push_back(
+                    new Explosion(characters[characterIndex]->posX, characters[characterIndex]->posY, 
+                    characters[characterIndex]->color, gameTextures->explosionTexture));
+                diggedBombs.erase(diggedBombs.begin() + j);
+                if (characters[characterIndex]->shield) {
+                    characters[characterIndex]->shield = false;
+                    characters[characterIndex]->lostShieldTimeSpan = 180; // after losing shield, character can't be hit for 3 seconds
+                    gameBoard[characters[characterIndex]->posY][characters[characterIndex]->posX] = "character";
+                    return false;
+                }
+                else
+                    return true;
+            }
+            return false;
+        }
+    }
+}
+
+void Game::killCharacter(const int characterIndex) {
+    characters.erase(characters.begin() + characterIndex);
+    if(characters.size() == 1)                                            // player is the only one character left -> next level
+        std::cout << "Next level!" << std::endl;
+
+}
+
+void Game::gameOver() {
+    // TODO
+    std::cout << "Game over!" << std::endl;
+}
 
 void Game::updateBoxesOnBoard() {
     int boxesSize = boxes.size();

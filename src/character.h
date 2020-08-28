@@ -83,4 +83,8 @@ class Character: public Object {
         void useSpecialWeapon(std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<DiggedBomb *> &diggedBombs, std::vector<SpecialWeapon *> &specialWeapons, std::array<sf::Texture, 2> &specialWeaponsTextures);
 
         void steppedOnBonus(const char type, int &playersLives, std::vector<Icon *> &specialWeaponsIcons, std::array<sf::Texture, 3> &iconsTextures, sf::Font &font); // player gets a bonus
+
+        void continueUnfreezing();
+
+        bool doesHaveAfterHitProtection();
 };

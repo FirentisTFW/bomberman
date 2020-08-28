@@ -100,7 +100,7 @@ bool Character::isMovePossible(const int posX, const int posY, char direction, s
     if(isPositionOnTheMap(posX, posY)) {
         if (gameBoard[posY][posX] != "box" && gameBoard[posY][posX] != "wall" && gameBoard[posY][posX] != "bomb" && gameBoard[posY][posX] != "ice") // field character wants to step on is possible to step on
             return true;
-        if (gameBoard[posY][posX] == "bomb" && bombPushing == true)                            // character wants to step on the bomb and character can push the bombs
+        if (gameBoard[posY][posX] == "bomb" && bombPushing == true && isHuman)                            // character wants to step on the bomb and character can push the bombs
             return didCharacterPushBomb(posX, posY, bombs, direction, gameBoard);
         return false;
     }
@@ -334,4 +334,14 @@ void Character::steppedOnBonus(const char type, int &playersLives, std::vector<I
         default:
             break;
     }
+}
+
+void Character::continueUnfreezing() {
+    frozenTime--;
+    if (frozenTime <= 0)
+        frozen = false;
+}
+
+bool Character::doesHaveAfterHitProtection() {
+    return lostShieldTimeSpan > 0;
 }

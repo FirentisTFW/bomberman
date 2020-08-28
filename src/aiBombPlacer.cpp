@@ -10,8 +10,8 @@ AiBombPlacer::~AiBombPlacer() {}
 
 bool AiBombPlacer::isItWorthToPlaceBombHere() {
     if(character->bombLimit > 0) {
-        int luck = rand() % 3000 + 1;
-        if(luck < 20) {
+        int luck = rand() % 2000 + 1;
+        if(luck < 20 || character->specialWeaponCounter > 0) {
             surroundingPositions = getSurroundingPositions();
             for(Point point : surroundingPositions) {
                 if (gameBoard[point.posY][point.posX] == "box" || gameBoard[point.posY][point.posX] == "character" && !character->frozen)

@@ -27,6 +27,16 @@ class Game {
 
         void updateCharactersOnBoard();
 
+        bool shouldCharacterDieBecauseOfExplosionOrFire(const int characterIndex);
+
+        void characterSteppedOnBonus(const int characterIndex);
+
+        bool shouldCharacterDieBecauseOfDiggedBomb(const int characterIndex);
+
+        void killCharacter(const int characterIndex);
+
+        void gameOver();
+
         void updateBoxesOnBoard();
 
         void updateBombsOnBoard();
