@@ -21,9 +21,13 @@ class AiMovement {
 
         static std::string possibleMoves;
 
+        static void createCharactersMovement(std::vector<Character *> &characters, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
+
         void handleMovement();
 
-        void characterDidNotMove();
+        void savePossibleMove();
+
+        void makeMostOptimalMove();
 
         bool wasThisDirectionAlreadyTried(const char direction);
 
@@ -34,8 +38,6 @@ class AiMovement {
         bool isMovingSaferThanStaying();
 
         int getDangerOfSafestMovePossible();
-
-        static void createCharactersMovement(std::vector<Character *> &characters, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
 
         static char getRandomMove();
 

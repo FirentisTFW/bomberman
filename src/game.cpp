@@ -345,7 +345,7 @@ void Game::createBonus(const int posX, const int posY) {
     bonuses.push_back(new Bonus(posX, posY, bonusType));
     int textureId = bonuses[bonuses.size() - 1]->getTextureId();
     bonuses[bonuses.size() - 1]->setTexture(gameTextures->bonusesTextures[textureId]);
-    gameBoard[posY][posX] = "bonus";
+    // gameBoard[posY][posX] = "bonus";
 }
 
 void Game::updateAnimations() {

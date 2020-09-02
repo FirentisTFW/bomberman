@@ -10,6 +10,13 @@ AiMovement::AiMovement(Character* &_character, std::array<std::array<std::string
 
 AiMovement::~AiMovement() {}
 
+void AiMovement::createCharactersMovement(std::vector<Character *> &characters, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
+    for (int i = 1; i < characters.size(); i++) {
+        AiMovement AiMovementMovementHandler = AiMovement(characters[i], gameBoard, bombs);
+        AiMovementMovementHandler.handleMovement();
+    }
+}
+
 void AiMovement::handleMovement() {
    while(!didCharacterMove) {
         possibleMove = getRandomMove();
@@ -20,24 +27,28 @@ void AiMovement::handleMovement() {
 
         if(character->didCharacterMove(suggestedXPos, suggestedYPos))
             didCharacterMove = true;
-        else
-            characterDidNotMove();
+        else {
+            savePossibleMove();
+            if(allDirectionsTried())
+                makeMostOptimalMove();
+        }
     }
 }
 
-void AiMovement::characterDidNotMove() {
-    if(!wasThisDirectionAlreadyTried(possibleMove)) {
+void AiMovement::savePossibleMove() {
+    if (!wasThisDirectionAlreadyTried(possibleMove)) {
         triedDirections.push_back(possibleMove);
         dangerOfMoves.push_back(getDangerOfSuggestedMove());
-        if(allDirectionsTried()) {
-            if(isMovingSaferThanStaying()) {
-                int bestMoveIndex = std::min_element(dangerOfMoves.begin(), dangerOfMoves.end()) - dangerOfMoves.begin();
-                if(!character->frozen)
-                    character->move(triedDirections[bestMoveIndex]);
-            }
-            didCharacterMove = true;
-        }
     }
+}
+
+void AiMovement::makeMostOptimalMove() {
+    if(isMovingSaferThanStaying()) {
+        int bestMoveIndex = std::min_element(dangerOfMoves.begin(), dangerOfMoves.end()) - dangerOfMoves.begin();
+        if(!character->frozen)
+            character->move(triedDirections[bestMoveIndex]);
+    }
+    didCharacterMove = true;
 }
 
 bool AiMovement::wasThisDirectionAlreadyTried(const char direction) {
@@ -63,13 +74,6 @@ bool AiMovement::isMovingSaferThanStaying() {
 
 int AiMovement::getDangerOfSafestMovePossible() {
     return *std::min_element(dangerOfMoves.begin(), dangerOfMoves.end());
-}
-
-void AiMovement::createCharactersMovement(std::vector<Character *> &characters, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb*> &bombs) {
-    for (int i = 1; i < characters.size(); i++) {
-        AiMovement AiMovementMovementHandler = AiMovement(characters[i], gameBoard, bombs);
-        AiMovementMovementHandler.handleMovement();
-    }
 }
 
 char AiMovement::getRandomMove() {
