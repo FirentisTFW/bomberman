@@ -14,8 +14,9 @@ bool AiBombPlacer::isItWorthToPlaceBombHere() {
         if(luck < 20 || character->specialWeaponCounter > 0) {
             surroundingPositions = getSurroundingPositions();
             for(Point point : surroundingPositions) {
-                if (gameBoard[point.posY][point.posX] == "box" || gameBoard[point.posY][point.posX] == "character" && !character->frozen)
-                    return true;
+                if(Object::isPositionOnTheMap(point.posX, point.posY))
+                    if (gameBoard[point.posY][point.posX] == "box" || gameBoard[point.posY][point.posX] == "character" && !character->frozen)
+                        return true;
             }
         }
     }

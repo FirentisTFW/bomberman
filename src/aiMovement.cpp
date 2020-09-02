@@ -39,14 +39,40 @@ void AiMovement::savePossibleMove() {
     if (!wasThisDirectionAlreadyTried(possibleMove)) {
         triedDirections.push_back(possibleMove);
         dangerOfMoves.push_back(getDangerOfSuggestedMove());
+        nubmerOfNextPossibleMoves.push_back(getNumberOfNextPossibleMoves());
     }
 }
 
+int AiMovement::getNumberOfNextPossibleMoves() {
+    int possibleNextMoves = 0;
+    std::array<Point, 4> surroundingPositions = getSurroundingPositions();
+    for(Point point : surroundingPositions) {
+        if (Object::isPositionOnTheMap(point.posX, point.posY)) {
+            if (gameBoard[point.posY][point.posX] == "0" || gameBoard[point.posY][point.posX] == "bonus" || gameBoard[point.posY][point.posX] == "digged_bomb" || gameBoard[point.posY][point.posX] == "character")
+                possibleNextMoves++;
+        }
+    }
+    return possibleNextMoves-1;
+}
+
+std::array<Point, 4> AiMovement::getSurroundingPositions() {
+    std::array<Point, 4> positions;
+    positions[0].posX = suggestedXPos;
+    positions[0].posY = suggestedYPos - 1;
+    positions[1].posX = suggestedXPos;
+    positions[1].posY = suggestedYPos + 1;
+    positions[2].posX = suggestedXPos - 1;
+    positions[2].posY = suggestedYPos;
+    positions[3].posX = suggestedXPos + 1;
+    positions[3].posY = suggestedYPos;
+
+    return positions;
+}
+
 void AiMovement::makeMostOptimalMove() {
-    if(isMovingSaferThanStaying()) {
-        int bestMoveIndex = std::min_element(dangerOfMoves.begin(), dangerOfMoves.end()) - dangerOfMoves.begin();
-        if(!character->frozen)
-            character->move(triedDirections[bestMoveIndex]);
+    if(!character->frozen && isMovingSaferThanStaying()) {
+        int bestMoveIndex = getBestMoveIndex();
+        character->move(triedDirections[bestMoveIndex]);
     }
     didCharacterMove = true;
 }
@@ -79,4 +105,27 @@ int AiMovement::getDangerOfSafestMovePossible() {
 char AiMovement::getRandomMove() {
     int randomNumber = rand() % 4;      // 0-3
     return possibleMoves[randomNumber];
+}
+
+int AiMovement::getBestMoveIndex() {
+    int bestMoveDanger = getDangerOfSafestMovePossible();
+    std::vector<int> bestMovesIndexes;
+    for (int i = 0; i < dangerOfMoves.size(); i++)
+        if (dangerOfMoves[i] == bestMoveDanger)
+            bestMovesIndexes.push_back(i);
+    if(bestMovesIndexes.size() > 1)
+        return getIndexOfMoveWithMostNextPossibleMoves(bestMovesIndexes);
+    return bestMovesIndexes[0];
+}
+
+int AiMovement::getIndexOfMoveWithMostNextPossibleMoves(const std::vector<int> movesIndexes) {
+    int mostPossibleMoves = -1;
+    int bestMoveIndex = 0;
+    for (int i = 0; i < movesIndexes.size(); i++) {
+        if (nubmerOfNextPossibleMoves[movesIndexes[i]] > mostPossibleMoves) {
+            mostPossibleMoves = nubmerOfNextPossibleMoves[movesIndexes[i]];
+            bestMoveIndex = movesIndexes[i];
+        }
+    }
+    return bestMoveIndex;
 }
