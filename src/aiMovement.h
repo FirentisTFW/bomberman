@@ -1,8 +1,9 @@
 #pragma once
 #include "character.h"
 #include "point.h"
+#include "aiPositionChecker.h"
 
-class AiMovement {
+class AiMovement : AiPositionChecker {
     private:
         Character* character;
         std::array<std::array<std::string, 16>, 16> gameBoard;
@@ -16,7 +17,29 @@ class AiMovement {
         int suggestedXPos;
         int suggestedYPos;
 
-        std::array<Point, 4> getSurroundingPositions();
+        void handleMovement();
+
+        char getRandomMove();
+
+        void savePossibleMove();
+
+        int getNumberOfNextPossibleMoves();
+
+        // std::array<Point, 4> getSurroundingPositions();
+
+        bool isFieldPossibleToStepOn(const Point field);
+
+        void makeMostOptimalMove();
+
+        bool wasThisDirectionAlreadyTried(const char direction);
+
+        int getDangerOfSuggestedMove();
+
+        bool allDirectionsTried();
+
+        bool isMovingSaferThanStaying();
+
+        int getDangerOfSafestMovePossible();
 
         int getBestMoveIndex();
 
@@ -30,27 +53,4 @@ class AiMovement {
         static std::string possibleMoves;
 
         static void createCharactersMovement(std::vector<Character *> &characters, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
-
-        void handleMovement();
-
-        void savePossibleMove();
-
-        void makeMostOptimalMove();
-
-        bool wasThisDirectionAlreadyTried(const char direction);
-
-        int getNumberOfNextPossibleMoves();
-
-        int getDangerOfSuggestedMove();
-
-        bool allDirectionsTried();
-
-        bool isMovingSaferThanStaying();
-
-        int getDangerOfSafestMovePossible();
-
-        static char getRandomMove();
-
-        // static int getDangerOfMove(const int posX, const int posY, char direction, std::array<std::array<std::string, 16>, 16> &gameBoard, std::vector<Bomb *> &bombs);
-
 };

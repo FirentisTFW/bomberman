@@ -35,6 +35,11 @@ void AiMovement::handleMovement() {
     }
 }
 
+char AiMovement::getRandomMove() {
+    int randomNumber = rand() % 4;      // 0-3
+    return possibleMoves[randomNumber];
+}
+
 void AiMovement::savePossibleMove() {
     if (!wasThisDirectionAlreadyTried(possibleMove)) {
         triedDirections.push_back(possibleMove);
@@ -45,28 +50,19 @@ void AiMovement::savePossibleMove() {
 
 int AiMovement::getNumberOfNextPossibleMoves() {
     int possibleNextMoves = 0;
-    std::array<Point, 4> surroundingPositions = getSurroundingPositions();
+    std::array<Point, 4> surroundingPositions = getSurroundingPositions(suggestedXPos, suggestedYPos);
     for(Point point : surroundingPositions) {
         if (Object::isPositionOnTheMap(point.posX, point.posY)) {
-            if (gameBoard[point.posY][point.posX] == "0" || gameBoard[point.posY][point.posX] == "bonus" || gameBoard[point.posY][point.posX] == "digged_bomb" || gameBoard[point.posY][point.posX] == "character")
+            if (isFieldPossibleToStepOn(point))
                 possibleNextMoves++;
         }
     }
     return possibleNextMoves-1;
 }
 
-std::array<Point, 4> AiMovement::getSurroundingPositions() {
-    std::array<Point, 4> positions;
-    positions[0].posX = suggestedXPos;
-    positions[0].posY = suggestedYPos - 1;
-    positions[1].posX = suggestedXPos;
-    positions[1].posY = suggestedYPos + 1;
-    positions[2].posX = suggestedXPos - 1;
-    positions[2].posY = suggestedYPos;
-    positions[3].posX = suggestedXPos + 1;
-    positions[3].posY = suggestedYPos;
-
-    return positions;
+bool AiMovement::isFieldPossibleToStepOn(const Point field) {
+    return gameBoard[field.posY][field.posX] == "0" || gameBoard[field.posY][field.posX] == "bonus" ||
+     gameBoard[field.posY][field.posX] == "digged_bomb" || gameBoard[field.posY][field.posX] == "character";
 }
 
 void AiMovement::makeMostOptimalMove() {
@@ -100,11 +96,6 @@ bool AiMovement::isMovingSaferThanStaying() {
 
 int AiMovement::getDangerOfSafestMovePossible() {
     return *std::min_element(dangerOfMoves.begin(), dangerOfMoves.end());
-}
-
-char AiMovement::getRandomMove() {
-    int randomNumber = rand() % 4;      // 0-3
-    return possibleMoves[randomNumber];
 }
 
 int AiMovement::getBestMoveIndex() {
