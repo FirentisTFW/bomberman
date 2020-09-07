@@ -464,6 +464,6 @@ void Game::draw() {
         window->draw(icon->counter);
     }
 
-    gameUI->updateUI(characters, player->score);
+    gameUI->updateUI(characters, player->score, player->lives);
     gameUI->drawUI(window);
 }

@@ -2,7 +2,7 @@
 
 GameExecutor::GameExecutor(sf::RenderWindow *_window) {
     window = _window;
-    player = new Player('b');
+    player = new Player('r');
     gameTextures = new GameTextures();
     gameUI = new GameUI(player->lives, player->color);
     game = new Game(_window, player, gameTextures, gameUI);

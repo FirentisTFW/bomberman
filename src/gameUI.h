@@ -12,6 +12,10 @@ class GameUI {
         std::array<sf::Text, 4> charactersScores;
         std::array<sf::Text, 4> charactersLives;
 
+        void setCharactersScores(std::vector<Character *> &characters);
+
+        void setPlayersLives(std::vector<Character *> &characters, const int playersLives);
+
         void setAndCenterOverallScore(const int &playersScore);
 
     public:
@@ -23,7 +27,7 @@ class GameUI {
 
         ~GameUI();
 
-        void updateUI(std::vector<Character *> &characters, const int &playersScore);       // update side bar with stats
+        void updateUI(std::vector<Character *> &characters, const int &playersScore, const int playersLives);       // update side bar with stats
 
         void drawUI(sf::RenderWindow* &window);                                             // draw side bar
 };
