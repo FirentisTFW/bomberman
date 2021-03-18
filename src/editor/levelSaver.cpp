@@ -8,7 +8,7 @@ LevelSaver::~LevelSaver() {}
 
 void LevelSaver::saveLevel(const int backgroundId, const std::vector<BoxEditor *> &boxes, const std::vector<CharacterEditor *> &characters) {
     int nrOfMap = getNumberOfNextMap();
-    mapFile.open("maps/map_" + std::to_string(nrOfMap) + ".txt", std::ios::out);
+    mapFile.open("maps/custom/map_" + std::to_string(nrOfMap) + ".txt", std::ios::out);
     if(mapFile.good()) {
         saveBackground(backgroundId);
         saveBoxes(boxes);

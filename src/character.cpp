@@ -39,11 +39,23 @@ Character::Character(bool _isHuman, int _posX, int _posY, char _color) {
     rect.setPosition(posX * 50, posY * 50);
     rect.setFillColor(sf::Color::Green);
 
+    setUiScoreIndex();
 }
 
 Character::~Character() {}
 
 // ------------------------------------------ METHODS -------------------------------------------------
+
+void Character::setUiScoreIndex() {
+    if(color == 'b')
+        uiScoreIndex = 0;
+    else if(color == 'g')
+        uiScoreIndex = 1;
+    else if(color == 'r')
+        uiScoreIndex = 2;
+    else if(color == 'y')
+        uiScoreIndex = 3;
+}
 
 void Character::updateAnimationDirection() {
     sprite.setTextureRect(sf::IntRect(50 * animationCounter, 50 * animationDirection, 50, 50));

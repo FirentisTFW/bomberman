@@ -10,6 +10,8 @@
 
 class Character: public Object {
     private:
+        void setUiScoreIndex();
+
         void updateAnimationDirection();
 
         void updateAnimationIfNeeded();
@@ -41,6 +43,7 @@ class Character: public Object {
         int animationCounter;   // which frame in animation is currently being displayed
 
         char color;
+        int uiScoreIndex;
         bool shield;
         int lostShieldTimeSpan; // after character loses shield, he can't be hit for another three seconds (he won't be killed by the bomb that crashed his shield)
         bool bombPushing;       // can character push planted bomb

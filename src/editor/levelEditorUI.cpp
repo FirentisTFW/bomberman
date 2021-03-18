@@ -36,7 +36,7 @@ void LevelEditorUI::loadTextures() {
         wallsTextures[i].loadFromFile("images/boxes/stone_wall_" + std::to_string(i+1) + ".png");
         walls[i].setTexture(wallsTextures[i]);
     }
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < characters.size(); i++) {
         charactersTextures[i].loadFromFile("images/level_editor_icons/characters/character_" + std::to_string(i+1) + ".png");
         characters[i].setTexture(charactersTextures[i]);
     }

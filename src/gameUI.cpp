@@ -1,6 +1,6 @@
 #include "gameUI.h"
 
-GameUI::GameUI(const int playersLives, const char color) {
+GameUI::GameUI(const int playersLives, const char playersColor) {
     
     font.loadFromFile("images/fonts/BebasNeue-Regular.ttf");
 
@@ -18,7 +18,7 @@ GameUI::GameUI(const int playersLives, const char color) {
         textProperties::setProperties(charactersLives[i], 25, 847, 116 + 140 * i);
     }
 
-    switch(color) {
+    switch(playersColor) {
         case 'b':
             charactersLives[0].setString(std::to_string(playersLives));
             break;
@@ -55,10 +55,19 @@ GameUI::GameUI(const int playersLives, const char color) {
 
 GameUI::~GameUI() {}
 
-void GameUI::updateUI(std::vector<Character *> &characters, const int &playersScore){
-    for (int i = 0; i < 4; i++)
-        charactersScores[i].setString(std::to_string(characters[i]->score));
+void GameUI::updateUI(std::vector<Character *> &characters, const int &playersScore, const int playersLives){
+    setCharactersScores(characters);
+    setPlayersLives(characters, playersLives);
     setAndCenterOverallScore(playersScore);
+}
+
+void GameUI::setCharactersScores(std::vector<Character *> &characters) {
+    for (int i = 0; i < characters.size(); i++)
+        charactersScores[characters[i]->uiScoreIndex].setString(std::to_string(characters[i]->score));
+}
+
+void GameUI::setPlayersLives(std::vector<Character *> &characters, const int playersLives) {
+    charactersLives[characters[0]->uiScoreIndex].setString(std::to_string(playersLives));
 }
 
 void GameUI::setAndCenterOverallScore(const int &playersScore) {

@@ -5,7 +5,7 @@ MapLoader::MapLoader() {}
 MapLoader::~MapLoader() {}
 
 void MapLoader::loadMap(std::vector<Box *> &boxes, std::vector<Character *> &characters, std::array<sf::Texture, 10> &boxesTextures, std::array<sf::Texture, 4> &charactersTextures, sf::Texture &backgroundTexture) {
-    mapFile.open("maps/testMap.txt", std::ios::in);
+    mapFile.open("maps/native/map_1.txt", std::ios::in);
     if(mapFile.good()) {
         loadBackground(backgroundTexture);
         loadBoxes(boxes, boxesTextures);
