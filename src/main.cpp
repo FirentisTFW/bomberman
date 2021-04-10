@@ -2,10 +2,10 @@
 // #include "menu/mainMenu.h"
 // #include "menu/mainMenuNavigation.h"
 // #include "menu/mainMenuEventHandler.h"
-#include "editor/levelEditorEventChecker.h"
-#include "mainMenuExecutor.h"
-#include "gameExecutor.h"
-#include "editorExecutor.h"
+#include "editor/includes/levelEditorEventChecker.h"
+#include "game/includes/mainMenuExecutor.h"
+#include "game/includes/gameExecutor.h"
+#include "game/includes/editorExecutor.h"
 
 void handleMenuResult(const std::string result, sf::RenderWindow &window, GameExecutor* &gameExecutor, EditorExecutor* &editorExecutor) {
     if(result == "game")

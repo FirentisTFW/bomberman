@@ -1,4 +1,4 @@
-#include "editorMapHighlight.h"
+#include "includes/editorMapHighlight.h"
 
 MapHighlight::MapHighlight(sf::Vector2f mousePosition, sf::Texture &texture) {
     posX = fixPositionOnMap(mousePosition.x);

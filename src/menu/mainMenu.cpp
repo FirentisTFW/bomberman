@@ -1,4 +1,4 @@
-#include "mainMenu.h"
+#include "includes/mainMenu.h"
 
 std::array<std::string, 6> MainMenu::stringsForButtonsTexts = {"Start game", "Load game", "Level editor", "Highscores", "Credits", "Exit"};
 

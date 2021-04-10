@@ -1,4 +1,4 @@
-#include "mainMenuEventHandler.h"
+#include "includes/mainMenuEventHandler.h"
 
 MainMenuEventHandler::MainMenuEventHandler(sf::Event &_event, MainMenuNavigation* _navigation) {
     event = _event;

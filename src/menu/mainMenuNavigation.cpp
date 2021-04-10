@@ -1,4 +1,4 @@
-#include "mainMenuNavigation.h"
+#include "includes/mainMenuNavigation.h"
 
 MainMenuNavigation::MainMenuNavigation(sf::RenderWindow *_window, std::array<sf::Text, 6> _buttonsTexts) {
     window = _window;

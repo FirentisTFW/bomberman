@@ -1,6 +1,6 @@
-#include "includes/boxEditor.h"
+#include "includes/box.h"
 
-BoxEditor::BoxEditor(bool _isDestroyable, int _posX, int _posY) {
+Box::Box(bool _isDestroyable, int _posX, int _posY) {
     isDestroyable = _isDestroyable;
     posX = _posX;
     posY = _posY;
@@ -10,4 +10,4 @@ BoxEditor::BoxEditor(bool _isDestroyable, int _posX, int _posY) {
     rect.setFillColor(sf::Color::Red);
 }
 
-BoxEditor::~BoxEditor() {};
+Box::~Box() {}

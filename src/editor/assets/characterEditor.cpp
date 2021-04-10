@@ -1,4 +1,4 @@
-#include "characterEditor.h"
+#include "includes/characterEditor.h"
 
 CharacterEditor::CharacterEditor(bool _isHuman, int _posX, int _posY, char _color) {
 
