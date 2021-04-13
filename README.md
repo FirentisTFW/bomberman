@@ -21,7 +21,7 @@ Placing boxes, walls and characters on the screen, changing backgrounds and savi
 
 ## Credits
 
-I do not own any of image assets used in the game. I found these images on the internet (CC license).
+I do not own any right to image assets used in the game. I found these images on the Internet (CC license).
 
 ## Gameplay Preview
 
