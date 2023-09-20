@@ -14,7 +14,7 @@ Placing boxes, walls and characters on the screen, changing backgrounds and savi
 ## Launch (Linux)
 
 - Make sure SFML is installed on your OS
-- Clone the respository
+- Clone the repository
 - Enter the directory and run build file in your terminal: `./build.sh`
 - Press `2` to compile the code
 - After compilation, press `3` to run the game
